@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Database Rekening — Upload PDF Mandiri</title>
+  <meta name="description" content="Data rekening akurat, langsung dari laporan bank. Upload PDF Transaction Report Kopra Mandiri ke spreadsheet Database Rekening.">
+  <meta name="theme-color" content="#1565F5">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preload" href="assets/fonts/lexend-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+  <a class="skip" href="#kerja">Langsung ke area upload</a>
+
+  <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="brand" href="#top" aria-label="Database Rekening, ke atas">
+        <img src="icons/icon.svg" alt="" width="36" height="36">
+        <span class="brand__text">
+          <strong>Database Rekening</strong>
+          <small>Shelter Indonesia Gemilang</small>
+        </span>
+      </a>
+      <nav class="nav__links" aria-label="Navigasi utama">
+        <a href="#kerja">Upload</a>
+        <a href="#aturan">Cara kerja</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="conn" id="connBtn" type="button" aria-haspopup="dialog">
+          <span class="conn__dot" aria-hidden="true"></span>
+          <span id="connText">Belum terhubung</span>
+        </button>
+        <a class="btn btn--ghost btn--sm nav__sheet" id="navSheet" href="#" target="_blank" rel="noopener">Buka spreadsheet</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero__copy">
+        <h1>Data rekening akurat, langsung dari laporan bank.</h1>
+        <p class="hero__lead">Upload PDF <em>Transaction Report</em> dari Kopra Mandiri. Setiap batch dicek dengan total bank, lalu otomatis masuk ke spreadsheet Database Rekening.</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary btn--lg" href="#kerja" id="heroStart">Pilih PDF</a>
+          <a class="btn btn--ghost btn--lg" id="heroSheet" href="#" target="_blank" rel="noopener">Buka spreadsheet</a>
+        </div>
+      </div>
+      <figure class="hero__art">
+        <picture>
+          <source srcset="assets/img/hero.webp" type="image/webp">
+          <img src="assets/img/hero.jpg" width="1536" height="1024" alt="Ilustrasi aplikasi perbankan: kartu, gedung bank, ponsel dengan riwayat transfer gaji, dan bukti pembayaran berhasil." fetchpriority="high">
+        </picture>
+      </figure>
+    </section>
+
+    <ul class="assure" aria-label="Jaminan data">
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+        <span><b>Dicek dengan total bank</b>Batch yang tidak cocok tidak akan terkirim.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="11" height="11" rx="2.5"/><path d="M9 20h8.5a2.5 2.5 0 002.5-2.5V9"/></svg>
+        <span><b>Tidak ada data dobel</b>PDF yang sama dilewati otomatis.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7.5a4 4 0 018 0V10"/></svg>
+        <span><b>PDF tetap di perangkat</b>Dibaca di browser, tidak diunggah ke server.</span>
+      </li>
+    </ul>
+
+    <!-- WORKSPACE -->
+    <section class="work" id="kerja" aria-labelledby="workTitle">
+      <div class="work__head">
+        <h2 id="workTitle">Upload laporan</h2>
+        <ol class="steps" aria-label="Langkah">
+          <li class="step is-active" data-step="1"><span class="step__n">1</span><span class="step__t">Pilih PDF</span></li>
+          <li class="step" data-step="2"><span class="step__n">2</span><span class="step__t">Periksa hasil</span></li>
+          <li class="step" data-step="3"><span class="step__n">3</span><span class="step__t">Kirim ke spreadsheet</span></li>
+        </ol>
+      </div>
+
+      <div class="panel" id="panel">
+        <div class="notice notice--warn" id="connNotice" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3L12 4z"/><path d="M12 10v4M12 17.2v.1"/></svg>
+          <div><b>Belum terhubung ke spreadsheet.</b> PDF tetap bisa diperiksa. Untuk mengirim, masukkan kode akses di <button type="button" class="link" data-open-settings>Pengaturan</button>.</div>
+        </div>
+
+        <!-- state: pilih -->
+        <div class="state" id="stPick">
+          <label class="drop" id="drop" for="file">
+            <input type="file" id="file" accept="application/pdf,.pdf" class="sr-only">
+            <span class="drop__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M14 6h14l10 10v24a3 3 0 01-3 3H14a3 3 0 01-3-3V9a3 3 0 013-3z"/><path d="M28 6v10h10"/><path d="M24 34V22M19 27l5-5 5 5"/></svg>
+            </span>
+            <span class="drop__title">Seret PDF ke sini, atau <u>pilih dari perangkat</u></span>
+            <span class="drop__hint">Transaction Report dari Kopra Mandiri, misalnya "BT GAJI 26-30 SEPT 2026 SIG.pdf"</span>
+          </label>
+          <p class="err" id="pickErr" role="alert" hidden></p>
+        </div>
+
+        <!-- state: membaca -->
+        <div class="state" id="stRead" hidden>
+          <div class="reading">
+            <div class="reading__file">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5"/></svg>
+              <span id="readName">file.pdf</span>
+            </div>
+            <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="meter"><i></i></div>
+            <p class="reading__txt" id="readTxt" aria-live="polite">Membaca halaman…</p>
+          </div>
+        </div>
+
+        <!-- state: hasil -->
+        <div class="state" id="stResult" hidden>
+          <div class="file-bar">
+            <div class="file-bar__name">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5"/></svg>
+              <div><b id="resName"></b><small id="resPages"></small></div>
+            </div>
+            <button class="btn btn--ghost btn--sm" type="button" data-reset>Ganti PDF</button>
+          </div>
+
+          <div class="verdict" id="verdict" role="status"></div>
+
+          <dl class="figures">
+            <div class="fig fig--main"><dt>Baris yang akan masuk</dt><dd id="fRows">0</dd></div>
+            <div class="fig"><dt>Batch terbaca</dt><dd id="fBatch">0</dd></div>
+            <div class="fig"><dt>Cocok dengan bank</dt><dd id="fCheck">0</dd></div>
+            <div class="fig"><dt>Failed dibuang</dt><dd id="fFailed">0</dd></div>
+          </dl>
+
+          <div class="tabs" role="tablist" aria-label="Detail hasil">
+            <button role="tab" id="tab-batch" aria-controls="pane-batch" aria-selected="true">Ringkasan batch</button>
+            <button role="tab" id="tab-data" aria-controls="pane-data" aria-selected="false" tabindex="-1">Data 5 kolom</button>
+            <button role="tab" id="tab-failed" aria-controls="pane-failed" aria-selected="false" tabindex="-1">Failed <span class="count" id="failedCount">0</span></button>
+            <button role="tab" id="tab-err" aria-controls="pane-err" aria-selected="false" tabindex="-1" hidden>Masalah <span class="count count--bad" id="errCount">0</span></button>
+          </div>
+
+          <div class="pane" role="tabpanel" id="pane-batch" aria-labelledby="tab-batch" tabindex="0">
+            <div class="tbl-wrap">
+              <table class="tbl tbl--batch">
+                <thead><tr><th scope="col">No</th><th scope="col">Site penempatan</th><th scope="col">Site bisnis</th><th scope="col" class="r">Transaksi</th><th scope="col" class="r">Masuk</th><th scope="col" class="r">Total (Rp)</th><th scope="col">Cek bank</th></tr></thead>
+                <tbody id="tBatch"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="pane" role="tabpanel" id="pane-data" aria-labelledby="tab-data" tabindex="0" hidden>
+            <div class="tools">
+              <label class="search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+                <span class="sr-only">Cari</span>
+                <input type="search" id="q" placeholder="Cari nama, rekening, atau site" autocomplete="off">
+              </label>
+              <span class="tools__meta" id="qMeta"></span>
+            </div>
+            <div class="tbl-wrap">
+              <table class="tbl tbl--data">
+                <thead><tr><th scope="col">Nama</th><th scope="col">Bank</th><th scope="col">No rekening</th><th scope="col">Site bisnis</th><th scope="col">Site penempatan</th></tr></thead>
+                <tbody id="tData"></tbody>
+              </table>
+            </div>
+            <div class="pager" id="pager">
+              <button class="btn btn--ghost btn--sm" type="button" id="prev">Sebelumnya</button>
+              <span id="pageInfo"></span>
+              <button class="btn btn--ghost btn--sm" type="button" id="next">Berikutnya</button>
+            </div>
+          </div>
+
+          <div class="pane" role="tabpanel" id="pane-failed" aria-labelledby="tab-failed" tabindex="0" hidden>
+            <p class="pane__note">Transfer berstatus Failed tidak dimasukkan ke spreadsheet. Daftar ini untuk ditindaklanjuti tim payroll.</p>
+            <div class="tbl-wrap">
+              <table class="tbl tbl--failed">
+                <thead><tr><th scope="col">Nama</th><th scope="col">Bank</th><th scope="col">No rekening</th><th scope="col">Site penempatan</th><th scope="col" class="r">Hal.</th></tr></thead>
+                <tbody id="tFailed"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="pane" role="tabpanel" id="pane-err" aria-labelledby="tab-err" tabindex="0" hidden>
+            <p class="pane__note">Karena ada masalah di bawah ini, tidak ada satu baris pun yang dikirim. Pastikan PDF asli dari Kopra dan tidak terpotong.</p>
+            <ul class="errlist" id="errList"></ul>
+          </div>
+
+          <div class="actionbar" id="actionbar">
+            <p class="actionbar__txt" id="actionTxt"></p>
+            <button class="btn btn--primary btn--lg" type="button" id="sendBtn" disabled>Kirim ke spreadsheet</button>
+          </div>
+        </div>
+
+        <!-- state: terkirim -->
+        <div class="state" id="stDone" hidden>
+          <div class="done">
+            <div class="done__mark" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20"/><path d="M15 24.5l6 6 12-13"/></svg></div>
+            <h3 id="doneTitle" tabindex="-1">Terkirim ke spreadsheet</h3>
+            <p id="doneTxt"></p>
+            <div class="notice notice--warn" id="doneSkip" hidden></div>
+            <div class="done__cta">
+              <a class="btn btn--primary" id="doneSheet" href="#" target="_blank" rel="noopener">Buka spreadsheet</a>
+              <button class="btn btn--ghost" type="button" data-reset>Upload PDF lain</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATURAN -->
+    <section class="rules" id="aturan" aria-labelledby="rulesTitle">
+      <h2 id="rulesTitle">Cara aplikasi ini mengolah PDF</h2>
+      <p class="rules__lead">Pembacaan memakai aturan tetap, bukan AI, supaya tidak ada nama atau angka yang berubah.</p>
+      <div class="rules__grid">
+        <article>
+          <h3>Yang diambil</h3>
+          <ul>
+            <li><b>Nama</b> dari kolom Credit Account Name (From Host), nama pemilik rekening menurut bank.</li>
+            <li><b>Bank</b> dari Beneficiary Bank dan <b>No rekening</b> dari Credit Account Number, disimpan sebagai teks.</li>
+            <li><b>Site bisnis</b> dari rekening sumber dana. 1420001020303 adalah Shelter Indonesia Gemilang.</li>
+            <li><b>Site penempatan</b> dari File Description tanpa kode depan, misalnya PHL GSKLMG.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Yang dicek sebelum terkirim</h3>
+          <ul>
+            <li>Jumlah transaksi dan total nominal setiap batch harus sama dengan ringkasan bank.</li>
+            <li>Transfer berstatus Failed dibuang.</li>
+            <li>Batch dengan Transaction ID yang sudah pernah dikirim dilewati.</li>
+            <li>Rekening sumber dana yang belum dikenal membuat PDF ditolak.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Shelter Indonesia Gemilang</p>
+    <button type="button" class="link" data-open-settings>Pengaturan koneksi</button>
+  </footer>
+
+  <!-- Dialog konfirmasi kirim -->
+  <dialog class="dlg" id="dlgSend" aria-labelledby="dlgSendTitle">
+    <form method="dialog">
+      <h3 id="dlgSendTitle">Kirim ke spreadsheet?</h3>
+      <p id="dlgSendTxt"></p>
+      <ul class="dlg__list" id="dlgSendList"></ul>
+      <div class="dlg__cta">
+        <button class="btn btn--ghost" value="cancel">Batal</button>
+        <button class="btn btn--primary" value="ok" id="dlgSendOk">Ya, kirim</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dialog pengaturan -->
+  <dialog class="dlg" id="dlgSet" aria-labelledby="dlgSetTitle">
+    <form method="dialog" id="setForm">
+      <h3 id="dlgSetTitle">Pengaturan koneksi</h3>
+      <p>Kode akses diberikan oleh admin dan hanya disimpan di browser ini.</p>
+      <label class="field">
+        <span>Kode akses</span>
+        <input type="password" id="tokenIn" autocomplete="off" required>
+      </label>
+      <p class="field__msg" id="setMsg" role="status"></p>
+      <div class="dlg__cta">
+        <button class="btn btn--ghost" value="cancel" formnovalidate>Tutup</button>
+        <button class="btn btn--ghost" type="button" id="forgetBtn">Hapus kode</button>
+        <button class="btn btn--primary" type="button" id="testBtn">Simpan &amp; tes koneksi</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/parser.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
