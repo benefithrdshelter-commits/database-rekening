@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Moneywise — Crosscheck MCM</title>
-  <meta name="description" content="Cek nomor rekening dan nama di file MCM terhadap database rekening dari laporan bank Mandiri.">
+  <meta name="description" content="Cek nomor rekening dan nama di file MCM terhadap database rekening dari laporan bank Mandiri dan BNI.">
   <meta name="theme-color" content="#1565F5">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
@@ -750,6 +750,10 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .tbl--failed td.why { min-width: 260px; max-width: 420px; white-space: normal; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
 
+.drop__banks { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin: 2px 0 4px; }
+.drop__banks i { font-style: normal; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--blue-50); color: var(--blue-700); }
+.drop__banks i:last-child { background: var(--mint-50); color: var(--mint-700); }
+
 </style>
 </head>
 <body class="is-auth">
@@ -867,7 +871,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
     <ul class="assure" aria-label="Jaminan data">
       <li>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
-        <span><b>Dicocokkan dengan data bank</b>Nama pembanding adalah nama pemilik rekening dari laporan Mandiri.</span>
+        <span><b>Dicocokkan dengan data bank</b>Nama pembanding adalah nama pemilik rekening dari laporan bank (Mandiri dan BNI).</span>
       </li>
       <li>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v10H9l-4 4V5z"/><path d="M9 9h6M9 12h4"/></svg>
@@ -1024,7 +1028,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
       <div class="work__head">
         <div>
           <h2 id="workTitle">Update database rekening</h2>
-          <p class="work__lead">Tambahkan data rekening dari PDF Transaction Report Kopra Mandiri ke sheet Data Upah.</p>
+          <p class="work__lead">Tambahkan data rekening dari PDF laporan transfer Kopra Mandiri atau BNI Direct ke sheet Data Upah.</p>
         </div>
         <ol class="steps" aria-label="Langkah update database" id="dbSteps">
           <li class="step is-active" data-step="1"><span class="step__n">1</span><span class="step__t">Pilih PDF</span></li>
@@ -1042,12 +1046,13 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
         <!-- state: pilih -->
         <div class="state" id="stPick">
           <label class="drop" id="drop" for="file">
-            <input type="file" id="file" accept="application/pdf,.pdf" class="sr-only">
+            <input type="file" id="file" accept="application/pdf,.pdf" class="sr-only" multiple>
             <span class="drop__icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><path d="M14 6h14l10 10v24a3 3 0 01-3 3H14a3 3 0 01-3-3V9a3 3 0 013-3z"/><path d="M28 6v10h10"/><path d="M24 34V22M19 27l5-5 5 5"/></svg>
             </span>
             <span class="drop__title">Seret PDF ke sini, atau <u>pilih dari perangkat</u></span>
-            <span class="drop__hint">Transaction Report dari Kopra Mandiri, misalnya "BT GAJI 26-30 SEPT 2026 SIG.pdf"</span>
+            <span class="drop__banks" aria-hidden="true"><i>Mandiri Kopra</i><i>BNI Direct</i><i>Bisa pilih banyak file sekaligus</i></span>
+            <span class="drop__hint">Transaction Report Kopra Mandiri (misalnya "BT GAJI 26-30 SEPT 2026 SIG.pdf") atau Transaction Status BNI Direct (misalnya "…-GCM_MFT_PROLL_IH.pdf")</span>
           </label>
           <p class="err" id="pickErr" role="alert" hidden></p>
         </div>
@@ -1124,7 +1129,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
           </div>
 
           <div class="pane" role="tabpanel" id="pane-failed" aria-labelledby="tab-failed" tabindex="0" hidden>
-            <p class="pane__note">Transfer berstatus <b>Failed</b> atau <b>Rejected</b> tidak dimasukkan ke database, karena uangnya tidak sampai ke rekening tersebut sehingga no rekening dan namanya belum terbukti benar. Laporan Kopra tidak mencantumkan alasan teknis gagalnya; penyebab yang umum: rekening tidak aktif/dormant/sudah ditutup, nomor rekening salah, atau ditolak bank penerima. Alasan pastinya bisa dilihat di detail transaksi Kopra.</p>
+            <p class="pane__note">Transfer berstatus <b>Failed</b> atau <b>Rejected</b> tidak dimasukkan ke database, karena uangnya tidak sampai ke rekening tersebut sehingga no rekening dan namanya belum terbukti benar. Laporan bank tidak mencantumkan alasan teknis gagalnya; penyebab yang umum: rekening tidak aktif/dormant/sudah ditutup, nomor rekening salah, atau ditolak bank penerima. Alasan pastinya bisa dilihat di detail transaksi Kopra / BNI Direct.</p>
             <div class="tbl-wrap">
               <table class="tbl tbl--failed">
                 <thead><tr><th scope="col">Nama</th><th scope="col">Bank</th><th scope="col">No rekening</th><th scope="col">Site penempatan</th><th scope="col">Keterangan dibuang</th><th scope="col" class="r">Hal.</th></tr></thead>
@@ -1134,7 +1139,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
           </div>
 
           <div class="pane" role="tabpanel" id="pane-err" aria-labelledby="tab-err" tabindex="0" hidden>
-            <p class="pane__note">Karena ada masalah di bawah ini, tidak ada satu baris pun yang dikirim. Pastikan PDF asli dari Kopra dan tidak terpotong.</p>
+            <p class="pane__note">Karena ada masalah di bawah ini, tidak ada satu baris pun yang dikirim. Pastikan PDF asli dari Kopra Mandiri / BNI Direct dan tidak terpotong.</p>
             <ul class="errlist" id="errList"></ul>
           </div>
 
@@ -1325,6 +1330,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
    * return { batches, rows, failed, errors }
    */
   function parse(pages) {
+    if (isBNI(pages)) return parseBNI(pages);
     var batches = [], cur = null, errors = [];
     var LABEL = /^(Transaction ID|File Description|File Name|Total Transaction Record|Total Transaction Amount|Source of Funds|Transaction Date|Transaction Status)\b/;
 
@@ -1419,7 +1425,138 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
       });
     });
     if (!batches.length) errors.push('Tidak ditemukan batch transaksi. Pastikan ini PDF "Transaction Report" dari Kopra Mandiri.');
-    return { batches: batches, rows: rows, failed: failed, errors: errors, warnings: warnings };
+    return { format: 'Mandiri', batches: batches, rows: rows, failed: failed, errors: errors, warnings: warnings };
+  }
+
+  /* =====================================================================
+   * FORMAT BNI DIRECT — "Mass Payment / PAYROLL / Transaction Status"
+   * Satu PDF = satu batch (Reference No.). Tabel BENEFICIARY INFORMATION:
+   *   No | Account No (x~110) | Account Name (x~191, bisa 2-3 baris) | Bank Name (x~299) |
+   *   Remark (x~389) | Amount "IDR 1,000.00" (x~523) | Remitter Ref (x~602)
+   * Status per baris tidak ditulis; status batch ada di "Trx Status".
+   * Total dicocokkan dengan TRANSACTION HISTORY baris "Execute".
+   * ===================================================================== */
+  function isBNI(pages) {
+    var t = (pages[0] || []).map(function (i) { return i.str; }).join(' ');
+    return /Mass Payment/.test(t) && /(Debitted Account|BENEFICIARY INFORMATION|Reference No\.)/.test(t);
+  }
+
+  var BANK_INHOUSE = 'BNI (Bank Negara Indonesia)';
+
+  function parseBNI(pages) {
+    var errors = [], warnings = [], meta = {}, anchors = [], nums = [], histAmount = null, statusCol = null;
+    var head = null;   // posisi kolom dari judul tabel
+    pages.forEach(function (items, pi) {
+      var its = items.filter(function (it) { return it.str && it.str.trim() !== ''; });
+      var lines = toLines(its);
+      var stopY = Infinity;
+      lines.forEach(function (l, li) {
+        if (/^TRANSACTION HISTORY/.test(l.text)) stopY = Math.min(stopY, l.y);
+        // metadata "Label : nilai"
+        var m = /^(Trx Status|Reference No\.|File Format|File Upload|File Description|Transaction Type|Charge To|Immediate|Future Date)\s*:\s*(.*)$/.exec(l.text);
+        if (m && !(m[1] in meta)) meta[m[1]] = clean(m[2]);
+        if (/^Debitted Account$/.test(l.text) && lines[li + 1]) meta['Debitted Account'] = lines[li + 1].text;
+        if (/^Beneficiary Type$/.test(l.text) && lines[li + 1]) meta['Beneficiary Type'] = lines[li + 1].text;
+        if (/^Account No\b/.test(l.text) && /Account Name/.test(l.text)) {
+          var h = {};
+          l.items.forEach(function (it) { h[clean(it.str)] = it.x; });
+          head = { name: h['Account Name'] || 190.6, bank: h['Bank Name'] || 298.6, remark: h['Remark'] || 388.6, amount: h['Amount'] || 522.6, ref: h['Remitter Ref'] || 601.6, status: h['Status'] || null };
+          if (head.status) statusCol = head.status;
+        }
+        // riwayat: "04-Sep-2026 Execute System - System IDR 786,684,500.00 Success Executed Succesfully"
+        if (l.y > stopY - 1 && /\bExecute\b/.test(l.text) && !/Pending Execute/.test(l.text.replace(/.*IDR [\d,.]+/, ''))) {
+          var a = /IDR\s+([\d,]+\.\d{2})/.exec(l.text);
+          if (a && histAmount === null) histAmount = toCents(a[1]);
+        }
+      });
+      if (!head) return;
+      var H = head;
+      its.forEach(function (it) {
+        if (it.y >= stopY) return;
+        var s = clean(it.str);
+        if (Math.abs(it.x - 110) < 6 && /^\d{5,20}$/.test(s)) anchors.push({ page: pi + 1, y: it.y, acct: s, name: [], bank: [], remark: [], amount: [], ref: [], status: [] });
+        else if (it.x < 108 && /^\d+\.$/.test(s)) nums.push({ page: pi + 1, y: it.y, n: parseInt(s, 10) });
+      });
+      var mine = anchors.filter(function (a) { return a.page === pi + 1; });
+      if (!mine.length) return;
+      its.forEach(function (it) {
+        if (it.y >= stopY) return;
+        var s = clean(it.str);
+        if (!s || it.x < 185) return;
+        // baris terdekat (nama yang terlipat ada di atas/bawah nomor rekening)
+        var best = null, bd = Infinity;
+        mine.forEach(function (a) { var d = Math.abs(a.y - it.y); if (d < bd) { bd = d; best = a; } });
+        if (!best || bd > 9.5) return;
+        var col = it.x >= H.ref - 4 ? 'ref' : (H.status && it.x >= H.status - 4) ? 'status' : it.x >= H.amount - 4 ? 'amount' : it.x >= H.remark - 4 ? 'remark' : it.x >= H.bank - 4 ? 'bank' : 'name';
+        if (col !== 'name' && bd > 1.5) col = col === 'bank' ? 'bank' : col;   // kolom lain juga boleh terlipat
+        best[col].push(it);
+      });
+    });
+
+    var fd = meta['File Description'] || '';
+    var da = /^(\d{6,})\s*-\s*(.*)$/.exec(meta['Debitted Account'] || '');
+    var src = { acct: da ? da[1] : '', nama: da ? clean(da[2].replace(/\(IDR\)\s*$/i, '').replace(/\s+PT\.?$/i, '')) : '' };
+    var cocok = [];
+    var rn = rataNama(src.nama);
+    if (rn.length >= 5) PERUSAHAAN.forEach(function (p) { var r = rataNama(p); if (r === rn || r.indexOf(rn) === 0) cocok.push(p); });
+    var b = { trxId: meta['Reference No.'] || '', page: anchors.length ? anchors[0].page : 1, rows: [],
+      meta: { 'File Description': fd, 'Transaction Status': meta['Trx Status'] || '', 'Source of Funds': meta['Debitted Account'] || '', 'File Name': meta['File Upload'] || '', 'Bank': 'BNI' } };
+    if (!b.trxId) errors.push('Reference No. tidak terbaca. Pastikan ini PDF "Transaction Status" dari BNI Direct.');
+    if (!fd) errors.push('File Description tidak terbaca.');
+    if (!src.acct) errors.push('Rekening sumber dana (Debitted Account) tidak terbaca.');
+
+    var trx = meta['Trx Status'] || '';
+    var semuaBerhasil = /^Executed Succes+ful+y$/i.test(trx);
+    var semuaGagal = /reject|fail|cancel|expire/i.test(trx);
+    if (!semuaBerhasil && !semuaGagal && !statusCol) errors.push('Status batch BNI "' + trx + '" belum bisa dipastikan per baris. Upload PDF yang statusnya sudah "Executed Succesfully".');
+
+    // nomor urut -> pastikan tidak ada baris terlewat
+    anchors.forEach(function (a) {
+      var best = null, bd = Infinity;
+      nums.forEach(function (n) { if (n.page !== a.page) return; var d = Math.abs(n.y - a.y); if (d < bd) { bd = d; best = n; } });
+      a.no = best && bd <= 9.5 ? best.n : null;
+    });
+    var sum = 0, beneType = meta['Beneficiary Type'] || '';
+    anchors.forEach(function (a, i) {
+      var tag = 'Baris ' + (i + 1) + ' (hal. ' + a.page + ')';
+      if (a.no !== i + 1) errors.push(tag + ': nomor urut terbaca ' + a.no + ', seharusnya ' + (i + 1) + '.');
+      var nama = joinCell(a.name).toUpperCase();
+      var amt = joinCell(a.amount).replace(/^IDR\s*/, '');
+      var c = toCents(amt);
+      if (c === null) errors.push(tag + ': nominal tidak terbaca "' + amt + '"');
+      else sum += c;
+      if (!nama) errors.push(tag + ': nama kosong (rekening ' + a.acct + ')');
+      var bank = joinCell(a.bank) || (/in\s*house/i.test(beneType) ? BANK_INHOUSE : '');
+      if (!bank) errors.push(tag + ': nama bank kosong (rekening ' + a.acct + ')');
+      var st = statusCol ? (joinCell(a.status) || '') : semuaBerhasil ? 'Success' : (trx || 'Failed');
+      if (/succes/i.test(st)) st = 'Success';
+      else if (/reject/i.test(st)) st = 'Rejected';
+      else if (/fail/i.test(st)) st = 'Failed';
+      b.rows.push({ page: a.page, acct: a.acct, host: nama, bank: bank, amount: amt, remark: joinCell(a.remark), status: st });
+    });
+    var nExp = nums.length ? Math.max.apply(null, nums.map(function (n) { return n.n; })) : 0;
+    b.count = b.rows.length;
+    b.totalCents = sum;
+    b.okCount = b.count > 0 && b.count === nExp;
+    b.okTotal = histAmount !== null && sum === histAmount;
+    if (!b.count) errors.push('Tidak ditemukan baris penerima di tabel BENEFICIARY INFORMATION.');
+    if (b.count && !b.okCount) errors.push('Jumlah baris terbaca ' + b.count + ', nomor urut terakhir di PDF ' + nExp + '.');
+    if (histAmount === null) errors.push('Total nominal di TRANSACTION HISTORY (baris Execute) tidak terbaca.');
+    else if (!b.okTotal) errors.push('Total nominal terbaca ' + (sum / 100) + ', di PDF ' + (histAmount / 100) + '.');
+    b.meta['Total Transaction Record'] = nExp + ' Transaction';
+    b.meta['Total Transaction Amount'] = 'IDR ' + (histAmount === null ? '?' : (histAmount / 100).toFixed(2));
+    b.sourceAcct = src.acct; b.sourceName = src.nama;
+    b.siteBisnis = cocok.length === 1 ? cocok[0] : src.nama;
+    if (src.acct && cocok.length !== 1) warnings.push('Nama rekening sumber dana "' + src.nama + '" tidak cocok dengan daftar 6 perusahaan. Site Bisnis sementara ditulis "' + src.nama + '"; bisa diubah di sheet Sumber Dana.');
+    b.sitePenempatan = clean(fd);
+    b.success = 0;
+    var rows = [], failed = [];
+    b.rows.forEach(function (r) {
+      var out = [r.host, r.bank, r.acct, b.siteBisnis, b.sitePenempatan];
+      if (r.status === 'Success') { b.success++; rows.push({ trxId: b.trxId, data: out }); }
+      else failed.push({ trxId: b.trxId, data: out, page: r.page, status: r.status, batchStatus: semuaGagal ? 'Rejected' : '' });
+    });
+    return { format: 'BNI', batches: [b], rows: rows, failed: failed, errors: errors, warnings: warnings };
   }
 
   // Ambil items dari dokumen pdf.js
@@ -1753,7 +1890,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
 
   var INFO = {
     beranda: ['Moneywise', '<p>Moneywise adalah aplikasi internal untuk memastikan nomor rekening dan nama penerima gaji sesuai dengan data bank sebelum diproses MCM.</p>'],
-    layanan: ['Layanan', '<ul><li><b>Crosscheck MCM</b>: cocokkan file MCM (Excel/CSV) dengan database rekening.</li><li><b>Update database</b>: tambahkan rekening dari PDF Transaction Report Kopra Mandiri.</li><li><b>Riwayat</b>: semua upload dan crosscheck tercatat lengkap dengan tanggal, jam, dan nama pengguna.</li></ul>'],
+    layanan: ['Layanan', '<ul><li><b>Crosscheck MCM</b>: cocokkan file MCM (Excel/CSV) dengan database rekening.</li><li><b>Update database</b>: tambahkan rekening dari PDF laporan transfer Kopra Mandiri atau BNI Direct.</li><li><b>Riwayat</b>: semua upload dan crosscheck tercatat lengkap dengan tanggal, jam, dan nama pengguna.</li></ul>'],
     keamanan: ['Keamanan', '<ul><li>Masuk dengan email Anda dan kata sandi tim. Email dicatat di setiap riwayat.</li><li>PDF dan file MCM dibaca di perangkat Anda; yang dikirim hanya data yang diperlukan.</li><li>Sesi otomatis berakhir setelah 6 jam tidak dipakai.</li></ul>'],
     bantuan: ['Bantuan', '<p>Masuk dengan email Anda dan kata sandi tim. Lupa kata sandi? Hubungi admin HRD.</p>']
   };
@@ -1769,10 +1906,10 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
   var state = { file: null, pages: 0, res: null, q: '', page: 1, sent: false };
   var drop = $('drop'), input = $('file');
 
-  input.addEventListener('change', function () { if (input.files[0]) handle(input.files[0]); });
+  input.addEventListener('change', function () { if (input.files.length) handle(Array.prototype.slice.call(input.files)); });
   ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('is-over'); }); });
   ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('is-over'); }); });
-  drop.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (f) handle(f); });
+  drop.addEventListener('drop', function (e) { var f = Array.prototype.slice.call(e.dataTransfer.files || []); if (f.length) handle(f); });
   // cegah browser membuka PDF bila dilepas di luar area
   window.addEventListener('dragover', function (e) { e.preventDefault(); });
   window.addEventListener('drop', function (e) { e.preventDefault(); });
@@ -1780,24 +1917,47 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
 
   function pickError(msg) { var e = $('pickErr'); e.textContent = msg; e.hidden = !msg; }
 
-  async function handle(file) {
+  async function handle(files) {
     pickError('');
-    if (!/\.pdf$/i.test(file.name) && file.type !== 'application/pdf') { pickError('File "' + file.name + '" bukan PDF. Pilih Transaction Report dalam format PDF.'); return; }
-    state = { file: file, pages: 0, res: null, q: '', page: 1, sent: false };
+    var bukan = files.filter(function (f) { return !/\.pdf$/i.test(f.name) && f.type !== 'application/pdf'; });
+    if (bukan.length) { pickError('File "' + bukan[0].name + '" bukan PDF. Pilih laporan transfer bank dalam format PDF.'); return; }
+    var label = files.length === 1 ? files[0].name : files.length + ' file PDF';
+    state = { file: { name: label, files: files }, pages: 0, res: null, q: '', page: 1, sent: false };
+    var me = state.file;
     show('stRead'); setStep(1);
-    $('readName').textContent = file.name;
+    $('readName').textContent = label;
     var meter = $('meter');
     meter.firstElementChild.style.width = '0'; meter.setAttribute('aria-valuenow', '0');
     $('readTxt').textContent = 'Membuka PDF…';
+    var gab = { formats: {}, batches: [], rows: [], failed: [], errors: [], warnings: [] }, sudahId = {}, kembar = 0;
     try {
-      var doc = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
-      state.pages = doc.numPages;
-      var pages = await MandiriParser.extractPages(doc, function (p, n) {
-        var pct = Math.round(p / n * 100);
-        meter.firstElementChild.style.width = pct + '%'; meter.setAttribute('aria-valuenow', String(pct));
-        $('readTxt').textContent = 'Membaca halaman ' + p + ' dari ' + n;
-      });
-      state.res = MandiriParser.parse(pages);
+      for (var fi = 0; fi < files.length; fi++) {
+        var f = files[fi], depan = files.length > 1 ? '[' + f.name + '] ' : '';
+        var doc = await pdfjsLib.getDocument({ data: await f.arrayBuffer() }).promise;
+        state.pages += doc.numPages;
+        var pages = await MandiriParser.extractPages(doc, function (p, n) {
+          var pct = Math.round(((fi + p / n) / files.length) * 100);
+          meter.firstElementChild.style.width = pct + '%'; meter.setAttribute('aria-valuenow', String(pct));
+          $('readTxt').textContent = (files.length > 1 ? 'File ' + (fi + 1) + ' dari ' + files.length + ' · ' : '') + 'Membaca halaman ' + p + ' dari ' + n;
+        });
+        if (state.file !== me) return;
+        var r = MandiriParser.parse(pages);
+        gab.formats[r.format || 'Mandiri'] = 1;
+        r.errors.forEach(function (e) { gab.errors.push(depan + e); });
+        r.warnings.forEach(function (w) { gab.warnings.push(depan + w); });
+        var skip = {};
+        r.batches.forEach(function (b) {
+          b.fileName = f.name;
+          if (b.trxId && sudahId[b.trxId]) { skip[b.trxId] = 1; kembar++; return; }
+          if (b.trxId) sudahId[b.trxId] = 1;
+          gab.batches.push(b);
+        });
+        r.rows.forEach(function (x) { if (!skip[x.trxId]) gab.rows.push(x); });
+        r.failed.forEach(function (x) { if (!skip[x.trxId]) gab.failed.push(x); });
+      }
+      if (kembar) gab.warnings.push(kembar + ' batch muncul di lebih dari satu file yang dipilih (file kembar), jadi hanya dihitung sekali.');
+      gab.format = Object.keys(gab.formats).join(' + ');
+      state.res = gab;
       renderResult();
     } catch (err) {
       show('stPick'); setStep(1);
@@ -1813,7 +1973,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
     var r = state.res;
     show('stResult'); setStep(2);
     $('resName').textContent = state.file.name;
-    $('resPages').textContent = num(state.pages) + ' halaman';
+    $('resPages').textContent = (state.file.files.length > 1 ? num(state.file.files.length) + ' file · ' : '') + num(state.pages) + ' halaman · format ' + (r.format || 'Mandiri');
     var okB = r.batches.filter(function (b) { return b.okCount && b.okTotal; }).length;
     $('fRows').textContent = num(r.rows.length);
     $('fBatch').textContent = num(r.batches.length);
@@ -1876,10 +2036,10 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
     var t = berhasil
       ? 'Transfer ini ' + (st === 'Failed' ? 'gagal' : 'berstatus ' + st) + ', tetapi rekening yang sama berhasil di transfer lain pada PDF ini, jadi rekeningnya tetap masuk database dari transfer yang berhasil.'
       : st === 'Rejected'
-        ? 'Status Rejected di Kopra: transfer ditolak sebelum diproses' + (x.batchStatus === 'Rejected' ? ' (seluruh batch "' + (x.data[4] || '') + '" ditolak, biasanya saat approval)' : '') + ', jadi uang tidak dikirim dan rekening belum terbukti benar.'
+        ? 'Status Rejected di laporan bank: transfer ditolak sebelum diproses' + (x.batchStatus === 'Rejected' ? ' (seluruh batch "' + (x.data[4] || '') + '" ditolak, biasanya saat approval)' : '') + ', jadi uang tidak dikirim dan rekening belum terbukti benar.'
         : st === 'Failed'
-          ? 'Status Failed di Kopra: uang tidak sampai ke rekening ini, jadi rekening dan namanya belum terbukti benar.'
-          : 'Status ' + st + ' di Kopra: transfer tidak dijalankan, jadi rekening belum terbukti benar.';
+          ? 'Status Failed di laporan bank: uang tidak sampai ke rekening ini, jadi rekening dan namanya belum terbukti benar.'
+          : 'Status ' + st + ' di laporan bank: transfer tidak dijalankan, jadi rekening belum terbukti benar.';
     if (gagal > 1) t += ' Tidak berhasil ' + gagal + ' kali di PDF ini.';
     if (/^[^A-Za-z]/.test(nama)) t += ' Nama dari bank tidak wajar (diawali "' + nama.charAt(0) + '"), kemungkinan data rekening bermasalah.';
     var ada = state.cek && state.cek.rekeningAda && state.cek.rekeningAda.indexOf(acct) !== -1;
@@ -2039,7 +2199,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
         token: getToken(),
         fileName: state.file.name,
         batches: r.batches.map(function (b) {
-          return { trxId: b.trxId, fileDesc: b.meta['File Description'], count: b.count, success: b.success, okCount: b.okCount, okTotal: b.okTotal, sourceAcct: b.sourceAcct, sourceName: b.sourceName, siteBisnis: b.siteBisnis };
+          return { trxId: b.trxId, fileName: b.fileName, fileDesc: b.meta['File Description'], count: b.count, success: b.success, okCount: b.okCount, okTotal: b.okTotal, sourceAcct: b.sourceAcct, sourceName: b.sourceName, siteBisnis: b.siteBisnis };
         }),
         rows: r.rows
       });
@@ -2409,7 +2569,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
         isi: '<p>' + (h.jenis === 'cc' ? 'Crosscheck' : 'Upload PDF') + ' <b>' + esc(h.fileName || '-') + '</b><br>' + esc(h.waktuTeks || '') + ' WIB' + (h.oleh ? ' · ' + esc(h.oleh) : '') + '</p>' +
           (h.jenis === 'cc' ? '<p>Laporan crosscheck ini juga dihapus dari sheet Hasil Crosscheck.</p>' : CATATAN_PDF),
         jalankan: async function () {
-          var out = await A.post(h.jenis === 'cc' ? { action: 'hapusRiwayat', jenis: 'cc', id: h.id } : { action: 'hapusRiwayat', jenis: 'pdf', waktu: h.waktu, fileName: h.fileName });
+          var out = await A.post(h.jenis === 'cc' ? { action: 'hapusRiwayat', jenis: 'cc', id: h.id } : { action: 'hapusRiwayat', jenis: 'pdf', waktu: h.waktu, pengunggah: h.oleh || '' });
           if (!out.ok) throw new Error(out.error || 'Server menolak.');
         }
       });
