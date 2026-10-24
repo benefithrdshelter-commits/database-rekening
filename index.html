@@ -1082,13 +1082,13 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
             <div class="fig fig--main"><dt>Baris yang akan masuk</dt><dd id="fRows">0</dd></div>
             <div class="fig"><dt>Batch terbaca</dt><dd id="fBatch">0</dd></div>
             <div class="fig"><dt>Cocok dengan bank</dt><dd id="fCheck">0</dd></div>
-            <div class="fig"><dt>Failed dibuang</dt><dd id="fFailed">0</dd></div>
+            <div class="fig"><dt>Failed / Rejected dibuang</dt><dd id="fFailed">0</dd></div>
           </dl>
 
           <div class="tabs" role="tablist" aria-label="Detail hasil">
             <button role="tab" id="tab-batch" aria-controls="pane-batch" aria-selected="true">Ringkasan batch</button>
             <button role="tab" id="tab-data" aria-controls="pane-data" aria-selected="false" tabindex="-1">Data 5 kolom</button>
-            <button role="tab" id="tab-failed" aria-controls="pane-failed" aria-selected="false" tabindex="-1">Failed <span class="count" id="failedCount">0</span></button>
+            <button role="tab" id="tab-failed" aria-controls="pane-failed" aria-selected="false" tabindex="-1">Failed / Rejected <span class="count" id="failedCount">0</span></button>
             <button role="tab" id="tab-err" aria-controls="pane-err" aria-selected="false" tabindex="-1" hidden>Masalah <span class="count count--bad" id="errCount">0</span></button>
           </div>
 
@@ -1124,7 +1124,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
           </div>
 
           <div class="pane" role="tabpanel" id="pane-failed" aria-labelledby="tab-failed" tabindex="0" hidden>
-            <p class="pane__note">Transfer berstatus <b>Failed</b> tidak dimasukkan ke database, karena uangnya tidak sampai ke rekening tersebut sehingga no rekening dan namanya belum terbukti benar. Laporan Kopra tidak mencantumkan alasan teknis gagalnya; penyebab yang umum: rekening tidak aktif/dormant/sudah ditutup, nomor rekening salah, atau ditolak bank penerima. Alasan pastinya bisa dilihat di detail transaksi Kopra.</p>
+            <p class="pane__note">Transfer berstatus <b>Failed</b> atau <b>Rejected</b> tidak dimasukkan ke database, karena uangnya tidak sampai ke rekening tersebut sehingga no rekening dan namanya belum terbukti benar. Laporan Kopra tidak mencantumkan alasan teknis gagalnya; penyebab yang umum: rekening tidak aktif/dormant/sudah ditutup, nomor rekening salah, atau ditolak bank penerima. Alasan pastinya bisa dilihat di detail transaksi Kopra.</p>
             <div class="tbl-wrap">
               <table class="tbl tbl--failed">
                 <thead><tr><th scope="col">Nama</th><th scope="col">Bank</th><th scope="col">No rekening</th><th scope="col">Site penempatan</th><th scope="col">Keterangan dibuang</th><th scope="col" class="r">Hal.</th></tr></thead>
@@ -1179,7 +1179,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
           <ul>
             <li>Nama diambil dari Credit Account Name (From Host), yaitu nama pemilik rekening menurut bank.</li>
             <li>Jumlah transaksi dan total nominal setiap batch harus sama dengan ringkasan bank.</li>
-            <li>Transfer berstatus Failed dibuang, dan batch yang sudah pernah dikirim dilewati.</li>
+            <li>Transfer berstatus Failed atau Rejected dibuang, dan batch yang sudah pernah dikirim dilewati.</li>
             <li>Satu no rekening hanya disimpan sekali; rekening yang sudah ada di database dilewati.</li>
             <li>Site bisnis ditentukan dari rekening sumber dana, sesuai sheet Sumber Dana di spreadsheet.</li>
           </ul>
@@ -1236,6 +1236,8 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
   // Posisi awal (x, dalam satuan PDF) tiap kolom tabel Transaction Records.
   // Identik di semua halaman laporan Kopra yang sudah diuji.
   var COL_STARTS = [39.8, 119.6, 199.5, 279.4, 359.2, 439.1, 519.0, 598.9, 678.8, 758.7, 838.6, 918.6, 998.5, 1078.4, 99999];
+  // status yang TIDAK dimasukkan ke database: uang tidak sampai ke rekening
+  var TIDAK_MASUK = /^(Failed|Rejected|Cancell?ed|Expired)$/;
   var COLS = ['source', 'product', 'bank', 'acct', 'uploaded', 'host', 'cur', 'amount',
               'remark', 'ref', 'charge', 'time', 'info', 'status'];
 
@@ -1393,7 +1395,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
         else sum += c;
         if (!/^\d{5,20}$/.test(r.acct)) errors.push(tag + ' baris ' + (ri + 1) + ': no rekening tidak valid "' + r.acct + '"');
         if (!r.host) errors.push(tag + ' baris ' + (ri + 1) + ': nama (From Host) kosong');
-        if (r.status !== 'Success' && r.status !== 'Failed') errors.push(tag + ' baris ' + (ri + 1) + ': status tidak dikenal "' + r.status + '"');
+        if (r.status !== 'Success' && !TIDAK_MASUK.test(r.status)) errors.push(tag + ' baris ' + (ri + 1) + ': status tidak dikenal "' + r.status + '"');
       });
       b.count = b.rows.length;
       b.totalCents = sum;
@@ -1413,7 +1415,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
       b.rows.forEach(function (r) {
         var out = [r.host, r.bank, r.acct, b.siteBisnis, b.sitePenempatan];
         if (r.status === 'Success') { b.success++; rows.push({ trxId: b.trxId, data: out }); }
-        else failed.push({ trxId: b.trxId, data: out, page: r.page });
+        else failed.push({ trxId: b.trxId, data: out, page: r.page, status: r.status, batchStatus: b.meta['Transaction Status'] || '' });
       });
     });
     if (!batches.length) errors.push('Tidak ditemukan batch transaksi. Pastikan ini PDF "Transaction Report" dari Kopra Mandiri.');
@@ -1863,17 +1865,22 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
         '</td><td class="acct" data-label="No rekening">' + esc(x.data[2]) + '</td><td data-label="Site penempatan">' + esc(x.data[4]) +
         '</td><td class="why" data-label="Keterangan">' + esc(alasanFailed(x, r)) +
         '</td><td class="r" data-label="Halaman">' + x.page + '</td></tr>';
-    }).join('') || '<tr><td class="empty" colspan="6">Tidak ada transfer Failed di PDF ini.</td></tr>';
+    }).join('') || '<tr><td class="empty" colspan="6">Tidak ada transfer Failed / Rejected di PDF ini.</td></tr>';
   }
   // alasan baris Failed tidak dimasukkan (Kopra tidak menulis alasan teknisnya, jadi disimpulkan dari isi PDF)
   function alasanFailed(x, r) {
     var acct = x.data[2], nama = String(x.data[0] || '');
     var gagal = r.failed.filter(function (f) { return f.data[2] === acct; }).length;
     var berhasil = r.rows.some(function (s) { return s.data[2] === acct; });
+    var st = x.status || 'Failed';
     var t = berhasil
-      ? 'Transfer ini gagal, tetapi rekening yang sama berhasil di transfer lain pada PDF ini, jadi rekeningnya tetap masuk database dari transfer yang berhasil.'
-      : 'Status Failed di Kopra: uang tidak sampai ke rekening ini, jadi rekening dan namanya belum terbukti benar.';
-    if (gagal > 1) t += ' Gagal ' + gagal + ' kali di PDF ini.';
+      ? 'Transfer ini ' + (st === 'Failed' ? 'gagal' : 'berstatus ' + st) + ', tetapi rekening yang sama berhasil di transfer lain pada PDF ini, jadi rekeningnya tetap masuk database dari transfer yang berhasil.'
+      : st === 'Rejected'
+        ? 'Status Rejected di Kopra: transfer ditolak sebelum diproses' + (x.batchStatus === 'Rejected' ? ' (seluruh batch "' + (x.data[4] || '') + '" ditolak, biasanya saat approval)' : '') + ', jadi uang tidak dikirim dan rekening belum terbukti benar.'
+        : st === 'Failed'
+          ? 'Status Failed di Kopra: uang tidak sampai ke rekening ini, jadi rekening dan namanya belum terbukti benar.'
+          : 'Status ' + st + ' di Kopra: transfer tidak dijalankan, jadi rekening belum terbukti benar.';
+    if (gagal > 1) t += ' Tidak berhasil ' + gagal + ' kali di PDF ini.';
     if (/^[^A-Za-z]/.test(nama)) t += ' Nama dari bank tidak wajar (diawali "' + nama.charAt(0) + '"), kemungkinan data rekening bermasalah.';
     var ada = state.cek && state.cek.rekeningAda && state.cek.rekeningAda.indexOf(acct) !== -1;
     if (!berhasil && ada) t += ' Rekening ini sudah ada di database dari upload sebelumnya.';
@@ -2018,7 +2025,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
       '<li><span>Baris Success</span><b>' + num(r.rows.length) + '</b></li>' +
       (state.cek && !state.cek.gagal ? '<li><span>Perkiraan rekening baru</span><b>' + num(state.estimasi || 0) + '</b></li>' : '') +
       '<li><span>Batch</span><b>' + num(r.batches.length) + '</b></li>' +
-      '<li><span>Failed (tidak dikirim)</span><b>' + num(r.failed.length) + '</b></li>';
+      '<li><span>Failed / Rejected (tidak dikirim)</span><b>' + num(r.failed.length) + '</b></li>';
     dlgSend.returnValue = '';
     dlgSend.showModal();
   });
