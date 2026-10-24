@@ -754,6 +754,12 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
 .drop__banks i { font-style: normal; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--blue-50); color: var(--blue-700); }
 .drop__banks i:last-child { background: var(--mint-50); color: var(--mint-700); }
 
+.skipbox { display: flex; gap: 14px; align-items: flex-start; padding: 14px 18px; border-radius: var(--r-lg); margin: -6px 0 18px; background: var(--amber-50); color: #7A4A05; font-size: 14px; line-height: 1.5; }
+.skipbox svg { flex: none; width: 24px; height: 24px; margin-top: 1px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.skipbox > div > b { display: block; font-size: 15px; font-weight: 600; }
+.skipbox ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 6px; }
+.skipbox li b { font-weight: 600; word-break: break-all; }
+
 </style>
 </head>
 <body class="is-auth">
@@ -1081,6 +1087,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
 
           <div class="verdict" id="verdict" role="status"></div>
           <div class="dupbox" id="dupBox" role="status" hidden></div>
+          <div class="skipbox" id="skipBox" hidden></div>
           <ul class="warnlist" id="pdfWarn" hidden></ul>
 
           <dl class="figures">
@@ -1329,7 +1336,29 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
    * pages: array of array of items {str, x, y, w}  (y = jarak dari atas halaman ke baseline)
    * return { batches, rows, failed, errors }
    */
+  // laporan transfer tunggal (mis. BNI "Transfer Management / DOMESTIC TRANSFER", RTGS pindah dana):
+  // bukan pembayaran gaji, jadi tidak dimasukkan ke database — dilewati dengan penjelasan
+  function bukanPayroll(pages) {
+    var lines = [];
+    pages.forEach(function (p) { lines = lines.concat(toLines(p)); });
+    var semua = lines.map(function (l) { return l.text; }).join('\n');
+    if (!/Transfer Management/.test(semua) || /BENEFICIARY INFORMATION/.test(semua)) return null;
+    var v = {}, bagian = '';
+    lines.forEach(function (l) {
+      if (/^(Beneficiary Information|Beneficiary Bank Information|Beneficiary Notification|Instruction Mode)$/.test(l.text)) { bagian = l.text; return; }
+      var m = /^([A-Za-z .]+?)\s*:\s*(.*)$/.exec(l.text);
+      if (m) { var k = (bagian ? bagian + '/' : '') + m[1].trim(); if (!(k in v)) v[k] = m[2].trim(); }
+    });
+    var jenis = v['Services'] || (/DOMESTIC TRANSFER/.test(semua) ? 'domestik' : '');
+    var rek = v['Beneficiary Information/Account Number'], ke = v['Beneficiary Information/Account Name'], bank = v['Beneficiary Bank Information/Name'];
+    return 'Bukan laporan gaji/payroll, melainkan transfer ' + (jenis ? jenis + ' ' : '') + 'tunggal' + (v['Amount'] ? ' ' + v['Amount'] : '') +
+      (rek ? ' ke rekening ' + rek + (ke ? ' a.n. ' + ke : '') + (bank ? ' (' + bank + ')' : '') : '') + (v['Remark'] ? ', keterangan "' + v['Remark'] + '"' : '') +
+      '. Penerimanya bukan karyawan, jadi file ini tidak dimasukkan ke database.';
+  }
+
   function parse(pages) {
+    var lewat = bukanPayroll(pages);
+    if (lewat) return { format: 'Bukan payroll', dilewati: lewat, batches: [], rows: [], failed: [], errors: [], warnings: [] };
     if (isBNI(pages)) return parseBNI(pages);
     var batches = [], cur = null, errors = [];
     var LABEL = /^(Transaction ID|File Description|File Name|Total Transaction Record|Total Transaction Amount|Source of Funds|Transaction Date|Transaction Status)\b/;
@@ -1929,22 +1958,36 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
     var meter = $('meter');
     meter.firstElementChild.style.width = '0'; meter.setAttribute('aria-valuenow', '0');
     $('readTxt').textContent = 'Membuka PDF…';
-    var gab = { formats: {}, batches: [], rows: [], failed: [], errors: [], warnings: [] }, sudahId = {}, kembar = 0;
+    var gab = { formats: {}, batches: [], rows: [], failed: [], errors: [], warnings: [], dilewati: [], dipakai: 0 }, sudahId = {}, kembar = 0;
+    var banyak = files.length > 1;
     try {
       for (var fi = 0; fi < files.length; fi++) {
-        var f = files[fi], depan = files.length > 1 ? '[' + f.name + '] ' : '';
-        var doc = await pdfjsLib.getDocument({ data: await f.arrayBuffer() }).promise;
-        state.pages += doc.numPages;
-        var pages = await MandiriParser.extractPages(doc, function (p, n) {
-          var pct = Math.round(((fi + p / n) / files.length) * 100);
-          meter.firstElementChild.style.width = pct + '%'; meter.setAttribute('aria-valuenow', String(pct));
-          $('readTxt').textContent = (files.length > 1 ? 'File ' + (fi + 1) + ' dari ' + files.length + ' · ' : '') + 'Membaca halaman ' + p + ' dari ' + n;
-        });
-        if (state.file !== me) return;
-        var r = MandiriParser.parse(pages);
+        var f = files[fi], r;
+        try {
+          var doc = await pdfjsLib.getDocument({ data: await f.arrayBuffer() }).promise;
+          state.pages += doc.numPages;
+          var pages = await MandiriParser.extractPages(doc, function (p, n) {
+            var pct = Math.round(((fi + p / n) / files.length) * 100);
+            meter.firstElementChild.style.width = pct + '%'; meter.setAttribute('aria-valuenow', String(pct));
+            $('readTxt').textContent = (banyak ? 'File ' + (fi + 1) + ' dari ' + files.length + ' · ' : '') + 'Membaca halaman ' + p + ' dari ' + n;
+          });
+          if (state.file !== me) return;
+          r = MandiriParser.parse(pages);
+        } catch (e1) {
+          if (!banyak) throw e1;
+          gab.dilewati.push({ name: f.name, why: 'PDF tidak bisa dibuka (' + e1.message + '). Mungkin rusak atau terkunci kata sandi.' });
+          continue;
+        }
+        // satu file bermasalah tidak menahan file lain: file itu saja yang dilewati, dengan alasannya
+        if (r.dilewati) { gab.dilewati.push({ name: f.name, why: r.dilewati }); continue; }
+        if (banyak && r.errors.length) {
+          gab.dilewati.push({ name: f.name, why: 'Tidak lolos pengecekan (' + r.errors.length + ' masalah): ' + r.errors.slice(0, 2).join(' · ') + (r.errors.length > 2 ? ' · dan lainnya.' : '') });
+          continue;
+        }
+        gab.dipakai++;
         gab.formats[r.format || 'Mandiri'] = 1;
-        r.errors.forEach(function (e) { gab.errors.push(depan + e); });
-        r.warnings.forEach(function (w) { gab.warnings.push(depan + w); });
+        r.errors.forEach(function (e) { gab.errors.push(e); });
+        r.warnings.forEach(function (w) { gab.warnings.push((banyak ? '[' + f.name + '] ' : '') + w); });
         var skip = {};
         r.batches.forEach(function (b) {
           b.fileName = f.name;
@@ -1954,6 +1997,12 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
         });
         r.rows.forEach(function (x) { if (!skip[x.trxId]) gab.rows.push(x); });
         r.failed.forEach(function (x) { if (!skip[x.trxId]) gab.failed.push(x); });
+      }
+      if (!gab.dipakai) {
+        show('stPick'); setStep(1);
+        pickError(gab.dilewati.length === 1 ? 'File "' + gab.dilewati[0].name + '" tidak bisa diupload. ' + gab.dilewati[0].why
+          : 'Tidak ada file yang bisa diupload: ' + gab.dilewati.map(function (x) { return x.name + ' (' + x.why + ')'; }).join(' | '));
+        return;
       }
       if (kembar) gab.warnings.push(kembar + ' batch muncul di lebih dari satu file yang dipilih (file kembar), jadi hanya dihitung sekali.');
       gab.format = Object.keys(gab.formats).join(' + ');
@@ -1973,7 +2022,12 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
     var r = state.res;
     show('stResult'); setStep(2);
     $('resName').textContent = state.file.name;
-    $('resPages').textContent = (state.file.files.length > 1 ? num(state.file.files.length) + ' file · ' : '') + num(state.pages) + ' halaman · format ' + (r.format || 'Mandiri');
+    var nf = state.file.files.length;
+    $('resPages').textContent = (nf > 1 ? (r.dilewati.length ? num(r.dipakai) + ' dari ' + num(nf) + ' file dipakai' : num(nf) + ' file') + ' · ' : '') + num(state.pages) + ' halaman · format ' + (r.format || 'Mandiri');
+    var sk = $('skipBox');
+    sk.hidden = !r.dilewati.length;
+    sk.innerHTML = r.dilewati.length ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.3v.2"/></svg><div><b>' + num(r.dilewati.length) + ' file dilewati, tidak ikut dikirim</b><span>File lainnya tetap bisa dikirim. File di bawah ini saja yang tidak masuk:</span><ul>' +
+      r.dilewati.map(function (x) { return '<li><b>' + esc(x.name) + '</b> — ' + esc(x.why) + '</li>'; }).join('') + '</ul></div>' : '';
     var okB = r.batches.filter(function (b) { return b.okCount && b.okTotal; }).length;
     $('fRows').textContent = num(r.rows.length);
     $('fBatch').textContent = num(r.batches.length);
@@ -2185,6 +2239,7 @@ tr.is-going { opacity: .35; transition: opacity .2s; }
       '<li><span>Baris Success</span><b>' + num(r.rows.length) + '</b></li>' +
       (state.cek && !state.cek.gagal ? '<li><span>Perkiraan rekening baru</span><b>' + num(state.estimasi || 0) + '</b></li>' : '') +
       '<li><span>Batch</span><b>' + num(r.batches.length) + '</b></li>' +
+      (r.dilewati && r.dilewati.length ? '<li><span>File dilewati (tidak dikirim)</span><b>' + num(r.dilewati.length) + '</b></li>' : '') +
       '<li><span>Failed / Rejected (tidak dikirim)</span><b>' + num(r.failed.length) + '</b></li>';
     dlgSend.returnValue = '';
     dlgSend.showModal();
