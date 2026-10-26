@@ -1642,6 +1642,13 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
 .auth__nav .auth__nav-tut::before { content: ""; display: inline-block; width: .9em; height: .9em; margin-right: .4em; vertical-align: -.1em; border-radius: 50%; background: #22C9A0; box-shadow: 0 0 0 .22em rgba(34, 201, 160, .25); }
 .auth__nav .auth__nav-tut { display: flex; align-items: center; justify-content: center; }
 .pill--sk { background: #DFF7EC; color: #0B8A5A; } .pill__asal { display: block; margin-top: 4px; font-size: 11.5px; color: #8A97AE; }
+.dupbox__ada { margin-top: 8px; font-size: 13px; }
+.dupbox__ada summary { cursor: pointer; font-weight: 600; color: #1F5BD8; }
+.dupbox__ada ul { margin: 8px 0 0; padding: 8px 12px 8px 26px; max-height: 220px; overflow: auto; background: rgba(255, 255, 255, .7); border-radius: 10px; }
+.dupbox__ada li { margin: 3px 0; }
+.dupbox__ada .acct { font-variant-numeric: tabular-nums; font-weight: 600; }
+.dupbox__ada small { color: #6B7A95; }
+.dupbox__ada li b, .dupbox__ada li small, .dupbox__ada li span { display: inline; font-size: inherit; } .dupbox__ada li b { font-weight: 700; } .dupbox__ada li small { font-size: 12px; }
 
 </style>
 </head>
@@ -3589,6 +3596,13 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     });
     state.estimasi = nBaru;
     $('fRows').textContent = num(nBaru);
+    // rekening yang sudah ada di database: tidak disimpan lagi, tetapi ditampilkan atas nama siapa
+    var namaAda = c.rekeningAdaNama || {}, hitAda = {}, urutAda = [];
+    r.rows.forEach(function (x) { var a = x.data[2]; if (!ada[a] || sudah[x.trxId]) return; if (!hitAda[a]) { hitAda[a] = 0; urutAda.push(a); } hitAda[a]++; });
+    urutAda.sort(function (a, b) { return hitAda[b] - hitAda[a]; });
+    var daftarAda = urutAda.length ? '<details class="dupbox__ada"><summary>' + num(urutAda.length) + ' no rekening sudah ada di database, tidak disimpan lagi</summary><ul>' +
+      urutAda.slice(0, 200).map(function (a) { return '<li><span class="acct">' + esc(a) + '</span> sudah ada atas nama <b>' + esc(namaAda[a] || '-') + '</b>' + (hitAda[a] > 1 ? ' <small>(' + hitAda[a] + '× di PDF ini)</small>' : '') + '</li>'; }).join('') +
+      (urutAda.length > 200 ? '<li>…dan ' + num(urutAda.length - 200) + ' lainnya</li>' : '') + '</ul></details>' : '';
     var contoh = lama.length ? sudah[lama[0].trxId] : null;
     var kapan = contoh ? ' pada <b>' + esc(contoh.waktuTeks) + ' WIB</b>' + (contoh.oleh ? ' oleh <b>' + esc(contoh.oleh) + '</b>' : '') + (contoh.fileName ? ' (file "' + esc(contoh.fileName) + '")' : '') : '';
     if (lama.length && lama.length === r.batches.length) {
@@ -3599,10 +3613,10 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.3v.2"/></svg><div><b>' + num(lama.length) + ' dari ' + num(r.batches.length) + ' batch sudah pernah diupload</b><span>Batch itu sudah masuk' + kapan + ' dan akan dilewati. Hanya ' + num(r.batches.length - lama.length) + ' batch baru yang diproses.</span></div>';
     } else if (!nBaru) {
       box.hidden = false; box.className = 'dupbox dupbox--warn';
-      box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.3v.2"/></svg><div><b>Semua rekening sudah ada di database</b><span>PDF ini belum pernah diupload, tetapi semua rekeningnya sudah terdaftar. Tidak ada baris baru yang akan masuk.</span></div>';
+      box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.3v.2"/></svg><div><b>Semua rekening sudah ada di database</b><span>PDF ini belum pernah diupload, tetapi semua rekeningnya sudah terdaftar. Tidak ada baris baru yang akan masuk.</span>' + daftarAda + '</div>';
     } else {
       box.hidden = false; box.className = 'dupbox dupbox--ok';
-      box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>PDF baru, belum pernah diupload</b><span>' + num(nBaru) + ' rekening baru akan masuk' + (r.rows.length - nBaru ? ', ' + num(r.rows.length - nBaru) + ' baris dilewati karena rekeningnya sudah ada atau dobel di PDF ini' : '') + '.</span></div>';
+      box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>PDF baru, belum pernah diupload</b><span>' + num(nBaru) + ' rekening baru akan masuk' + (r.rows.length - nBaru ? ', ' + num(r.rows.length - nBaru) + ' baris dilewati karena rekeningnya sudah ada atau dobel di PDF ini' : '') + '.</span>' + daftarAda + '</div>';
     }
   }
 
@@ -5602,6 +5616,19 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     try { history.replaceState({ mw: 0 }, '', '#/' + dariHash()); } catch (e) { /* abaikan */ }
     tampil(dariHash(), { noScroll: true });
     muatBell();
+    // bersihkan baris dobel lama (nama & no rekening sama) sekali per sesi, diam-diam di belakang
+    if (!A.__dobelCek) {
+      A.__dobelCek = true;
+      setTimeout(function () {
+        A.post({ action: 'bersihkanDobel' }).then(function (out) {
+          if (!out || !out.ok || !out.dihapus) return;
+          db.basi = true;
+          A.toast(num(out.dihapus) + ' baris dobel lama (nama & no rekening sama) dibersihkan dari Data Upah. Cadangannya di sheet "Data Upah - dobel dihapus".', true);
+          if (current === 'dashboard') muatDashboard(true);
+          if (current === 'database') muatDatabase(true);
+        }).catch(function () { });
+      }, 3500);
+    }
   });
 })();
 
