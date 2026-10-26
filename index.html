@@ -1558,6 +1558,46 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   .side__brand small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; }
   .side__waves { height: 40%; }
 }
+.kpi__spark.is-nol .kpi__line { opacity: .45; } .kpi__spark.is-nol .kpi__area { opacity: 0; }
+
+/* ---------- tutorial ---------- */
+.auth__tut { all: unset; box-sizing: border-box; position: relative; display: flex; align-items: center; justify-content: center; gap: .6em; width: 100%; margin-top: 1.4cqw; padding: .5em 0; cursor: pointer; font-size: 1.2cqw; color: #56657E; border-radius: 10px; }
+.auth__tut b { color: #0B6CF4; font-weight: 600; }
+.auth__tut svg { width: 1.35em; height: 1.35em; fill: none; stroke: #0B6CF4; stroke-width: 1.8; stroke-linejoin: round; }
+.auth__tut:hover b { text-decoration: underline; text-underline-offset: 3px; }
+.auth__tut:focus-visible { outline: 3px solid rgba(21, 101, 245, .45); outline-offset: 2px; }
+@media (min-width: 641px) and (min-aspect-ratio: 1001/1000) { .auth__tut { margin-top: calc(var(--u) * 18); font-size: calc(var(--u) * 16.5); } }
+@media (max-width: 640px), (max-aspect-ratio: 1/1) { .auth__tut { margin-top: 3.4cqw; font-size: 3.5cqw; } }
+
+.dlg--tut { width: min(640px, calc(100vw - 24px)); max-height: calc(100vh - 24px); }
+.tut { padding: 22px 26px 22px; display: flex; flex-direction: column; max-height: calc(100vh - 24px); box-sizing: border-box; }
+.tut__head { display: flex; align-items: center; justify-content: space-between; }
+.tut__no { font-size: 12.5px; font-weight: 600; color: #1F5BD8; background: #EEF4FF; padding: 4px 10px; border-radius: 99px; font-variant-numeric: tabular-nums; }
+.tut__x { width: 34px; height: 34px; border: 0; border-radius: 10px; background: transparent; cursor: pointer; display: grid; place-items: center; color: #56647D; }
+.tut__x:hover { background: #F1F5FB; }
+.tut__x svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.tut__bar { height: 4px; border-radius: 4px; background: #EDF2F9; margin: 14px 0 18px; overflow: hidden; }
+.tut__bar i { display: block; height: 100%; width: 10%; border-radius: inherit; background: linear-gradient(90deg, #2E8BFF, #1565F5); transition: width .3s ease; }
+.tut__body { overflow: auto; min-height: 250px; }
+.tut__top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.tut__ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; flex: none; background: linear-gradient(135deg, #E3EEFF, #D3F3EA); }
+.tut__ic svg { width: 24px; height: 24px; fill: none; stroke: #1557D6; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tut__body h3 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.02em; color: var(--navy); }
+.tut__body .tut__where { margin: 2px 0 0; font-size: 12.5px; color: #6B7A95; }
+.tut__body > p { margin: 0 0 12px; font-size: 14.5px; line-height: 1.6; color: #3D4C69; }
+.tut__body ol { margin: 0; padding: 0; list-style: none; counter-reset: t; display: grid; gap: 9px; }
+.tut__body ol li { counter-increment: t; position: relative; padding: 10px 12px 10px 44px; border-radius: 12px; background: #F6F9FE; font-size: 14px; line-height: 1.55; color: #1B2846; }
+.tut__body ol li::before { content: counter(t); position: absolute; left: 12px; top: 10px; width: 22px; height: 22px; border-radius: 50%; background: #1565F5; color: #fff; font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+.tut__note { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: #FFF6E6; color: #7A4A05; font-size: 13px; line-height: 1.55; }
+.tut__tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 12px; }
+.tut__tags span { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 99px; }
+.tut__dots { display: flex; justify-content: center; gap: 6px; margin: 16px 0 14px; }
+.tut__dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; background: #D5DFED; cursor: pointer; transition: width .2s, background .2s; }
+.tut__dots button[aria-current="step"] { width: 22px; background: #1565F5; }
+.tut__cta { display: flex; justify-content: space-between; gap: 10px; }
+.tut__cta .btn { --h: 42px; font-size: 14px; }
+@media (max-width: 640px) { .tut { padding: 18px 16px; } .tut__body h3 { font-size: 18px; } .tut__body { min-height: 0; } }
+@media (min-width: 641px) and (min-aspect-ratio: 1001/1000) { .auth__tut { margin-top: calc(var(--u) * 8); padding: calc(var(--u) * 6) 0; } }
 
 </style>
 </head>
@@ -1615,6 +1655,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
           </button>
         </form>
+        <button type="button" class="auth__tut" id="tutBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 015.5 4H10a2 2 0 012 2v14a2 2 0 00-2-2H4z"/><path d="M20 5.5A1.5 1.5 0 0018.5 4H14a2 2 0 00-2 2v14a2 2 0 012-2h6z"/></svg>Baru pertama kali? <b>Lihat tutorial</b></button>
       </div>
     </div>
   </section>
@@ -1718,22 +1759,22 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
             <article class="kpi kpi--blue">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2.5h6.6c.5 0 1 .2 1.4.6l3.9 3.9c.4.4.6.9.6 1.4V19a2.5 2.5 0 01-2.5 2.5H7A2.5 2.5 0 014.5 19V5A2.5 2.5 0 017 2.5z"/><path fill="#fff" d="M8.5 12.2h7v1.6h-7zM8.5 15.6h5v1.6h-5z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">File Dicek Hari Ini</p><p class="kpi__val" id="sFile">0</p><p class="kpi__sub" id="sFileSub">&nbsp;</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 30 C10 30 14 22 24 24 S38 34 46 26 S60 8 80 6 L80 40 L0 40Z"/><path class="kpi__line" d="M0 30 C10 30 14 22 24 24 S38 34 46 26 S60 8 80 6"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--green">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8 12.3l2.7 2.7L16.2 9.5"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Rekening Cocok</p><p class="kpi__val" id="sOk">0</p><p class="kpi__sub" id="sOkSub">&nbsp;</p><span class="bar"><i id="sOkBar"></i></span></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 32 C12 32 16 26 26 27 S40 18 50 20 S66 8 80 4 L80 40 L0 40Z"/><path class="kpi__line" d="M0 32 C12 32 16 26 26 27 S40 18 50 20 S66 8 80 4"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--orange">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.6a2 2 0 013.4 0l8 13.9a2 2 0 01-1.7 3H4a2 2 0 01-1.7-3z"/><path fill="#fff" d="M11 9h2v5.2h-2zM11 15.8h2v2h-2z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Perlu Review</p><p class="kpi__val" id="sRev">0</p><p class="kpi__sub" id="sRevSub">&nbsp;</p><span class="bar"><i id="sRevBar"></i></span></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 30 C8 31 14 26 22 28 S36 30 44 22 S62 6 80 10 L80 40 L0 40Z"/><path class="kpi__line" d="M0 30 C8 31 14 26 22 28 S36 30 44 22 S62 6 80 10"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--red">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" d="M9 9l6 6M15 9l-6 6"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Tidak Cocok</p><p class="kpi__val" id="sBad">0</p><p class="kpi__sub" id="sBadSub">&nbsp;</p><span class="bar"><i id="sBadBar"></i></span></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 33 C12 31 18 24 28 26 S42 30 52 20 S68 10 80 6 L80 40 L0 40Z"/><path class="kpi__line" d="M0 33 C12 31 18 24 28 26 S42 30 52 20 S68 10 80 6"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
           </div>
 
@@ -1896,27 +1937,27 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
             <article class="kpi kpi--green">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8 12.3l2.7 2.7L16.2 9.5"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Cocok</p><p class="kpi__val" id="rCocok">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 32 C12 32 16 26 26 27 S40 18 50 20 S66 8 80 4 L80 40 L0 40Z"/><path class="kpi__line" d="M0 32 C12 32 16 26 26 27 S40 18 50 20 S66 8 80 4"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--orange">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path fill="#fff" d="M11 6.5h2v7h-2zM11 15.5h2v2h-2z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Mirip</p><p class="kpi__val" id="rMirip">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 30 C8 31 14 26 22 28 S36 30 44 22 S62 6 80 10 L80 40 L0 40Z"/><path class="kpi__line" d="M0 30 C8 31 14 26 22 28 S36 30 44 22 S62 6 80 10"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--red">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" d="M9 9l6 6M15 9l-6 6"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Beda nama</p><p class="kpi__val" id="rBeda">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 33 C12 31 18 24 28 26 S42 30 52 20 S68 10 80 6 L80 40 L0 40Z"/><path class="kpi__line" d="M0 33 C12 31 18 24 28 26 S42 30 52 20 S68 10 80 6"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--slate">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" d="M8 12h8"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Tidak ada di database</p><p class="kpi__val" id="rNone">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 31 C10 32 18 28 28 29 S44 22 54 18 S70 14 80 8 L80 40 L0 40Z"/><path class="kpi__line" d="M0 31 C10 32 18 28 28 29 S44 22 54 18 S70 14 80 8"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--purple">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path fill="#fff" d="M2.5 9h19v2.4h-19zM5.5 14.5h5v1.8h-5z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Via RO</p><p class="kpi__val" id="rRo">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 30 C10 30 14 22 24 24 S38 34 46 26 S60 8 80 6 L80 40 L0 40Z"/><path class="kpi__line" d="M0 30 C10 30 14 22 24 24 S38 34 46 26 S60 8 80 6"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
           </div>
           <div class="tabs" role="tablist" aria-label="Kategori hasil" id="rTabs">
@@ -1975,22 +2016,22 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
             <article class="kpi kpi--blue">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" d="M12 7v5.2l3.3 2"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Total riwayat</p><p class="kpi__val" id="hsTotal">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 30 C10 30 14 22 24 24 S38 34 46 26 S60 8 80 6 L80 40 L0 40Z"/><path class="kpi__line" d="M0 30 C10 30 14 22 24 24 S38 34 46 26 S60 8 80 6"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--green">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8 12.3l2.7 2.7L16.2 9.5"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Crosscheck MCM</p><p class="kpi__val" id="hsCc">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 32 C12 32 16 26 26 27 S40 18 50 20 S66 8 80 4 L80 40 L0 40Z"/><path class="kpi__line" d="M0 32 C12 32 16 26 26 27 S40 18 50 20 S66 8 80 4"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--purple">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 19.5a4.5 4.5 0 01-.6-9 6.3 6.3 0 0112.2 1.4 4 4 0 01-.6 7.6z"/><path fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 17v-5.5M9.6 13.8L12 11.4l2.4 2.4"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Upload PDF</p><p class="kpi__val" id="hsPdf">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 30 C8 31 14 26 22 28 S36 30 44 22 S62 6 80 10 L80 40 L0 40Z"/><path class="kpi__line" d="M0 30 C8 31 14 26 22 28 S36 30 44 22 S62 6 80 10"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--orange">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.8" r="4"/><path d="M4 20.5c.6-4.6 3.8-7 8-7s7.4 2.4 8 7z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Aktivitas tercatat</p><p class="kpi__val" id="hsLog">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 33 C12 31 18 24 28 26 S42 30 52 20 S68 10 80 6 L80 40 L0 40Z"/><path class="kpi__line" d="M0 33 C12 31 18 24 28 26 S42 30 52 20 S68 10 80 6"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
       </div>
       <div class="panel panel--list">
@@ -2190,27 +2231,27 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
             <article class="kpi kpi--blue">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.6"/><circle cx="16.8" cy="9" r="2.8"/><path d="M2.5 19c.4-3.6 3-5.8 6.5-5.8s6.1 2.2 6.5 5.8z"/><path d="M15.2 13.5c3.2-.4 5.8 1.5 6.3 5.5h-4.6c-.2-2.2-.8-3.9-1.7-5.5z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Total rekening</p><p class="kpi__val" id="bTotal">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 30 C10 30 14 22 24 24 S38 34 46 26 S60 8 80 6 L80 40 L0 40Z"/><path class="kpi__line" d="M0 30 C10 30 14 22 24 24 S38 34 46 26 S60 8 80 6"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--teal">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l9.5 5.4v1.6h-19V8.2z"/><path d="M4.5 11h2.6v6.5H4.5zM9.2 11h2.6v6.5H9.2zM13.9 11h2.6v6.5h-2.6zM18.6 11h2.6v6.5h-2.6z" transform="translate(-.8 0)"/><path d="M2.5 19h19v2.2h-19z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Bank</p><p class="kpi__val" id="bBanks">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 32 C12 32 16 26 26 27 S40 18 50 20 S66 8 80 4 L80 40 L0 40Z"/><path class="kpi__line" d="M0 32 C12 32 16 26 26 27 S40 18 50 20 S66 8 80 4"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--purple">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5.5A2.5 2.5 0 016.5 3h6A2.5 2.5 0 0115 5.5V21z"/><path d="M15 9h3.5A2.5 2.5 0 0121 11.5V21h-6z"/><path fill="#fff" d="M7 6.5h2v2H7zM10.5 6.5h2v2h-2zM7 10.5h2v2H7zM10.5 10.5h2v2h-2zM7 14.5h2v2H7zM10.5 14.5h2v2h-2zM17 12.5h2v2h-2zM17 16h2v2h-2z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Site bisnis</p><p class="kpi__val" id="bSites">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 30 C8 31 14 26 22 28 S36 30 44 22 S62 6 80 10 L80 40 L0 40Z"/><path class="kpi__line" d="M0 30 C8 31 14 26 22 28 S36 30 44 22 S62 6 80 10"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--orange">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path fill="#fff" d="M2.5 9h19v2.4h-19zM5.5 14.5h5v1.8h-5z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Rekening RO</p><p class="kpi__val" id="bRo">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 33 C12 31 18 24 28 26 S42 30 52 20 S68 10 80 6 L80 40 L0 40Z"/><path class="kpi__line" d="M0 33 C12 31 18 24 28 26 S42 30 52 20 S68 10 80 6"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--green">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l8 3.2v5.8c0 5-3.4 9-8 10.5-4.6-1.5-8-5.5-8-10.5V5.7z"/><path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8.4 12.2l2.5 2.5 4.8-5"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Dengan surat kuasa</p><p class="kpi__val" id="bSk">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 31 C10 32 18 28 28 29 S44 22 54 18 S70 14 80 8 L80 40 L0 40Z"/><path class="kpi__line" d="M0 31 C10 32 18 28 28 29 S44 22 54 18 S70 14 80 8"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
           </div>
           <div class="panel panel--list">
@@ -2325,22 +2366,22 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
             <article class="kpi kpi--orange">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path fill="#fff" d="M2.5 9h19v2.4h-19zM5.5 14.5h5v1.8h-5z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Rekening RO</p><p class="kpi__val" id="psRo">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 30 C10 30 14 22 24 24 S38 34 46 26 S60 8 80 6 L80 40 L0 40Z"/><path class="kpi__line" d="M0 30 C10 30 14 22 24 24 S38 34 46 26 S60 8 80 6"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--purple">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.8" r="4"/><path d="M4 20.5c.6-4.6 3.8-7 8-7s7.4 2.4 8 7z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Orang RO</p><p class="kpi__val" id="psRoOrang">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 32 C12 32 16 26 26 27 S40 18 50 20 S66 8 80 4 L80 40 L0 40Z"/><path class="kpi__line" d="M0 32 C12 32 16 26 26 27 S40 18 50 20 S66 8 80 4"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--green">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l8 3.2v5.8c0 5-3.4 9-8 10.5-4.6-1.5-8-5.5-8-10.5V5.7z"/><path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8.4 12.2l2.5 2.5 4.8-5"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Surat kuasa aktif</p><p class="kpi__val" id="psSk">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 30 C8 31 14 26 22 28 S36 30 44 22 S62 6 80 10 L80 40 L0 40Z"/><path class="kpi__line" d="M0 30 C8 31 14 26 22 28 S36 30 44 22 S62 6 80 10"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--blue">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.6"/><circle cx="16.8" cy="9" r="2.8"/><path d="M2.5 19c.4-3.6 3-5.8 6.5-5.8s6.1 2.2 6.5 5.8z"/><path d="M15.2 13.5c3.2-.4 5.8 1.5 6.3 5.5h-4.6c-.2-2.2-.8-3.9-1.7-5.5z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Pengguna</p><p class="kpi__val" id="psUser">0</p></div>
-              <svg class="kpi__spark" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 33 C12 31 18 24 28 26 S42 30 52 20 S68 10 80 6 L80 40 L0 40Z"/><path class="kpi__line" d="M0 33 C12 31 18 24 28 26 S42 30 52 20 S68 10 80 6"/></svg>
+              <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
           </div>
           <div class="seg" role="tablist" aria-label="Bagian pengaturan" id="pTabs">
@@ -2446,6 +2487,23 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
         <button class="btn btn--primary" value="ok" id="skOk">Upload &amp; approve</button>
       </div>
     </form>
+  </dialog>
+
+  <!-- Tutorial -->
+  <dialog class="dlg dlg--tut" id="dlgTut" aria-labelledby="tutTitle">
+    <div class="tut">
+      <div class="tut__head">
+        <span class="tut__no" id="tutNo">1 / 10</span>
+        <button type="button" class="tut__x" id="tutClose" aria-label="Tutup tutorial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="tut__bar" aria-hidden="true"><i id="tutBar"></i></div>
+      <div class="tut__body" id="tutBody" aria-live="polite"></div>
+      <nav class="tut__dots" id="tutDots" aria-label="Langkah tutorial"></nav>
+      <div class="tut__cta">
+        <button type="button" class="btn btn--ghost" id="tutPrev">Sebelumnya</button>
+        <button type="button" class="btn btn--primary" id="tutNext">Lanjut</button>
+      </div>
+    </div>
   </dialog>
 
   <!-- Dialog edit RO -->
@@ -3676,14 +3734,145 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     });
   });
 
+  /* ---------- tutorial cara kerja Moneywise (dibuka dari halaman login) ---------- */
+  var IC = {
+    masuk: '<path d="M10 16.5L14.5 12 10 7.5M14.5 12H3.5"/><path d="M13 4.5h5a1.5 1.5 0 011.5 1.5v12a1.5 1.5 0 01-1.5 1.5h-5"/>',
+    dash: '<path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4.5v-6h-5v6H5a1 1 0 01-1-1z"/>',
+    pdf: '<path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M12 11v6M9.5 13.5L12 11l2.5 2.5"/>',
+    kar: '<circle cx="10" cy="8" r="3.8"/><path d="M3 20c.5-4 3.3-6.4 7-6.4 1.4 0 2.7.3 3.8 1M18 13.5v6M15 16.5h6"/>',
+    cc: '<rect x="5" y="3.5" width="12" height="17" rx="2"/><path d="M8.5 8h5M8.5 11.5h3"/><circle cx="16" cy="16" r="3.2"/><path d="M18.4 18.4L21 21"/>',
+    sk: '<path d="M12 2.5l8 3.2v5.8c0 5-3.4 9-8 10.5-4.6-1.5-8-5.5-8-10.5V5.7z"/><path d="M8.4 12.2l2.5 2.5 4.8-5"/>',
+    fix: '<path d="M4 20h4L19 9a2.1 2.1 0 00-3-3L5 17z"/><path d="M14 7l3 3"/>',
+    hist: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    db: '<path d="M3.5 9.5L12 4l8.5 5.5"/><path d="M5.5 10v7.5M9.8 10v7.5M14.2 10v7.5M18.5 10v7.5M3.5 20h17"/>',
+    set: '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M4.2 6.2l1.7 1.7M18.1 16.1l1.7 1.7M2.8 12h2.4M18.8 12h2.4M4.2 17.8l1.7-1.7M18.1 7.9l1.7-1.7"/>'
+  };
+  var TUT = [
+    { ic: 'masuk', judul: 'Masuk ke Moneywise', di: 'Halaman login',
+      isi: 'Moneywise memastikan nomor rekening dan nama penerima gaji di file MCM sesuai data bank sebelum gaji ditransfer. Urutan kerjanya: isi database dari laporan bank, lalu cocokkan setiap file MCM dengan database itu.',
+      langkah: ['Ketik email Anda dan kata sandi tim, lalu klik <b>Masuk</b>.', 'Email Anda dicatat di setiap upload, crosscheck, dan perubahan, jadi selalu pakai email sendiri.', 'Sesi berakhir otomatis setelah 6 jam tidak dipakai. Klik <b>Keluar</b> di kanan atas kalau memakai komputer bersama.'] },
+    { ic: 'dash', judul: 'Dashboard', di: 'Menu Dashboard',
+      isi: 'Halaman pertama setelah masuk. Isinya ringkasan pengecekan hari ini.',
+      langkah: ['<b>File dicek hari ini</b>, <b>Rekening cocok</b>, <b>Perlu review</b>, dan <b>Tidak cocok</b>. Grafik kecil di setiap kartu menunjukkan 7 hari terakhir; garis datar berarti belum ada data.', '<b>Tren 7 hari</b>, jumlah rekening per bank, dan aktivitas terbaru semua pengguna.', 'Kartu <b>Crosscheck File MCM</b> bisa langsung menerima file MCM tanpa pindah halaman.', 'Ikon lonceng di atas berisi aktivitas terbaru. Kolom cari (Ctrl + K) mencari nama, no rekening, atau file crosscheck.'] },
+    { ic: 'pdf', judul: 'Update Database dari PDF bank', di: 'Menu Update Database',
+      isi: 'Database rekening (sheet <b>Data Upah</b>: Nama, Bank, No Rekening, Site Bisnis, Site Penempatan) diisi dari laporan transfer bank.',
+      langkah: ['Klik <b>Pilih PDF</b>. Pilih PDF <b>Transaction Report Kopra Mandiri</b> atau <b>Transaction Status BNI Direct</b>. Bisa banyak file sekaligus.', 'PDF dibaca di perangkat Anda. Jumlah transaksi dan total nominal setiap batch dicek dengan ringkasan bank. Transfer Failed/Rejected dibuang dan alasannya ditampilkan.', 'Periksa hasilnya, lalu klik <b>Kirim ke spreadsheet</b>. Rekening yang sudah ada dilewati, jadi tidak ada data dobel.', 'Salah pilih? Klik <b>Batalkan</b> saat membaca, saat mengirim, atau sesudah terkirim; data yang sempat masuk dihapus lagi.'],
+      catatan: 'PDF yang sama tidak bisa diupload dua kali. File yang bukan laporan gaji (mis. transfer RTGS tunggal) dilewati dengan keterangan, file lain tetap masuk.' },
+    { ic: 'kar', judul: 'Tambah Karyawan', di: 'Menu Tambah Karyawan',
+      isi: 'Untuk karyawan yang belum ada di PDF bank mana pun.',
+      langkah: ['<b>Upload Excel/CSV</b>: klik <b>Unduh template Excel</b> atau <b>Template CSV</b>, isi mulai baris ke-2 (Nama sampai Site Penempatan), lalu seret file ke kotak upload.', '<b>Ketik manual</b>: isi per baris dan klik <b>Tambah baris</b> untuk orang berikutnya. Bisa juga salin beberapa baris dari Excel lalu tempel.', 'Klik <b>Periksa</b>. Setiap baris diberi label: <b>Baru</b>, <b>Sudah ada</b>, <b>Dobel</b>, atau <b>Perlu diperbaiki</b>.', 'Klik <b>Simpan</b>. Hanya baris <b>Baru</b> yang masuk ke Data Upah. Bisa dibatalkan dari layar selesai atau dari Riwayat.'],
+      catatan: 'Baris yang diketik langsung di spreadsheet juga ikut terbaca oleh aplikasi.' },
+    { ic: 'cc', judul: 'Crosscheck MCM', di: 'Menu Crosscheck MCM',
+      isi: 'Sebelum file MCM dikirim ke bank, cocokkan dulu dengan database.',
+      langkah: ['Klik <b>Pilih file MCM</b> (Excel .xls/.xlsx atau CSV dari MCM). Jumlah baris dan total nominal dicek dengan baris ringkasan file.', 'Klik <b>Cocokkan dengan database</b>. Hasilnya langsung tersimpan di Riwayat.', 'Baca labelnya: <b>Cocok</b> (aman), <b>Mirip</b> (beda ejaan/singkatan, cek sekilas), <b>Beda nama</b> (rekening milik orang lain), <b>Tidak ada di database</b>, dan <b>Via RO</b> (dibayar lewat rekening RO).', 'Buka tab <b>Perlu dicek</b> untuk melihat baris yang harus ditindaklanjuti.'] },
+    { ic: 'sk', judul: 'Surat kuasa', di: 'Laporan crosscheck → baris Beda nama / Via RO',
+      isi: 'Kalau gaji memang sengaja dikirim ke rekening orang lain (istri, orang tua, atau RO), upload surat kuasanya.',
+      langkah: ['Di baris <b>Beda nama</b> klik <b>Upload surat kuasa</b>; di baris <b>Via RO</b> klik <b>Surat kuasa orang ini</b>. Lalu pilih file PDF/JPG/PNG.', 'Pilih hubungan pemilik rekening. Pilih <b>Lainnya</b> lalu tulis hubungannya kalau tidak ada di daftar.', 'Untuk banyak karyawan di satu rekening RO, klik <b>Satu surat kuasa untuk N orang di RO ini</b>: cukup satu file.', 'Baris itu langsung berlabel hijau <b>Approved</b>, dan tetap Approved di setiap crosscheck berikutnya.'],
+      catatan: 'File surat kuasa disimpan privat di Google Drive pemilik aplikasi. Bisa dilihat atau dicabut di Pengaturan → Surat kuasa.' },
+    { ic: 'fix', judul: 'Unduh MCM yang sudah dibetulkan', di: 'Laporan crosscheck → MCM benar',
+      isi: 'Moneywise bisa membuat file MCM baru dengan nama yang sudah disamakan dengan database.',
+      langkah: ['Klik <b>MCM benar</b> di laporan crosscheck (juga bisa dari laporan lama di Riwayat).', 'Baris <b>Mirip</b> dan baris yang punya surat kuasa otomatis diganti ke nama di database.', '<b>Beda nama</b> tanpa surat kuasa tidak diubah dan ditandai merah. Semua nama masih bisa diedit dulu.', 'Klik <b>Unduh Excel</b> atau <b>Unduh CSV</b>. Format file sama dengan file MCM asli, siap diupload ke bank.'],
+      catatan: 'File hasil unduhan tidak mengubah database maupun riwayat.' },
+    { ic: 'hist', judul: 'Riwayat & laporan', di: 'Menu Riwayat',
+      isi: 'Semua kegiatan tercatat lengkap dengan tanggal, jam, dan email pengguna.',
+      langkah: ['Filter: <b>Crosscheck MCM</b>, <b>Upload PDF</b> (termasuk Tambah karyawan), atau <b>Log aktivitas</b>.', 'Klik <b>Lihat laporan</b> untuk membuka hasil crosscheck lama.', '<b>Unduh PDF</b> atau <b>Cetak</b> untuk laporan resmi.', 'Ikon tempat sampah menghapus riwayat. Kalau upload PDF atau tambah karyawan yang dihapus, rekening yang masuk dari situ ikut terhapus dari Data Upah.'] },
+    { ic: 'db', judul: 'Database Bank', di: 'Menu Database Bank',
+      isi: 'Isi sheet Data Upah yang bisa dicari tanpa membuka spreadsheet.',
+      langkah: ['Cari nama atau no rekening, saring per site bisnis atau bank.', 'Klik judul kolom untuk mengurutkan.', 'No rekening disamarkan; nyalakan <b>Tampilkan nomor lengkap</b> hanya bila perlu.', '<b>Unduh PDF</b>, <b>Unduh Excel</b>, atau <b>Cetak</b> sesuai saringan yang aktif.'] },
+    { ic: 'set', judul: 'Pengaturan', di: 'Menu Pengaturan',
+      isi: 'Data pendukung yang dipakai saat crosscheck.',
+      langkah: ['<b>Rekening RO</b>: tambah, edit (ikon pensil: nama, no rekening, bank, catatan), atau hapus rekening penampung gaji.', '<b>Surat kuasa</b>: lihat file, atau cabut kalau sudah tidak berlaku.', '<b>Pengguna</b>: daftar email yang pernah masuk; blokir untuk menutup akses.', 'Tombol <b>Kembali</b> di setiap halaman membawa Anda ke halaman sebelumnya, di posisi yang sama.'],
+      catatan: 'Selesai! Urutan harian: Update Database (PDF baru) → Crosscheck MCM → tindak lanjuti baris Perlu dicek → unduh MCM benar.' }
+  ];
+  var tutI = 0;
+  function tampilTut(i) {
+    tutI = Math.max(0, Math.min(TUT.length - 1, i));
+    var t = TUT[tutI];
+    $('tutBody').innerHTML = '<div class="tut__top"><span class="tut__ic"><svg viewBox="0 0 24 24" aria-hidden="true">' + IC[t.ic] + '</svg></span><div><h3 id="tutTitle">' + t.judul + '</h3><p class="tut__where">' + t.di + '</p></div></div>' +
+      '<p>' + t.isi + '</p><ol>' + t.langkah.map(function (l) { return '<li>' + l + '</li>'; }).join('') + '</ol>' + (t.catatan ? '<p class="tut__note">' + t.catatan + '</p>' : '');
+    $('tutBody').scrollTop = 0;
+    $('tutNo').textContent = (tutI + 1) + ' / ' + TUT.length;
+    $('tutBar').style.width = ((tutI + 1) / TUT.length * 100) + '%';
+    [].forEach.call($('tutDots').children, function (b, j) { if (j === tutI) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+    $('tutPrev').disabled = tutI === 0;
+    $('tutNext').textContent = tutI === TUT.length - 1 ? 'Selesai, mulai masuk' : 'Lanjut';
+  }
+  $('tutDots').innerHTML = TUT.map(function (t, j) { return '<button type="button" aria-label="Langkah ' + (j + 1) + ': ' + t.judul + '"></button>'; }).join('');
+  $('tutDots').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) tampilTut([].indexOf.call(this.children, b)); });
+  $('tutBtn').addEventListener('click', function () { tampilTut(0); $('dlgTut').showModal(); });
+  $('tutPrev').addEventListener('click', function () { tampilTut(tutI - 1); });
+  $('tutNext').addEventListener('click', function () {
+    if (tutI < TUT.length - 1) return tampilTut(tutI + 1);
+    $('dlgTut').close();
+    try { $('loginEmail').focus(); } catch (x) { /* abaikan */ }
+  });
+  $('tutClose').addEventListener('click', function () { $('dlgTut').close(); });
+  $('dlgTut').addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); tampilTut(tutI + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); tampilTut(tutI - 1); }
+  });
+  $('dlgTut').addEventListener('click', function (e) { if (e.target === this) this.close(); });
+
+  /* grafik kecil di kartu angka: mengikuti data asli. Semua 0 = garis datar di dasar. */
+  function titikSpark(seri) {
+    var n = seri.length, maks = Math.max.apply(null, seri.concat([0]));
+    return seri.map(function (v, i) {
+      return [n > 1 ? i * 80 / (n - 1) : 0, maks > 0 ? 35 - (v / maks) * 29 : 35];
+    });
+  }
+  function jalurSpark(p) {
+    if (p.length < 2) return 'M0 35 L80 35';
+    var d = 'M' + p[0][0].toFixed(1) + ' ' + p[0][1].toFixed(1);
+    for (var i = 0; i < p.length - 1; i++) {   // kurva halus tanpa melewati titik data (monoton per segmen)
+      var a = p[i], b = p[i + 1], mx = (a[0] + b[0]) / 2;
+      d += ' C' + mx.toFixed(1) + ' ' + a[1].toFixed(1) + ' ' + mx.toFixed(1) + ' ' + b[1].toFixed(1) + ' ' + b[0].toFixed(1) + ' ' + b[1].toFixed(1);
+    }
+    return d;
+  }
+  function spark(idNilai, seri) {
+    var el = $(idNilai), k = el && el.closest('.kpi'), svg = k && k.querySelector('.kpi__spark');
+    if (!svg) return;
+    seri = (seri && seri.length ? seri : [0, 0]).map(function (v) { return Math.max(0, Number(v) || 0); });
+    var garis = jalurSpark(titikSpark(seri)), kosong = !seri.some(function (v) { return v > 0; });
+    svg.querySelector('.kpi__line').setAttribute('d', garis);
+    svg.querySelector('.kpi__area').setAttribute('d', garis + ' L80 40 L0 40Z');
+    svg.classList.toggle('is-nol', kosong);
+    svg.setAttribute('aria-label', kosong ? 'Belum ada data' : 'Tren: ' + seri.join(', '));
+  }
+  // seri per hari (7 hari terakhir, zona WIB) dari daftar waktu
+  function seriHarian(waktu, hari) {
+    hari = hari || 7;
+    var key = function (d) { return new Date(d).toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' }); };
+    var idx = {}, out = [], now = Date.now();
+    for (var i = hari - 1; i >= 0; i--) { idx[key(now - i * 864e5)] = out.length; out.push(0); }
+    waktu.forEach(function (w) { var k = key(w); if (k in idx) out[idx[k]]++; });
+    return out;
+  }
+  // seri kumulatif: bertambah sepanjang urutan data (mis. baris file / urutan sheet), 8 titik
+  function seriKumulatif(tanda, titik) {
+    titik = titik || 8;
+    var n = tanda.length, out = [], jml = 0, j = 0;
+    for (var t = 1; t <= titik; t++) {
+      var batas = Math.round(n * t / titik);
+      for (; j < batas; j++) if (tanda[j]) jml++;
+      out.push(jml);
+    }
+    return n ? [0].concat(out) : [0, 0];
+  }
+
   // fungsi bersama untuk crosscheck.js
   window.APP = {
+    spark: spark, seriHarian: seriHarian, seriKumulatif: seriKumulatif,
     post: post, getToken: getToken, connected: connected, openSettings: openSettings, logout: logout, konfirmasi: konfirmasi,
     esc: esc, num: num, rp: rp, toast: toast, cfg: CFG, sesi: getSesi, gas: !!GAS,
     onConn: function (f) { connListeners.push(f); f(connected()); }
   };
 
   refreshConn();
+  // bangunkan server sejak halaman login terbuka, supaya klik "Masuk" tidak menunggu server menyala
+  function hangatkan() { if (urlReady()) post({ action: 'hangat' }).catch(function () { }); }
+  if (!connected()) hangatkan();
+  $('loginEmail').addEventListener('focus', function () { if (!hangatkan.sudah) { hangatkan.sudah = 1; hangatkan(); } });
   // desktop: kursor langsung di kolom email (di HP tidak, supaya keyboard tidak langsung muncul)
   if (document.body.classList.contains('is-auth') && window.matchMedia('(min-width: 641px) and (hover: hover)').matches) {
     setTimeout(function () { try { $('loginEmail').focus(); } catch (x) { /* abaikan */ } }, 60);
@@ -3861,6 +4050,9 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     var rep = st.report, g = hitung(rep), n = rep.hasil.length, bedaTanpaSk = g.BEDA - g.SK;
     $('rCocok').textContent = num(g.COCOK); $('rMirip').textContent = num(g.MIRIP);
     $('rBeda').textContent = num(g.BEDA); $('rNone').textContent = num(g.TIDAK_ADA); $('rRo').textContent = num(g.RO);
+    [['rCocok', 'COCOK'], ['rMirip', 'MIRIP'], ['rBeda', 'BEDA'], ['rNone', 'TIDAK_ADA'], ['rRo', 'RO']].forEach(function (x) {
+      A.spark(x[0], A.seriKumulatif(rep.hasil.map(function (h) { return h.status === x[1]; })));
+    });
     $('rcCek').textContent = g.CEK; $('rcBeda').textContent = g.BEDA; $('rcMirip').textContent = g.MIRIP;
     $('rcNone').textContent = g.TIDAK_ADA; $('rcOk').textContent = g.COCOK; $('rcRo').textContent = g.RO; $('rcSk').textContent = g.SK;
     $('rt-ro').hidden = !g.RO; $('rt-sk').hidden = !g.SK;
@@ -4020,13 +4212,33 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       fr.readAsDataURL(file);
     });
   }
+  var SK_MAKS = 100 * 1024 * 1024;
+  function ukuranTeks(b) { return b >= 1048576 ? (b / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
+  // upload bertahap per potongan (server Apps Script tidak sanggup menerima 100 MB sekaligus)
+  async function uploadBertahap(file, kabar) {
+    var m = await A.post({ action: 'skMulai', fileName: file.name, mime: file.type, size: file.size });
+    if (!m.ok) throw new Error(m.error || 'Upload tidak bisa dimulai.');
+    var P = m.potong, off = 0;
+    kabar(0);
+    while (off < file.size) {
+      var akhir = Math.min(file.size, off + P), b64 = await bacaBase64(file.slice(off, akhir)), r = null;
+      for (var coba = 0; coba < 3 && !(r && r.ok); coba++) {
+        try { r = await A.post({ action: 'skPotong', uploadId: m.uploadId, offset: off, data: b64 }); }
+        catch (e) { if (coba === 2) throw e; }
+        if (r && !r.ok && coba === 2) throw new Error(r.error || 'Upload terputus.');
+      }
+      off = r.selesai ? file.size : (r.diterima > off ? r.diterima : akhir);
+      kabar(off / file.size);
+    }
+    return m.uploadId;
+  }
   function setSkFile(f) {
     var e = $('skErr'); e.hidden = true;
     if (f && !/^(application\/pdf|image\/jpeg|image\/png)$/.test(f.type)) { e.textContent = 'File harus PDF, JPG, atau PNG.'; e.hidden = false; f = null; }
-    else if (f && f.size > 5 * 1024 * 1024) { e.textContent = 'Ukuran file maksimal 5 MB.'; e.hidden = false; f = null; }
+    else if (f && f.size > SK_MAKS) { e.textContent = 'Ukuran file maksimal 100 MB. File ini ' + ukuranTeks(f.size) + '.'; e.hidden = false; f = null; }
     skFile = f || null;
     $('skDrop').classList.toggle('has-file', !!skFile);
-    $('skFileTxt').innerHTML = skFile ? '<b>' + esc(skFile.name) + '</b><small>' + (skFile.size / 1024).toFixed(0) + ' KB · klik untuk ganti</small>' : '<b>Pilih file surat kuasa</b><small>PDF, JPG, atau PNG · maks. 5 MB</small>';
+    $('skFileTxt').innerHTML = skFile ? '<b>' + esc(skFile.name) + '</b><small>' + ukuranTeks(skFile.size) + ' · klik untuk ganti</small>' : '<b>Pilih file surat kuasa</b><small>PDF, JPG, atau PNG · maks. 100 MB</small>';
   }
   $('skFile').addEventListener('change', function () { setSkFile(this.files[0]); this.value = ''; });
   ['dragenter', 'dragover'].forEach(function (ev) { $('skDrop').addEventListener(ev, function (e) { e.preventDefault(); $('skDrop').classList.add('is-over'); }); });
@@ -4072,11 +4284,12 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     if ($('skHub').value === 'Lainnya' && !$('skLain').value.trim()) { err.textContent = 'Tulis dulu hubungan "Lainnya" itu apa.'; err.hidden = false; $('skLain').focus(); return; }
     btn.disabled = true; btn.textContent = 'Mengupload…';
     try {
-      var data = await bacaBase64(skFile);
+      var uploadId = await uploadBertahap(skFile, function (p) { btn.textContent = 'Mengupload ' + Math.round(p * 100) + '%…'; });
+      btn.textContent = 'Menyimpan…';
       var items = [], seen = {};
       skRows.forEach(function (x) { var k = x.acct + '|' + x.namaMcm; if (seen[k]) return; seen[k] = 1; items.push({ acct: x.acct, namaMcm: x.namaMcm, namaDb: namaDb1(x), status: x.status }); });
       var out = await A.post({ action: 'uploadSK', items: items, hubungan: hubDipilih(), keterangan: $('skKet').value.trim(),
-        fileName: skFile.name, mime: skFile.type, data: data, ccId: st.report && st.report.id });
+        fileName: skFile.name, mime: skFile.type, uploadId: uploadId, ccId: st.report && st.report.id });
       if (!out.ok) throw new Error(out.error || 'Upload gagal.');
       // berlaku untuk semua baris dengan rekening + nama yang sama di laporan ini
       var peta = {};
@@ -4097,9 +4310,17 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     try {
       var out = await A.post({ action: 'lihatSK', id: id });
       if (!out.ok) throw new Error(out.error || 'Tidak bisa dibuka.');
-      var bin = atob(out.data), arr = new Uint8Array(bin.length);
-      for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-      var url = URL.createObjectURL(new Blob([arr], { type: out.mime }));
+      var bagian = [];
+      function keBytes(b64) { var bin = atob(b64), arr = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i); return arr; }
+      if (out.besar) {
+        for (var off = 0; off < out.size; off += out.potong) {
+          if (tombol) tombol.textContent = 'Mengunduh ' + Math.round(off / out.size * 100) + '%…';
+          var pt = await A.post({ action: 'skUnduh', id: id, offset: off });
+          if (!pt.ok) throw new Error(pt.error || 'Unduhan terputus.');
+          bagian.push(keBytes(pt.data));
+        }
+      } else bagian.push(keBytes(out.data));
+      var url = URL.createObjectURL(new Blob(bagian, { type: out.mime }));
       var w = window.open(url, '_blank');
       if (!w) { var a = document.createElement('a'); a.href = url; a.download = out.fileName || (id + '.pdf'); document.body.appendChild(a); a.click(); a.remove(); }
       setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
@@ -4286,6 +4507,11 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     $('hsCc').textContent = num(hist.filter(function (h) { return h.jenis === 'cc'; }).length);
     $('hsPdf').textContent = num(hist.filter(function (h) { return h.jenis === 'pdf'; }).length);
     $('hsLog').textContent = num(logAkt.length);
+    var w = function (l) { return l.map(function (h) { return h.waktu; }); };
+    A.spark('hsTotal', A.seriHarian(w(hist)));
+    A.spark('hsCc', A.seriHarian(w(hist.filter(function (h) { return h.jenis === 'cc'; }))));
+    A.spark('hsPdf', A.seriHarian(w(hist.filter(function (h) { return h.jenis === 'pdf'; }))));
+    A.spark('hsLog', A.seriHarian(w(logAkt)));
   }
   function listAktif() { return hist.filter(function (h) { return histFilter === 'semua' || h.jenis === histFilter; }); }
   function renderHistory() {
@@ -4636,7 +4862,6 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     if (v === 'riwayat' && ganti && A.refreshHistory) A.refreshHistory();
   }
   A.go = go;
-  A.dbBasi = function () { db.basi = true; };
   function dariHash() { var m = /^#\/(\w+)/.exec(location.hash); return m ? m[1] : 'dashboard'; }
   // tombol Back browser / HP ikut memakai tumpukan yang sama
   window.addEventListener('popstate', function () {
@@ -4754,15 +4979,23 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   }
 
   /* ---------- dashboard ---------- */
-  var dashBusy = false;
-  async function muatDashboard() {
+  var dashBusy = false, dashTampil = false, KUNCI_DASH = 'mw_dash_v8';
+  function dashLokal() {
+    if (dashTampil) return;
+    try { var c = JSON.parse(lsGet(KUNCI_DASH) || 'null'); if (c && c.ok && c.hariIni) { renderDashboard(c, true); dashTampil = true; } } catch (e) { /* abaikan */ }
+  }
+  async function muatDashboard(segar) {
+    dashLokal();   // angka terakhir langsung tampil, lalu diperbarui diam-diam
     if (dashBusy) return;
     dashBusy = true;
     try {
-      var d = await A.post({ action: 'dashboard' });
+      var d = await A.post({ action: 'dashboard', segar: !!segar });
       if (!d.ok) throw new Error(d.error || 'Gagal memuat dashboard.');
       renderDashboard(d);
+      dashTampil = true;
+      lsSet(KUNCI_DASH, JSON.stringify(d));
     } catch (e) {
+      if (dashTampil) return;
       $('dAct').innerHTML = '<li class="act__empty">' + esc(e.message) + '</li>';
       $('dRecent').innerHTML = '<tr><td class="empty" colspan="8">' + esc(e.message) + '</td></tr>';
     } finally { dashBusy = false; }
@@ -4771,6 +5004,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   function pct(a, b) { return b ? Math.round(a / b * 1000) / 10 : 0; }
   function animasiAngka(el, target) {
     var mulai = Number(String(el.textContent).replace(/\D/g, '')) || 0, t0 = performance.now(), dur = 700;
+    if (el.dataset.instan) { delete el.dataset.instan; el.textContent = num(target); return; }
     if (matchMedia('(prefers-reduced-motion: reduce)').matches || mulai === target) { el.textContent = num(target); return; }
     (function langkah(t) {
       var p = Math.min(1, (t - t0) / dur), v = Math.round(mulai + (target - mulai) * (1 - Math.pow(1 - p, 3)));
@@ -4778,8 +5012,9 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       if (p < 1) requestAnimationFrame(langkah);
     })(t0);
   }
-  function renderDashboard(d) {
+  function renderDashboard(d, dariLokal) {
     var s = (A.sesi && A.sesi()) || {};
+    if (dariLokal) ['sFile', 'sOk', 'sRev', 'sBad', 'dDbTotal'].forEach(function (id) { $(id).dataset.instan = '1'; });
     $('dHello').textContent = s.nama ? ', ' + s.nama.split(' ')[0] : '';
     var h = d.hariIni, tot = h.cocok + h.perluReview + h.tidakCocok;
     animasiAngka($('sFile'), h.file);
@@ -4787,6 +5022,8 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     $('sFileSub').className = 'kpi__sub' + (selisih > 0 ? ' up' : selisih < 0 ? ' down' : '');
     $('sFileSub').textContent = selisih > 0 ? '↗ +' + selisih + ' dari kemarin' : selisih < 0 ? '↘ ' + selisih + ' dari kemarin' : (h.kemarin ? 'sama dengan kemarin' : 'belum ada pengecekan kemarin');
     animasiAngka($('sOk'), h.cocok); animasiAngka($('sRev'), h.perluReview); animasiAngka($('sBad'), h.tidakCocok);
+    var ambil = function (k) { return d.tren.map(function (t) { return t[k] || 0; }); };
+    A.spark('sFile', ambil('file')); A.spark('sOk', ambil('cocok')); A.spark('sRev', ambil('review')); A.spark('sBad', ambil('tidak'));
     $('sOkSub').textContent = pct(h.cocok, tot) + '% dari total';
     $('sRevSub').textContent = pct(h.perluReview, tot) + '% dari total';
     $('sBadSub').textContent = pct(h.tidakCocok, tot) + '% dari total';
@@ -4835,7 +5072,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     b.disabled = true; b.textContent = '…';
     A.bukaLaporan(b.dataset.lihat).finally(function () { b.disabled = false; b.textContent = 'Lihat'; });
   });
-  $('dRefresh').addEventListener('click', function () { muatDashboard(); A.toast('Dashboard diperbarui.', true); });
+  $('dRefresh').addEventListener('click', async function () { await muatDashboard(true); A.toast('Dashboard diperbarui.', true); });
   // kartu crosscheck cepat
   var qd = $('qDrop'), qf = $('qFile');
   qf.addEventListener('change', function () { if (qf.files[0]) { A.crosscheckFile(qf.files[0]); qf.value = ''; } });
@@ -4864,6 +5101,11 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       $('bTotal').textContent = num(db.rows.length); $('bBanks').textContent = num(Object.keys(banks).length); $('bSites').textContent = num(Object.keys(sites).length);
       $('bRo').textContent = num(db.rows.filter(function (r) { return db.ro[kunci(r[2])]; }).length);
       $('bSk').textContent = num(db.rows.filter(function (r) { return db.sk[kunci(r[2])]; }).length);
+      var baru = function (i) { var lihat = {}; return db.rows.map(function (r) { var b = !lihat[r[i]]; lihat[r[i]] = 1; return b; }); };
+      A.spark('bTotal', A.seriKumulatif(db.rows.map(function () { return true; })));
+      A.spark('bBanks', A.seriKumulatif(baru(1))); A.spark('bSites', A.seriKumulatif(baru(3)));
+      A.spark('bRo', A.seriKumulatif(db.rows.map(function (r) { return !!db.ro[kunci(r[2])]; })));
+      A.spark('bSk', A.seriKumulatif(db.rows.map(function (r) { return !!db.sk[kunci(r[2])]; })));
       renderDb();
     } catch (e) { $('bMeta').textContent = e.message; }
     finally { db.busy = false; }
@@ -4964,6 +5206,11 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       $('psRo').textContent = num(ro.length); $('psRoOrang').textContent = num(Object.keys(orang).length);
       $('psSk').textContent = num((r[1].sk || []).filter(function (x) { return x.status === 'Approved'; }).length);
       $('psUser').textContent = num((r[2].pengguna || []).length);
+      var lihatN = {};
+      A.spark('psRo', A.seriKumulatif(ro.map(function () { return true; })));
+      A.spark('psRoOrang', A.seriKumulatif(ro.map(function (x) { var b = !lihatN[x.nama]; lihatN[x.nama] = 1; return b; })));
+      A.spark('psSk', A.seriKumulatif((r[1].sk || []).slice().reverse().map(function (x) { return x.status === 'Approved'; })));
+      A.spark('psUser', A.seriKumulatif((r[2].pengguna || []).map(function () { return true; })));
     } catch (e) { /* abaikan */ } finally { pBusy = false; }
   }
   function muatPengaturan() {
