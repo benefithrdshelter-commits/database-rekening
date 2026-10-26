@@ -4285,12 +4285,19 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     if ($('skHub').value === 'Lainnya' && !$('skLain').value.trim()) { err.textContent = 'Tulis dulu hubungan "Lainnya" itu apa.'; err.hidden = false; $('skLain').focus(); return; }
     btn.disabled = true; btn.textContent = 'Mengupload…';
     try {
-      var uploadId = await uploadBertahap(skFile, function (p) { btn.textContent = 'Mengupload ' + Math.round(p * 100) + '%…'; });
+      var uploadId = null, dataLangsung = null;
+      try { uploadId = await uploadBertahap(skFile, function (p) { btn.textContent = 'Mengupload ' + Math.round(p * 100) + '%…'; }); }
+      catch (exUp) {
+        // cadangan: file sampai 20 MB dikirim langsung (tanpa upload bertahap)
+        if (skFile.size > 20 * 1024 * 1024) throw exUp;
+        btn.textContent = 'Mengupload…';
+        dataLangsung = await bacaBase64(skFile);
+      }
       btn.textContent = 'Menyimpan…';
       var items = [], seen = {};
       skRows.forEach(function (x) { var k = x.acct + '|' + x.namaMcm; if (seen[k]) return; seen[k] = 1; items.push({ acct: x.acct, namaMcm: x.namaMcm, namaDb: namaDb1(x), status: x.status }); });
       var out = await A.post({ action: 'uploadSK', items: items, hubungan: hubDipilih(), keterangan: $('skKet').value.trim(),
-        fileName: skFile.name, mime: skFile.type, uploadId: uploadId, ccId: st.report && st.report.id });
+        fileName: skFile.name, mime: skFile.type, uploadId: uploadId || undefined, data: dataLangsung || undefined, ccId: st.report && st.report.id });
       if (!out.ok) throw new Error(out.error || 'Upload gagal.');
       // berlaku untuk semua baris dengan rekening + nama yang sama di laporan ini
       var peta = {};
