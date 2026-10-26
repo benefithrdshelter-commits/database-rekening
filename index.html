@@ -1598,6 +1598,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
 .tut__cta .btn { --h: 42px; font-size: 14px; }
 @media (max-width: 640px) { .tut { padding: 18px 16px; } .tut__body h3 { font-size: 18px; } .tut__body { min-height: 0; } }
 @media (min-width: 641px) and (min-aspect-ratio: 1001/1000) { .auth__tut { margin-top: calc(var(--u) * 8); padding: calc(var(--u) * 6) 0; } }
+.confirm__opt { display: flex; gap: 10px; align-items: flex-start; margin-top: 10px; font-size: 13.5px; color: #3D4C69; text-align: left; cursor: pointer; } .confirm__opt input { margin-top: 3px; width: 16px; height: 16px; accent-color: #D93B45; } #skBody .act { white-space: nowrap; }
 
 </style>
 </head>
@@ -3768,7 +3769,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     { ic: 'sk', judul: 'Surat kuasa', di: 'Laporan crosscheck → baris Beda nama / Via RO',
       isi: 'Kalau gaji memang sengaja dikirim ke rekening orang lain (istri, orang tua, atau RO), upload surat kuasanya.',
       langkah: ['Di baris <b>Beda nama</b> klik <b>Upload surat kuasa</b>; di baris <b>Via RO</b> klik <b>Surat kuasa orang ini</b>. Lalu pilih file PDF/JPG/PNG.', 'Pilih hubungan pemilik rekening. Pilih <b>Lainnya</b> lalu tulis hubungannya kalau tidak ada di daftar.', 'Untuk banyak karyawan di satu rekening RO, klik <b>Satu surat kuasa untuk N orang di RO ini</b>: cukup satu file.', 'Baris itu langsung berlabel hijau <b>Approved</b>, dan tetap Approved di setiap crosscheck berikutnya.'],
-      catatan: 'File surat kuasa disimpan privat di Google Drive pemilik aplikasi. Bisa dilihat atau dicabut di Pengaturan → Surat kuasa.' },
+      catatan: 'File surat kuasa disimpan privat di Google Drive pemilik aplikasi. Bisa dilihat, dicabut, atau dihapus (file pindah ke Sampah Drive) di Pengaturan → Surat kuasa.' },
     { ic: 'fix', judul: 'Unduh MCM yang sudah dibetulkan', di: 'Laporan crosscheck → MCM benar',
       isi: 'Moneywise bisa membuat file MCM baru dengan nama yang sudah disamakan dengan database.',
       langkah: ['Klik <b>MCM benar</b> di laporan crosscheck (juga bisa dari laporan lama di Riwayat).', 'Baris <b>Mirip</b> dan baris yang punya surat kuasa otomatis diganti ke nama di database.', '<b>Beda nama</b> tanpa surat kuasa tidak diubah dan ditandai merah. Semua nama masih bisa diedit dulu.', 'Klik <b>Unduh Excel</b> atau <b>Unduh CSV</b>. Format file sama dengan file MCM asli, siap diupload ke bank.'],
@@ -3781,7 +3782,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       langkah: ['Cari nama atau no rekening, saring per site bisnis atau bank.', 'Klik judul kolom untuk mengurutkan.', 'No rekening disamarkan; nyalakan <b>Tampilkan nomor lengkap</b> hanya bila perlu.', '<b>Unduh PDF</b>, <b>Unduh Excel</b>, atau <b>Cetak</b> sesuai saringan yang aktif.'] },
     { ic: 'set', judul: 'Pengaturan', di: 'Menu Pengaturan',
       isi: 'Data pendukung yang dipakai saat crosscheck.',
-      langkah: ['<b>Rekening RO</b>: tambah, edit (ikon pensil: nama, no rekening, bank, catatan), atau hapus rekening penampung gaji.', '<b>Surat kuasa</b>: lihat file, atau cabut kalau sudah tidak berlaku.', '<b>Pengguna</b>: daftar email yang pernah masuk; blokir untuk menutup akses.', 'Tombol <b>Kembali</b> di setiap halaman membawa Anda ke halaman sebelumnya, di posisi yang sama.'],
+      langkah: ['<b>Rekening RO</b>: tambah, edit (ikon pensil: nama, no rekening, bank, catatan), atau hapus rekening penampung gaji.', '<b>Surat kuasa</b>: lihat file, cabut kalau sudah tidak berlaku, atau hapus (ikon tempat sampah) kalau salah upload.', '<b>Pengguna</b>: daftar email yang pernah masuk; blokir untuk menutup akses.', 'Tombol <b>Kembali</b> di setiap halaman membawa Anda ke halaman sebelumnya, di posisi yang sama.'],
       catatan: 'Selesai! Urutan harian: Update Database (PDF baru) → Crosscheck MCM → tindak lanjuti baris Perlu dicek → unduh MCM benar.' }
   ];
   var tutI = 0;
@@ -5294,12 +5295,15 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       return '<tr><td class="when" data-label="Waktu">' + esc(x.waktuTeks) + '</td><td class="acct" data-label="No rekening">' + esc(x.acct) + '</td><td class="lead" data-label="Nama di MCM">' + esc(x.namaMcm) +
         '</td><td data-label="Pemilik rekening">' + esc(x.namaDb || '-') + '</td><td data-label="Keterangan">' + esc(x.label.replace(/^Approved — /, '')) + '</td><td data-label="Oleh">' + esc(x.oleh || '-') +
         '</td><td data-label="Status"><span class="st ' + (aktif ? 'st--on">Approved' : 'st--off">Dicabut') + '</span></td><td class="act"><button class="btn btn--ghost btn--xs" type="button" data-sklihat="' + esc(x.id) + '">Lihat file</button>' +
-        (aktif ? ' <button class="btn btn--ghost btn--xs btn--danger-ghost" type="button" data-skcabut="' + esc(x.id) + '" data-nama="' + esc(x.namaMcm) + '">Cabut</button>' : '') + '</td></tr>';
+        (aktif ? ' <button class="btn btn--ghost btn--xs btn--danger-ghost" type="button" data-skcabut="' + esc(x.id) + '" data-nama="' + esc(x.namaMcm) + '">Cabut</button>' : '') +
+        ' <button class="hist__del" type="button" data-skhapus="' + esc(x.id) + '" data-nama="' + esc(x.namaMcm) + '" data-acct="' + esc(x.acct) + '" data-berbagi="' + (x.berbagi || 1) + '" title="Hapus surat kuasa" aria-label="Hapus surat kuasa ' + esc(x.namaMcm) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 7h15M9.5 7V4.8h5V7M6.5 7l.9 12.2h9.2L17.5 7M10 10.5v5.5M14 10.5v5.5"/></svg></button></td></tr>';
     }).join('') || '<tr><td class="empty" colspan="8">Belum ada surat kuasa. Upload dari baris Beda nama di laporan crosscheck.</td></tr>';
   }
   $('skBody').addEventListener('click', async function (e) {
     var l = e.target.closest('[data-sklihat]');
     if (l) { A.lihatSk(l.dataset.sklihat, l); return; }
+    var hp = e.target.closest('[data-skhapus]');
+    if (hp) { hapusSk(hp); return; }
     var c = e.target.closest('[data-skcabut]');
     if (!c) return;
     var hasil = null;
@@ -5310,6 +5314,25 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     });
     if (ok) { renderSK(hasil.sk); A.toast('Surat kuasa dicabut.', true); db.basi = true; }
   });
+  async function hapusSk(b) {
+    var berbagi = Number(b.dataset.berbagi) || 1, hasil = null;
+    var isi = '<p>Surat kuasa <b>' + esc(b.dataset.nama) + '</b> · ' + esc(b.dataset.acct) + '</p>' +
+      (berbagi > 1
+        ? '<p class="confirm__note">File ini dipakai <b>' + berbagi + ' karyawan</b> (satu surat kuasa untuk banyak orang).</p><label class="confirm__opt"><input type="checkbox" id="skHapusSemua"> Hapus juga untuk ' + (berbagi - 1) + ' karyawan lainnya, dan buang file-nya</label>'
+        : '<p class="confirm__note">Baris ini dihapus dari sheet Surat Kuasa dan file-nya dipindah ke <b>Sampah Google Drive</b> (masih bisa dipulihkan 30 hari). Crosscheck berikutnya kembali menandai rekening ini sebagai Beda nama / Via RO.</p>');
+    var ok = await A.konfirmasi({
+      judul: 'Hapus surat kuasa?', ok: 'Ya, hapus', isi: isi,
+      jalankan: async function () {
+        var semua = !!(document.getElementById('skHapusSemua') || {}).checked;
+        var out = await A.post({ action: 'hapusSK', id: b.dataset.skhapus, semua: semua });
+        if (!out.ok) throw new Error(out.error); hasil = out;
+      }
+    });
+    if (ok) {
+      renderSK(hasil.sk); db.basi = true; muatKpiSetting();
+      A.toast(hasil.dihapus + ' surat kuasa dihapus.' + (hasil.fileDibuang ? ' File dipindah ke Sampah Drive.' : hasil.sisa ? ' File tetap disimpan karena masih dipakai ' + hasil.sisa + ' karyawan lain.' : ''), true);
+    }
+  }
   async function muatUser() {
     try { var out = await A.post({ action: 'pengguna' }); if (!out.ok) throw new Error(out.error); renderUser(out.pengguna); }
     catch (e) { $('uBody').innerHTML = '<tr><td class="empty" colspan="5">' + esc(e.message || 'Gagal memuat.') + '</td></tr>'; }
