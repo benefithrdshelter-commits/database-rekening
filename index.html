@@ -1601,6 +1601,38 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
 .confirm__opt { display: flex; gap: 10px; align-items: flex-start; margin-top: 10px; font-size: 13.5px; color: #3D4C69; text-align: left; cursor: pointer; } .confirm__opt input { margin-top: 3px; width: 16px; height: 16px; accent-color: #D93B45; } #skBody .act { white-space: nowrap; }
 .skbadge .skbadge__del { color: #C42B36; margin-left: 4px; padding-left: 8px; border-left: 1px solid rgba(11, 122, 87, .25); }
 
+/* ---------- pratinjau file ---------- */
+.viewer { border: 0; padding: 0; margin: auto; width: min(1100px, calc(100vw - 24px)); height: calc(100vh - 24px); max-width: none; max-height: none; border-radius: 22px; background: #E9EEF6; box-shadow: 0 40px 80px -30px rgba(15, 35, 72, .55); overflow: hidden; }
+.viewer[open] { display: flex; flex-direction: column; }
+.viewer::backdrop { background: rgba(15, 35, 72, .55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.viewer__bar { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #fff; border-bottom: 1px solid #E3EAF4; flex: none; }
+.viewer__back { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border: 1px solid #DCE6F4; border-radius: 12px; background: #fff; color: #1F5BD8; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; flex: none; }
+.viewer__back:hover { background: #F0F6FF; }
+.viewer__back svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.viewer__info { min-width: 0; flex: 1; display: grid; }
+.viewer__info b { font-size: 14.5px; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.viewer__info small { font-size: 12px; color: #6B7A95; }
+.viewer__zoom { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border-radius: 12px; background: #F1F5FB; flex: none; }
+.viewer__zoom button { width: 32px; height: 32px; border: 0; border-radius: 9px; background: transparent; font-size: 18px; color: #1B2846; cursor: pointer; }
+.viewer__zoom button:hover { background: #fff; }
+.viewer__zoom span { min-width: 46px; text-align: center; font-size: 12.5px; font-weight: 600; color: #3D4C69; font-variant-numeric: tabular-nums; }
+.viewer__dl { --h: 40px; font-size: 14px; flex: none; }
+.viewer__dl svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.viewer__body { flex: 1; overflow: auto; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.viewer__page { position: relative; flex: none; max-width: none; background: #fff; border-radius: 6px; box-shadow: 0 8px 24px -12px rgba(16, 52, 120, .35); }
+.viewer__page canvas { display: block; border-radius: 6px; }
+.viewer__pn { position: absolute; right: 8px; bottom: 8px; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: rgba(15, 35, 72, .6); color: #fff; }
+.viewer__img { width: 100%; text-align: center; }
+.viewer__img img { width: 100%; max-width: none; height: auto; border-radius: 8px; background: #fff; box-shadow: 0 8px 24px -12px rgba(16, 52, 120, .35); }
+.viewer__wait { margin: auto; text-align: center; color: #3D4C69; font-size: 14px; max-width: 420px; line-height: 1.6; }
+@media (max-width: 640px) {
+  .viewer { width: 100vw; height: 100dvh; border-radius: 0; }
+  .viewer__zoom { display: none; }
+  .viewer__dl span { display: none; }
+  .viewer__dl { padding: 0 12px; }
+  .viewer__body { padding: 10px; }
+}
+
 </style>
 </head>
 <body class="is-auth">
@@ -2506,6 +2538,19 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
         <button type="button" class="btn btn--primary" id="tutNext">Lanjut</button>
       </div>
     </div>
+  </dialog>
+
+  <!-- Pratinjau file (surat kuasa) -->
+  <dialog class="viewer" id="dlgView" aria-labelledby="vwTitle">
+    <div class="viewer__bar">
+      <button type="button" class="viewer__back" id="vwBack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg>Kembali</button>
+      <div class="viewer__info"><b id="vwTitle">Surat kuasa</b><small id="vwMeta"></small></div>
+      <div class="viewer__zoom" role="group" aria-label="Perbesar">
+        <button type="button" id="vwOut" aria-label="Perkecil">−</button><span id="vwPct">100%</span><button type="button" id="vwIn" aria-label="Perbesar">+</button>
+      </div>
+      <button type="button" class="btn btn--primary viewer__dl" id="vwDl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></svg><span>Unduh</span></button>
+    </div>
+    <div class="viewer__body" id="vwBody"></div>
   </dialog>
 
   <!-- Dialog edit RO -->
@@ -4329,14 +4374,97 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
           bagian.push(keBytes(pt.data));
         }
       } else bagian.push(keBytes(out.data));
-      var url = URL.createObjectURL(new Blob(bagian, { type: out.mime }));
-      var w = window.open(url, '_blank');
-      if (!w) { var a = document.createElement('a'); a.href = url; a.download = out.fileName || (id + '.pdf'); document.body.appendChild(a); a.click(); a.remove(); }
-      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+      pratinjau(new Blob(bagian, { type: out.mime }), out.fileName || (id + (/png/.test(out.mime) ? '.png' : /jpe?g/.test(out.mime) ? '.jpg' : '.pdf')), out.mime);
     } catch (e) { A.toast('Surat kuasa tidak bisa dibuka: ' + e.message); }
     finally { if (tombol) { tombol.disabled = false; tombol.textContent = label; } }
   }
   A.lihatSk = lihatSk;
+
+  /* ---------- pratinjau file di dalam web (PDF digambar dengan pdf.js, gambar ditampilkan langsung) ---------- */
+  var vw = { blob: null, nama: '', zoom: 1, doc: null, tugas: 0, url: null };
+  function pratinjau(blob, nama, mime) {
+    vw.blob = blob; vw.nama = nama; vw.zoom = 1; vw.tugas++;
+    if (vw.url) { URL.revokeObjectURL(vw.url); vw.url = null; }
+    $('vwTitle').textContent = nama;
+    $('vwMeta').textContent = ukuranTeks(blob.size);
+    $('vwPct').textContent = '100%';
+    $('vwBody').innerHTML = '<p class="viewer__wait">Membuka file…</p>';
+    $('dlgView').showModal();
+    if (/^image\//.test(mime)) {
+      vw.doc = null; vw.url = URL.createObjectURL(blob);
+      $('vwBody').innerHTML = '<div class="viewer__img"><img id="vwImg" src="' + vw.url + '" alt="' + esc(nama) + '"></div>';
+      return;
+    }
+    gambarPdf(vw.tugas);
+  }
+  async function gambarPdf(tugas) {
+    try {
+      if (!vw.doc || vw.doc.__tugas !== tugas) {
+        vw.doc = await pdfjsLib.getDocument({ data: new Uint8Array(await vw.blob.arrayBuffer()) }).promise;
+        vw.doc.__tugas = tugas;
+      }
+      if (tugas !== vw.tugas) return;
+      var doc = vw.doc, body = $('vwBody');
+      $('vwMeta').textContent = ukuranTeks(vw.blob.size) + ' · ' + doc.numPages + ' halaman';
+      body.innerHTML = '';
+      var lebar = Math.min(body.clientWidth - 32, 900) * vw.zoom, dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var antre = [];
+      for (var n = 1; n <= doc.numPages; n++) {
+        var wadah = document.createElement('div');
+        wadah.className = 'viewer__page'; wadah.dataset.n = n;
+        wadah.style.width = lebar + 'px'; wadah.style.height = Math.round(lebar * 1.414) + 'px';
+        wadah.innerHTML = '<span class="viewer__pn">' + n + ' / ' + doc.numPages + '</span>';
+        body.appendChild(wadah); antre.push(wadah);
+      }
+      // halaman digambar saat terlihat, supaya file besar tetap ringan
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          if (!en.isIntersecting || en.target.dataset.ok) return;
+          en.target.dataset.ok = '1'; io.unobserve(en.target);
+          gambarHalaman(doc, en.target, lebar, dpr, tugas);
+        });
+      }, { root: body, rootMargin: '600px 0px' });
+      antre.forEach(function (w) { io.observe(w); });
+      vw.io && vw.io.disconnect(); vw.io = io;
+    } catch (e) {
+      if (tugas !== vw.tugas) return;
+      $('vwBody').innerHTML = '<p class="viewer__wait">File tidak bisa ditampilkan di sini (' + esc(e.message || 'format tidak dikenal') + '). Klik <b>Unduh</b> untuk membukanya di perangkat.</p>';
+    }
+  }
+  async function gambarHalaman(doc, wadah, lebar, dpr, tugas) {
+    var hal = await doc.getPage(Number(wadah.dataset.n));
+    if (tugas !== vw.tugas) return;
+    var v0 = hal.getViewport({ scale: 1 }), skala = lebar / v0.width, vp = hal.getViewport({ scale: skala * dpr });
+    var kv = document.createElement('canvas');
+    kv.width = Math.floor(vp.width); kv.height = Math.floor(vp.height);
+    kv.style.width = lebar + 'px'; kv.style.height = Math.round(v0.height * skala) + 'px';
+    wadah.style.height = 'auto';
+    await hal.render({ canvasContext: kv.getContext('2d'), viewport: vp }).promise;
+    if (tugas !== vw.tugas) return;
+    wadah.insertBefore(kv, wadah.firstChild);
+  }
+  function aturZoom(d) {
+    vw.zoom = Math.max(.5, Math.min(3, Math.round((vw.zoom + d) * 100) / 100));
+    $('vwPct').textContent = Math.round(vw.zoom * 100) + '%';
+    var img = $('vwImg');
+    if (img) { img.style.width = (vw.zoom * 100) + '%'; return; }
+    if (vw.doc) gambarPdf(vw.tugas);
+  }
+  $('vwIn').addEventListener('click', function () { aturZoom(.25); });
+  $('vwOut').addEventListener('click', function () { aturZoom(-.25); });
+  $('vwBack').addEventListener('click', function () { $('dlgView').close(); });
+  $('dlgView').addEventListener('close', function () {
+    vw.tugas++; vw.io && vw.io.disconnect(); $('vwBody').innerHTML = '';
+    if (vw.url) { URL.revokeObjectURL(vw.url); vw.url = null; }
+    vw.doc = null;
+  });
+  $('vwDl').addEventListener('click', function () {
+    if (!vw.blob) return;
+    var u = URL.createObjectURL(vw.blob), a = document.createElement('a');
+    a.href = u; a.download = vw.nama; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(u); }, 30000);
+    A.toast('File diunduh: ' + vw.nama, true);
+  });
 
   /* hapus surat kuasa langsung dari laporan crosscheck */
   function grupSk(id) { return String(id).split('-').slice(0, 4).join('-'); }
