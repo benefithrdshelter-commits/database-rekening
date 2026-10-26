@@ -1632,6 +1632,15 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   .viewer__dl { padding: 0 12px; }
   .viewer__body { padding: 10px; }
 }
+/* tombol Tutorial di menu atas halaman login */
+@media (min-width: 641px) and (min-aspect-ratio: 1001/1000) {
+  .auth__nav { left: calc(var(--u) * 825); width: calc(var(--u) * 790); }
+  .auth__nav button:nth-child(5) { left: calc(var(--u) * 631); }
+  .auth__tut { display: none; }
+}
+.auth__nav .auth__nav-tut { color: #0B6CF4; font-weight: 600; }
+.auth__nav .auth__nav-tut::before { content: ""; display: inline-block; width: .9em; height: .9em; margin-right: .4em; vertical-align: -.1em; border-radius: 50%; background: #22C9A0; box-shadow: 0 0 0 .22em rgba(34, 201, 160, .25); }
+.auth__nav .auth__nav-tut { display: flex; align-items: center; justify-content: center; }
 
 </style>
 </head>
@@ -1652,6 +1661,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
         <button type="button" data-info="layanan">Layanan</button>
         <button type="button" data-info="keamanan">Keamanan</button>
         <button type="button" data-info="bantuan">Bantuan</button>
+        <button type="button" id="tutNav" class="auth__nav-tut">Tutorial</button>
       </nav>
 
       <div class="auth__hero">
@@ -3846,7 +3856,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   }
   $('tutDots').innerHTML = TUT.map(function (t, j) { return '<button type="button" aria-label="Langkah ' + (j + 1) + ': ' + t.judul + '"></button>'; }).join('');
   $('tutDots').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) tampilTut([].indexOf.call(this.children, b)); });
-  $('tutBtn').addEventListener('click', function () { tampilTut(0); $('dlgTut').showModal(); });
+  ['tutBtn', 'tutNav'].forEach(function (id) { $(id).addEventListener('click', function () { tampilTut(0); $('dlgTut').showModal(); }); });
   $('tutPrev').addEventListener('click', function () { tampilTut(tutI - 1); });
   $('tutNext').addEventListener('click', function () {
     if (tutI < TUT.length - 1) return tampilTut(tutI + 1);
