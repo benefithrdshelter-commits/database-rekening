@@ -1649,6 +1649,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
 .dupbox__ada .acct { font-variant-numeric: tabular-nums; font-weight: 600; }
 .dupbox__ada small { color: #6B7A95; }
 .dupbox__ada li b, .dupbox__ada li small, .dupbox__ada li span { display: inline; font-size: inherit; } .dupbox__ada li b { font-weight: 700; } .dupbox__ada li small { font-size: 12px; }
+.dobelbar { align-items: center; margin-bottom: 14px; } .dobelbar > div { flex: 1; } .dobelbar span { display: block; font-size: 12.5px; opacity: .85; } .dobelbar .btn { flex: none; }
 
 </style>
 </head>
@@ -2307,6 +2308,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
             </article>
           </div>
           <div class="panel panel--list">
+            <div class="notice notice--warn dobelbar" id="bDobel" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.3v.2"/></svg><div><b id="bDobelTxt"></b><span>Nama dan no rekening sama. Akan disisakan 1 baris per rekening; nama sama dengan no rekening beda tidak disentuh.</span></div><button class="btn btn--primary btn--sm" type="button" id="bDobelBtn">Bersihkan sekarang</button></div>
             <div class="filters">
               <label class="search">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
@@ -5297,6 +5299,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       $('bRo').textContent = num(db.rows.filter(function (r) { return db.ro[kunci(r[2])]; }).length);
       $('bSk').textContent = num(db.rows.filter(function (r) { return db.sk[kunci(r[2])]; }).length);
       var baru = function (i) { var lihat = {}; return db.rows.map(function (r) { var b = !lihat[r[i]]; lihat[r[i]] = 1; return b; }); };
+      hitungDobel();
       A.spark('bTotal', A.seriKumulatif(db.rows.map(function () { return true; })));
       A.spark('bBanks', A.seriKumulatif(baru(1))); A.spark('bSites', A.seriKumulatif(baru(3)));
       A.spark('bRo', A.seriKumulatif(db.rows.map(function (r) { return !!db.ro[kunci(r[2])]; })));
@@ -5305,6 +5308,28 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     } catch (e) { $('bMeta').textContent = e.message; }
     finally { db.busy = false; }
   }
+  // baris dobel = nama & no rekening sama (aturan yang sama dengan server)
+  function kunciDobel(r) { var n = String(r[0] || '').toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim(), k = kunci(r[2]); return n && k ? n + '|' + k : ''; }
+  function hitungDobel() {
+    var lihat = {}, n = 0;
+    db.rows.forEach(function (r) { var k = kunciDobel(r); if (!k) return; if (lihat[k]) n++; else lihat[k] = 1; });
+    $('bDobel').hidden = !n;
+    $('bDobelTxt').textContent = num(n) + ' baris dobel di Data Upah';
+    return n;
+  }
+  async function bersihkanDobel(diam) {
+    var b = $('bDobelBtn'), lbl = b.textContent;
+    b.disabled = true; b.textContent = 'Membersihkan…';
+    try {
+      var out = await A.post({ action: 'bersihkanDobel' });
+      if (!out.ok) throw new Error(out.error || 'Gagal membersihkan.');
+      if (out.dihapus || !diam) A.toast(out.dihapus ? num(out.dihapus) + ' baris dobel dihapus. Data Upah sekarang ' + num(out.totalBarisSheet) + ' baris.' : 'Tidak ada baris dobel.', true);
+      if (out.dihapus) { db.basi = true; if (current === 'database') muatDatabase(true); if (current === 'dashboard') muatDashboard(true); }
+      return out;
+    } catch (e) { A.toast('Data dobel belum bisa dibersihkan: ' + e.message); }
+    finally { b.disabled = false; b.textContent = lbl; }
+  }
+  $('bDobelBtn').addEventListener('click', function () { bersihkanDobel(false); });
   function isiSelect(sel, list, semua, pilih) {
     sel.innerHTML = '<option value="">' + semua + '</option>' + list.map(function (x) { return '<option' + (x === pilih ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('');
   }
@@ -5619,15 +5644,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     // bersihkan baris dobel lama (nama & no rekening sama) sekali per sesi, diam-diam di belakang
     if (!A.__dobelCek) {
       A.__dobelCek = true;
-      setTimeout(function () {
-        A.post({ action: 'bersihkanDobel' }).then(function (out) {
-          if (!out || !out.ok || !out.dihapus) return;
-          db.basi = true;
-          A.toast(num(out.dihapus) + ' baris dobel lama (nama & no rekening sama) dibersihkan dari Data Upah.', true);
-          if (current === 'dashboard') muatDashboard(true);
-          if (current === 'database') muatDatabase(true);
-        }).catch(function () { });
-      }, 3500);
+      setTimeout(function () { bersihkanDobel(true); }, 3500);
     }
   });
 })();
