@@ -1641,6 +1641,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
 .auth__nav .auth__nav-tut { color: #0B6CF4; font-weight: 600; }
 .auth__nav .auth__nav-tut::before { content: ""; display: inline-block; width: .9em; height: .9em; margin-right: .4em; vertical-align: -.1em; border-radius: 50%; background: #22C9A0; box-shadow: 0 0 0 .22em rgba(34, 201, 160, .25); }
 .auth__nav .auth__nav-tut { display: flex; align-items: center; justify-content: center; }
+.pill--sk { background: #DFF7EC; color: #0B8A5A; } .pill__asal { display: block; margin-top: 4px; font-size: 11.5px; color: #8A97AE; }
 
 </style>
 </head>
@@ -4075,7 +4076,8 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   /* ---------- laporan ---------- */
   function hitung(rep) {
     var g = { COCOK: 0, MIRIP: 0, BEDA: 0, TIDAK_ADA: 0, RO: 0, SK: 0 };
-    rep.hasil.forEach(function (h) { g[h.status]++; if (h.sk) g.SK++; });
+    // baris yang sudah ber-surat kuasa hanya dihitung di Surat kuasa, tidak lagi di Beda nama / Via RO
+    rep.hasil.forEach(function (h) { if (h.sk) g.SK++; else g[h.status]++; });
     g.CEK = rep.hasil.filter(perluCek).length;
     rep.ringkas = g;
     return g;
@@ -4104,17 +4106,18 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   };
 
   function renderFigures() {
-    var rep = st.report, g = hitung(rep), n = rep.hasil.length, bedaTanpaSk = g.BEDA - g.SK;
+    var rep = st.report, g = hitung(rep), n = rep.hasil.length, bedaTanpaSk = g.BEDA;
     $('rCocok').textContent = num(g.COCOK); $('rMirip').textContent = num(g.MIRIP);
     $('rBeda').textContent = num(g.BEDA); $('rNone').textContent = num(g.TIDAK_ADA); $('rRo').textContent = num(g.RO);
     [['rCocok', 'COCOK'], ['rMirip', 'MIRIP'], ['rBeda', 'BEDA'], ['rNone', 'TIDAK_ADA'], ['rRo', 'RO']].forEach(function (x) {
-      A.spark(x[0], A.seriKumulatif(rep.hasil.map(function (h) { return h.status === x[1]; })));
+      A.spark(x[0], A.seriKumulatif(rep.hasil.map(function (h) { return h.status === x[1] && !h.sk; })));
     });
     $('rcCek').textContent = g.CEK; $('rcBeda').textContent = g.BEDA; $('rcMirip').textContent = g.MIRIP;
     $('rcNone').textContent = g.TIDAK_ADA; $('rcOk').textContent = g.COCOK; $('rcRo').textContent = g.RO; $('rcSk').textContent = g.SK;
     $('rt-ro').hidden = !g.RO; $('rt-sk').hidden = !g.SK;
-    var roNoSk = rep.hasil.filter(function (h) { return h.status === 'RO' && !h.sk; }).length;
-    var v = $('rVerdict'), tambahan = (g.RO ? ' ' + num(g.RO) + ' baris lewat rekening RO' + (roNoSk ? ', ' + num(roNoSk) + ' di antaranya belum punya surat kuasa.' : ', semuanya sudah ada surat kuasa.') : '') + (g.SK ? ' ' + num(g.SK) + ' baris sudah ber-surat kuasa.' : '');
+    // tab yang sedang dibuka jadi kosong & tersembunyi (semua RO sudah ber-surat kuasa): pindah ke tab Surat kuasa
+    if ((st.filter === 'RO' && !g.RO) || (st.filter === 'SK' && !g.SK)) setTimeout(function () { selectTab(g.SK ? 'rt-sk' : 'rt-cek'); }, 0);
+    var v = $('rVerdict'), tambahan = (g.RO ? ' ' + num(g.RO) + ' baris lewat rekening RO belum punya surat kuasa.' : '') + (g.SK ? ' ' + num(g.SK) + ' baris sudah ber-surat kuasa (lihat tab Surat kuasa).' : '');
     if (!g.CEK) { v.className = 'verdict verdict--ok'; v.innerHTML = ICON_OK + '<div><b>Semua ' + num(n) + ' baris aman</b><span>Nomor rekening dan nama sesuai database, RO, atau surat kuasa. Siap diproses MCM.' + esc(tambahan) + '</span></div>'; }
     else if (bedaTanpaSk) { v.className = 'verdict verdict--bad'; v.innerHTML = ICON_BAD + '<div><b>' + num(bedaTanpaSk) + ' rekening tercatat atas nama orang lain</b><span>Total ' + num(g.CEK) + ' baris perlu dicek sebelum diproses. ' + num(g.COCOK) + ' baris cocok.' + esc(tambahan) + ' Upload surat kuasa di baris Beda nama bila memang memakai rekening keluarga.</span></div>'; }
     else { v.className = 'verdict verdict--warn'; v.innerHTML = ICON_WARN + '<div><b>' + num(g.CEK) + ' baris perlu dicek</b><span>Tidak ada rekening atas nama orang lain tanpa surat kuasa. ' + num(g.COCOK) + ' baris cocok.' + esc(tambahan) + '</span></div>'; }
@@ -4123,11 +4126,12 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   function rows() {
     var f = st.filter, q = st.q.trim().toLowerCase();
     return st.report.hasil.filter(function (h) {
-      if (f === 'CEK' ? !perluCek(h) : f === 'SK' ? !h.sk : h.status !== f) return false;
+      if (f === 'CEK' ? !perluCek(h) : f === 'SK' ? !h.sk : (h.status !== f || ((f === 'BEDA' || f === 'RO') && h.sk))) return false;
       return !q || (h.acct + ' ' + h.namaMcm + ' ' + h.namaDb).toLowerCase().indexOf(q) !== -1;
     });
   }
   function statusCell(h) {
+    if (h.sk) return '<span class="pill pill--sk">Surat kuasa</span><small class="pill__asal">awalnya ' + LABEL[h.status] + '</small>';
     return '<span class="pill ' + PILL[h.status] + '">' + LABEL[h.status] + '</span>';
   }
   function grupRO(h) {
@@ -4227,7 +4231,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       judul: 'Laporan Crosscheck MCM', namaFile: 'Laporan Crosscheck - ' + String(rep.fileName || 'MCM').replace(/\.[^.]+$/, ''),
       sub: 'File ' + (rep.fileName || '-') + ' dicocokkan dengan database rekening (sheet Data Upah), daftar RO, dan surat kuasa.',
       meta: [['ID crosscheck', rep.id], ['Waktu', waktuRep(rep)], ['Oleh', rep.oleh || '-'], ['Nama file', rep.fileName || '-'], ['Jumlah baris', num(rep.hasil.length)], ['Total nominal', 'Rp ' + rp(rep.totalCents || 0)]],
-      ringkas: [['Cocok', num(g.COCOK)], ['Mirip', num(g.MIRIP)], ['Beda nama', num(g.BEDA)], ['Tidak ada di database', num(g.TIDAK_ADA)], ['Via RO', num(g.RO)], ['Approved', num(g.SK)]],
+      ringkas: [['Cocok', num(g.COCOK)], ['Mirip', num(g.MIRIP)], ['Beda nama', num(g.BEDA)], ['Tidak ada di database', num(g.TIDAK_ADA)], ['Via RO', num(g.RO)], ['Surat kuasa', num(g.SK)]],
       tabel: [
         { judul: 'Perlu dicek (' + num(g.CEK) + ' baris)', kolom: kolom, baris: baris(urut.filter(perluCek)), kanan: [0, 6], status: 4 },
         { judul: 'Aman: cocok, via RO, atau ada surat kuasa (' + num(rep.hasil.length - g.CEK) + ' baris)', kolom: kolom, baris: baris(urut.filter(function (h) { return !perluCek(h); })), kanan: [0, 6], status: 4 }
@@ -4249,7 +4253,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([
       ['Laporan Crosscheck MCM'], [],
       ['ID Crosscheck', rep.id], ['Waktu', waktuRep(rep)], ['Oleh', rep.oleh || ''], ['Nama file', rep.fileName], ['Jumlah baris', rep.hasil.length], ['Total nominal (Rp)', rep.totalCents / 100], [],
-      ['Status', 'Jumlah'], ['Cocok', g.COCOK], ['Mirip', g.MIRIP], ['Beda nama', g.BEDA], ['Beda nama dengan surat kuasa', g.SK], ['Tidak ada di database', g.TIDAK_ADA], ['Via RO', g.RO]
+      ['Status', 'Jumlah'], ['Cocok', g.COCOK], ['Mirip', g.MIRIP], ['Beda nama (belum ada surat kuasa)', g.BEDA], ['Tidak ada di database', g.TIDAK_ADA], ['Via RO (belum ada surat kuasa)', g.RO], ['Surat kuasa (Approved)', g.SK]
     ]), 'Ringkasan');
     XLSX.utils.book_append_sheet(wb, sheet(data(rep.hasil.filter(perluCek))), 'Perlu Dicek');
     XLSX.utils.book_append_sheet(wb, sheet(data(rep.hasil.filter(function (h) { return !perluCek(h); }))), 'Aman');
@@ -4673,7 +4677,10 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   }
   function ringkasCC(g, n) {
     return num(n) + ' baris: ' + num(g.COCOK || 0) + ' cocok, ' + num(g.MIRIP || 0) + ' mirip, ' +
-      (g.BEDA ? '<b class="t-bad">' + num(g.BEDA) + ' beda nama</b>' : '0 beda nama') + (g.SK ? ' (' + num(g.SK) + ' surat kuasa)' : '') + ', ' + num(g.TIDAK_ADA || 0) + ' tidak ada' + (g.RO ? ', ' + num(g.RO) + ' via RO' : '');
+      (function () {
+        var beda = g.BEDA_NOSK != null ? g.BEDA_NOSK : Math.max(0, (g.BEDA || 0) - (g.SK || 0)), ro = g.RO_NOSK != null ? g.RO_NOSK : (g.RO || 0);
+        return (beda ? '<b class="t-bad">' + num(beda) + ' beda nama</b>' : '0 beda nama') + ', ' + num(g.TIDAK_ADA || 0) + ' tidak ada' + (ro ? ', ' + num(ro) + ' via RO' : '') + (g.SK ? ', ' + num(g.SK) + ' surat kuasa' : '');
+      })();
   }
   function hitungKpiRiwayat() {
     var hari = new Date().toDateString();
