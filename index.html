@@ -1599,6 +1599,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
 @media (max-width: 640px) { .tut { padding: 18px 16px; } .tut__body h3 { font-size: 18px; } .tut__body { min-height: 0; } }
 @media (min-width: 641px) and (min-aspect-ratio: 1001/1000) { .auth__tut { margin-top: calc(var(--u) * 8); padding: calc(var(--u) * 6) 0; } }
 .confirm__opt { display: flex; gap: 10px; align-items: flex-start; margin-top: 10px; font-size: 13.5px; color: #3D4C69; text-align: left; cursor: pointer; } .confirm__opt input { margin-top: 3px; width: 16px; height: 16px; accent-color: #D93B45; } #skBody .act { white-space: nowrap; }
+.skbadge .skbadge__del { color: #C42B36; margin-left: 4px; padding-left: 8px; border-left: 1px solid rgba(11, 122, 87, .25); }
 
 </style>
 </head>
@@ -4079,7 +4080,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   }
   function ketCell(h, i) {
     var t = esc(h.ket);
-    if (h.sk) t += '<div><span class="skbadge">' + IC_CHECK + esc(h.sk.label) + ' <button type="button" data-sklihat="' + esc(h.sk.id) + '">Lihat file</button></span></div>';
+    if (h.sk) t += '<div><span class="skbadge">' + IC_CHECK + esc(h.sk.label) + ' <button type="button" data-sklihat="' + esc(h.sk.id) + '">Lihat file</button><button type="button" class="skbadge__del" data-skhapusr="' + i + '">Hapus</button></span></div>';
     else if (h.status === 'BEDA') t += '<div><button class="skup" type="button" data-skup="' + i + '">' + IC_UP + 'Upload surat kuasa</button></div>';
     else if (h.status === 'RO') {
       var n = grupRO(h).length;
@@ -4337,11 +4338,38 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   }
   A.lihatSk = lihatSk;
 
+  /* hapus surat kuasa langsung dari laporan crosscheck */
+  function grupSk(id) { return String(id).split('-').slice(0, 4).join('-'); }
+  async function hapusSkLaporan(h) {
+    var rep = st.report, g = grupSk(h.sk.id);
+    var lain = rep.hasil.filter(function (x) { return x !== h && x.sk && grupSk(x.sk.id) === g && x.sk.id !== h.sk.id; });
+    var namaLain = {}; lain.forEach(function (x) { namaLain[x.sk.id] = 1; });
+    var nLain = Object.keys(namaLain).length, hasil = null;
+    var isi = '<p>Surat kuasa <b>' + esc(h.namaMcm) + '</b> · ' + esc(h.acct) + '</p>' +
+      (nLain ? '<p class="confirm__note">File ini juga dipakai untuk <b>' + nLain + ' karyawan lain</b> di laporan ini.</p><label class="confirm__opt"><input type="checkbox" id="skHapusSemuaR"> Hapus juga untuk ' + nLain + ' karyawan lainnya, dan buang file-nya</label>'
+        : '<p class="confirm__note">Surat kuasa dihapus dan file-nya dipindah ke <b>Sampah Google Drive</b> (masih bisa dipulihkan 30 hari). Baris ini kembali menjadi ' + (h.status === 'RO' ? 'Via RO' : 'Beda nama') + ' tanpa label Approved.</p>');
+    var ok = await A.konfirmasi({
+      judul: 'Hapus surat kuasa?', ok: 'Ya, hapus', isi: isi,
+      jalankan: async function () {
+        var semua = !!(document.getElementById('skHapusSemuaR') || {}).checked;
+        var out = await A.post({ action: 'hapusSK', id: h.sk.id, semua: semua, ccId: rep.id });
+        if (!out.ok) throw new Error(out.error); hasil = out;
+      }
+    });
+    if (!ok) return;
+    var kena = {}; (hasil.ids || [h.sk.id]).forEach(function (id) { kena[id] = 1; });
+    rep.hasil.forEach(function (x) { if (x.sk && kena[x.sk.id]) delete x.sk; });
+    renderFigures(); renderRows();
+    A.toast(hasil.dihapus + ' surat kuasa dihapus.' + (hasil.fileDibuang ? ' File dipindah ke Sampah Drive.' : hasil.sisa ? ' File tetap disimpan karena masih dipakai ' + hasil.sisa + ' karyawan lain.' : ''), true);
+  }
+
   $('rBody').addEventListener('click', function (e) {
     var up = e.target.closest('[data-skup]');
     if (up) { bukaSk(st.report.hasil[Number(up.dataset.skup)]); return; }
     var all = e.target.closest('[data-skall]');
     if (all) { var h0 = st.report.hasil[Number(all.dataset.skall)]; bukaSk(h0, grupRO(h0)); return; }
+    var hp = e.target.closest('[data-skhapusr]');
+    if (hp) { hapusSkLaporan(st.report.hasil[Number(hp.dataset.skhapusr)]); return; }
     var lh = e.target.closest('[data-sklihat]');
     if (lh) lihatSk(lh.dataset.sklihat, lh);
   });
