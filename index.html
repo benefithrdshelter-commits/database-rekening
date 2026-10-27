@@ -3949,7 +3949,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       catatan: 'File hasil unduhan tidak mengubah database maupun riwayat.' },
     { ic: 'hist', judul: 'Riwayat & laporan', di: 'Menu Riwayat',
       isi: 'Semua kegiatan tercatat lengkap dengan tanggal, jam, dan email pengguna.',
-      langkah: ['Filter: <b>Crosscheck MCM</b>, <b>Upload PDF</b> (termasuk Tambah karyawan), atau <b>Log aktivitas</b>.', 'Klik <b>Lihat laporan</b> untuk membuka hasil crosscheck lama.', '<b>Unduh PDF</b> atau <b>Cetak</b> untuk laporan resmi.', 'Ikon tempat sampah menghapus riwayat. Kalau upload PDF atau tambah karyawan yang dihapus, rekening yang masuk dari situ ikut terhapus dari Data Upah.'] },
+      langkah: ['Filter: <b>Crosscheck MCM</b>, <b>Upload PDF</b> (termasuk Tambah karyawan), atau <b>Log aktivitas</b>.', 'Klik <b>Lihat laporan</b> untuk membuka hasil crosscheck lama.', '<b>Unduh PDF</b> atau <b>Cetak</b> untuk laporan resmi.', 'Ikon tempat sampah menghapus riwayat. Kalau upload PDF atau tambah karyawan yang dihapus, rekening yang masuk dari situ ikut terhapus dari Data Upah.', 'Di <b>Log aktivitas</b>, ikon tempat sampah menghapus satu log, dan <b>Hapus semua log</b> mengosongkannya. Log hanya disimpan di web, tidak di spreadsheet.'] },
     { ic: 'db', judul: 'Database Bank', di: 'Menu Database Bank',
       isi: 'Isi sheet Data Upah yang bisa dicari tanpa membuka spreadsheet.',
       langkah: ['Cari nama atau no rekening, saring per site bisnis atau bank.', 'Klik judul kolom untuk mengurutkan.', 'No rekening disamarkan; nyalakan <b>Tampilkan nomor lengkap</b> hanya bila perlu.', '<b>Unduh PDF</b>, <b>Unduh Excel</b>, atau <b>Cetak</b> sesuai saringan yang aktif.'] },
@@ -4858,13 +4858,14 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     var empty = $('hEmpty'), wrap = $('hWrap');
     var head = document.querySelector('#hWrap thead tr');
     if (histFilter === 'log') {
-      $('hClear').hidden = true;
-      head.innerHTML = '<th scope="col">Waktu</th><th scope="col">Jenis</th><th scope="col">Kejadian</th><th scope="col">Oleh</th><th scope="col">Detail</th><th scope="col"></th>';
+      $('hClear').hidden = !logAkt.length; $('hClearTxt').textContent = 'Hapus semua log';
+      head.innerHTML = '<th scope="col">Waktu</th><th scope="col">Jenis</th><th scope="col">Kejadian</th><th scope="col">Oleh</th><th scope="col">Detail</th><th scope="col"><span class="sr-only">Aksi</span></th>';
       if (!logAkt.length) { $('hBody').innerHTML = ''; wrap.hidden = true; empty.hidden = false; empty.textContent = 'Belum ada aktivitas tercatat.'; return; }
       empty.hidden = true; wrap.hidden = false;
       $('hBody').innerHTML = logAkt.map(function (a) {
         return '<tr><td class="when" data-label="Waktu">' + waktuCell(a) + '</td><td data-label="Jenis"><span class="kind kind--log">' + esc(a.jenis) + '</span></td><td class="lead" data-label="Kejadian">' + esc(a.judul) +
-          '</td><td data-label="Oleh">' + esc(a.oleh || '-') + '</td><td class="sum" data-label="Detail">' + esc(a.detail || '') + '</td><td></td></tr>';
+          '</td><td data-label="Oleh">' + esc(a.oleh || '-') + '</td><td class="sum" data-label="Detail">' + esc(a.detail || '') + '</td>' +
+          '<td class="act">' + (a.id ? '<button class="hist__del" type="button" data-logdel="' + esc(a.id) + '" aria-label="Hapus log ' + esc(a.judul) + '" title="Hapus log ini">' + '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 7h15M9.5 7V4.8h5V7M6.5 7l.9 12.2h9.2L17.5 7M10 10.5v5.5M14 10.5v5.5"/></svg>' + '</button>' : '') + '</td></tr>';
       }).join('');
       return;
     }
@@ -4951,6 +4952,21 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   $('hPrint').addEventListener('click', function () { A.laporan.cetak(specRiwayat()); });
 
   $('hClear').addEventListener('click', async function () {
+    if (histFilter === 'log') {
+      if (!logAkt.length) return;
+      var jml = logAkt.length;
+      var okLog = await A.konfirmasi({
+        judul: 'Hapus semua log aktivitas?',
+        isi: '<p><b>' + num(jml) + ' log aktivitas</b> akan dihapus dan tidak bisa dikembalikan.</p><p class="confirm__note">Riwayat upload, crosscheck, dan data di spreadsheet <b>tidak ikut terhapus</b>.</p>',
+        ok: 'Ya, hapus semua',
+        jalankan: async function () {
+          var out = await A.post({ action: 'hapusAktivitas', semua: true });
+          if (!out.ok) throw new Error(out.error || 'Server menolak.');
+        }
+      });
+      if (okLog) { logAkt = []; renderHistory(); hitungKpiRiwayat(); A.toast(num(jml) + ' log aktivitas dihapus.', true); if (A.refreshHistory) A.refreshHistory(); }
+      return;
+    }
     var f = histFilter, list = listAktif();
     if (!list.length) return;
     var data = list.reduce(function (s, h) { return s + (h.jenis === 'pdf' ? (h.dataTercatat || 0) : 0); }, 0);
@@ -4969,6 +4985,22 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     if (ok) { hist = hist.filter(function (h) { return !(f === 'semua' || h.jenis === f); }); renderHistory(); setTimeout(function () { A.toast(num(list.length) + ' riwayat berhasil dihapus.', true); }, 1800); A.refreshHistory(); }
   });
   $('hBody').addEventListener('click', async function (e) {
+    var ld = e.target.closest('[data-logdel]');
+    if (ld) {
+      var a = logAkt.filter(function (x) { return x.id === ld.dataset.logdel; })[0];
+      if (!a) return;
+      var okSatu = await A.konfirmasi({
+        judul: 'Hapus log ini?',
+        isi: '<p><b>' + esc(a.judul) + '</b><br>' + esc(a.waktuTeks || '') + ' WIB' + (a.oleh ? ' · ' + esc(a.oleh) : '') + '</p><p class="confirm__note">Hanya catatan log yang dihapus. Data dan riwayat lain tetap aman.</p>',
+        ok: 'Ya, hapus',
+        jalankan: async function () {
+          var out = await A.post({ action: 'hapusAktivitas', id: a.id });
+          if (!out.ok) throw new Error(out.error || 'Server menolak.');
+        }
+      });
+      if (okSatu) { logAkt = logAkt.filter(function (x) { return x !== a; }); renderHistory(); hitungKpiRiwayat(); A.toast('Log aktivitas dihapus.', true); }
+      return;
+    }
     var del = e.target.closest('[data-del]');
     if (del) {
       var h = hist[Number(del.dataset.del)];
