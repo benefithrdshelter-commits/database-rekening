@@ -1687,6 +1687,28 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
 .vset__up.is-busy { pointer-events: none; opacity: .85; border-style: solid; }
 .vset__atau { margin: 4px 0 8px; font-size: 13px; color: #6B7A95; }
 
+/* ---------- HP: tombol tutorial jelas + video layar penuh ---------- */
+@media (max-width: 640px), (max-aspect-ratio: 1/1) {
+  .auth__tut { margin-top: 3.4cqw; height: 13cqw; border-radius: 4.4cqw; border: 1.5px solid #BCD3F5; background: rgba(255, 255, 255, .92); font-size: 3.7cqw; color: #1F5BD8; gap: 2.4cqw; padding: 0; }
+  .auth__tut .t-q { display: none; }
+  .auth__tut b { font-weight: 700; }
+  .auth__tut svg { width: 5cqw; height: 5cqw; }
+  .auth__tut .t-play { display: inline-grid; place-items: center; width: 7.4cqw; height: 7.4cqw; border-radius: 50%; background: linear-gradient(135deg, #2E8BFF, #1565F5); }
+  .auth__tut .t-play svg { width: 3.4cqw; height: 3.4cqw; fill: #fff; stroke: none; margin-left: .4cqw; }
+  .vid { width: 100vw; height: 100dvh; max-height: none; margin: 0; border-radius: 0; }
+  .vid[open] { display: flex; flex-direction: column; }
+  .vid__frame { flex: 1; aspect-ratio: auto; max-height: none; display: flex; align-items: center; }
+  .vid__frame iframe, .vid__frame video { position: static; width: 100%; height: auto; aspect-ratio: 16 / 9; }
+  .vid__hint { display: block; }
+}
+.auth__tut .t-play { display: none; }
+.vid__hint { display: none; position: absolute; left: 0; right: 0; bottom: max(16px, env(safe-area-inset-bottom)); text-align: center; font-size: 13px; color: #9FB4DA; pointer-events: none; }
+@media (max-width: 640px), (max-aspect-ratio: 1/1) {
+  .auth__tut .t-play { display: inline-grid; }
+  .auth__tut > svg { display: none; }
+  .vid__hint { display: block; }
+}
+
 </style>
 </head>
 <body class="is-auth">
@@ -1744,7 +1766,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
           </button>
         </form>
-        <button type="button" class="auth__tut" id="tutBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 015.5 4H10a2 2 0 012 2v14a2 2 0 00-2-2H4z"/><path d="M20 5.5A1.5 1.5 0 0018.5 4H14a2 2 0 00-2 2v14a2 2 0 012-2h6z"/></svg>Baru pertama kali? <b>Lihat tutorial</b></button>
+        <button type="button" class="auth__tut" id="tutBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 015.5 4H10a2 2 0 012 2v14a2 2 0 00-2-2H4z"/><path d="M20 5.5A1.5 1.5 0 0018.5 4H14a2 2 0 00-2 2v14a2 2 0 012-2h6z"/></svg><span class="t-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg></span><span class="t-q">Baru pertama kali?</span> <b id="tutBtnTxt">Lihat tutorial</b></button>
       </div>
     </div>
   </section>
@@ -2617,6 +2639,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
       <button type="button" class="vid__x" id="vidClose" aria-label="Tutup video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="vid__frame" id="vidFrame"></div>
+    <p class="vid__hint">Putar HP ke posisi miring atau ketuk layar penuh di video agar lebih jelas</p>
   </dialog>
 
   <!-- Tutorial -->
@@ -4042,7 +4065,9 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   var VIDEO = undefined;
   function hangatkan() {
     if (!urlReady()) return Promise.resolve();
-    return post({ action: 'infoPublik' }).then(function (o) { if (o && o.ok) VIDEO = o.video || null; }).catch(function () { });
+    return post({ action: 'infoPublik' }).then(function (o) {
+      if (o && o.ok) { VIDEO = o.video || null; var bt = $('tutBtnTxt'); if (bt) bt.textContent = VIDEO ? 'Tonton video tutorial' : 'Lihat tutorial'; }
+    }).catch(function () { });
   }
   if (!connected()) hangatkan();
   $('loginEmail').addEventListener('focus', function () { if (!hangatkan.sudah) { hangatkan.sudah = 1; hangatkan(); } });
