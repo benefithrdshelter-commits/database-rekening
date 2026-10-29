@@ -1713,6 +1713,125 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
   .vid__hint { display: block; }
 }
 
+/* ===================== v12: chatbot ===================== */
+.cb-fab { position: fixed; right: 22px; bottom: 22px; z-index: 55; display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 20px 0 16px; border: 0; border-radius: 999px;
+  background: var(--grad); color: #fff; font: 700 14.5px/1 var(--f); letter-spacing: .01em; cursor: pointer; box-shadow: 0 14px 30px -12px rgba(21, 101, 245, .6), 0 2px 6px rgba(16, 52, 120, .18); transition: transform .18s ease, box-shadow .18s ease; }
+.cb-fab:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -12px rgba(21, 101, 245, .7), 0 2px 6px rgba(16, 52, 120, .18); }
+.cb-fab:focus-visible { outline: 3px solid rgba(21, 101, 245, .35); outline-offset: 3px; }
+.cb-fab svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linejoin: round; }
+.cb-fab__x { display: none; }
+body.cb-open .cb-fab__i, body.cb-open .cb-fab__lbl { display: none; }
+body.cb-open .cb-fab { padding: 0; width: 54px; justify-content: center; }
+body.cb-open .cb-fab__x { display: block; }
+body.is-auth .cb-fab, body.is-auth .cb { display: none !important; }
+@media print { .cb-fab, .cb { display: none !important; } }
+
+.cb { position: fixed; right: 22px; bottom: 90px; z-index: 56; width: min(420px, calc(100vw - 44px)); height: min(640px, calc(100vh - 120px)); display: flex; flex-direction: column;
+  background: #fff; border: 1px solid var(--card-b); border-radius: 24px; overflow: hidden; box-shadow: 0 40px 80px -30px rgba(16, 52, 120, .45), 0 4px 14px rgba(16, 52, 120, .08); animation: cbIn .18s ease; }
+.cb[hidden] { display: none; }
+@keyframes cbIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+.cb__head { display: flex; align-items: center; gap: 12px; padding: 14px 12px 14px 16px; background: linear-gradient(135deg, #F2F7FF, #EAFBF5); border-bottom: 1px solid var(--card-b); }
+.cb__ava { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--grad); }
+.cb__ava svg { width: 22px; height: 22px; fill: #fff; }
+.cb__ttl { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.cb__ttl b { font-size: 15.5px; color: var(--navy, var(--ink)); }
+.cb__ttl small { font-size: 12.5px; color: var(--ink-3); }
+.cb__ib { width: 36px; height: 36px; border: 0; border-radius: 10px; background: transparent; color: var(--ink-2); display: grid; place-items: center; cursor: pointer; }
+.cb__ib:hover { background: rgba(21, 101, 245, .08); color: var(--blue); }
+.cb__ib svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.cb__body { flex: 1; overflow-y: auto; padding: 16px 14px 10px; display: flex; flex-direction: column; gap: 12px; background: #FAFCFF; overscroll-behavior: contain; }
+.cbm { display: flex; flex-direction: column; max-width: 100%; }
+.cbm--aku { align-items: flex-end; }
+.cbm--aku .cbm__b { max-width: 84%; background: var(--blue); color: #fff; border-radius: 18px 18px 6px 18px; padding: 10px 14px; font-size: 14px; line-height: 1.5; word-break: break-word; }
+.cbm--bot { align-items: flex-start; }
+.cbm--bot .cbm__b { width: 100%; background: #fff; border: 1px solid var(--card-b); border-radius: 6px 18px 18px 18px; padding: 12px 14px; font-size: 14px; line-height: 1.55; color: var(--ink); box-shadow: 0 1px 2px rgba(16, 42, 92, .04); }
+.cbm__b p { margin: 0 0 6px; } .cbm__b p:last-child { margin-bottom: 0; }
+.cbm__b ul { margin: 4px 0 8px; padding-left: 18px; } .cbm__b li { margin: 3px 0; }
+.cbm__b b { color: var(--navy, var(--ink)); }
+.cbm__src { margin: 5px 0 0 6px; font-size: 11.5px; color: var(--ink-3); }
+.cbm__ty { display: inline-flex !important; width: auto !important; gap: 5px; padding: 14px 16px !important; }
+.cbm__ty i { width: 7px; height: 7px; border-radius: 50%; background: #9BB0D0; animation: cbTy 1s infinite ease-in-out; }
+.cbm__ty i:nth-child(2) { animation-delay: .15s; } .cbm__ty i:nth-child(3) { animation-delay: .3s; }
+@keyframes cbTy { 0%, 80%, 100% { opacity: .3; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+
+.cb-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.cb-chips button { border: 1px solid #CFE0FA; background: #fff; color: var(--blue-700); border-radius: 999px; padding: 7px 12px; font: 600 12.5px/1.2 var(--f); cursor: pointer; text-align: left; }
+.cb-chips button:hover { background: var(--blue-50); border-color: var(--blue); }
+
+.cbk { margin-top: 10px; border: 1px solid var(--card-b); border-radius: 14px; overflow: hidden; background: #fff; }
+.cbk__h { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: #F5F9FF; border-bottom: 1px solid var(--card-b); font-size: 13px; }
+.cbk__h b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cbk__h span { color: var(--ink-3); font-size: 12px; white-space: nowrap; }
+.cbk__rev { border: 0; background: none; color: var(--blue); font: 600 12px var(--f); cursor: pointer; padding: 2px 0 2px 6px; white-space: nowrap; }
+.cbk__tw { max-height: 260px; overflow: auto; }
+.cbk table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.cbk th { position: sticky; top: 0; background: #fff; text-align: left; font-weight: 700; color: var(--ink-2); padding: 7px 10px; border-bottom: 1px solid var(--card-b); white-space: nowrap; }
+.cbk td { padding: 7px 10px; border-bottom: 1px solid #EEF3FA; vertical-align: top; }
+.cbk tr:last-child td { border-bottom: 0; }
+.cbk td:first-child { font-weight: 600; color: var(--navy, var(--ink)); }
+.cbk__rek { font-variant-numeric: tabular-nums; white-space: nowrap; letter-spacing: .02em; }
+.cbk__nol, .cbk__cat { margin: 0; padding: 8px 12px; font-size: 12px; color: var(--ink-3); }
+.cbk__cat { border-top: 1px solid #EEF3FA; }
+.cbk__bars { list-style: none; margin: 0; padding: 6px 12px 10px; display: flex; flex-direction: column; gap: 7px; max-height: 300px; overflow: auto; }
+.cbk__bars li { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; font-size: 12.5px; }
+.cbk__bl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); }
+.cbk__bv { font-weight: 700; color: var(--navy, var(--ink)); font-variant-numeric: tabular-nums; }
+.cbk__bars i { grid-column: 1 / -1; height: 6px; border-radius: 99px; background: linear-gradient(90deg, #1565F5, #22C9A0); }
+.cbk__cc { list-style: none; margin: 0; padding: 0; }
+.cbk__cc li { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #EEF3FA; }
+.cbk__cc li:last-child { border-bottom: 0; }
+.cbk__cc li > div { flex: 1; min-width: 0; }
+.cbk__cc b { display: block; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cbk__cc small { display: block; font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+.cbk__chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.cbk__chip { font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 99px; }
+.cbk__chip--ok { background: var(--mint-50); color: var(--mint-700); }
+.cbk__chip--warn { background: var(--amber-50); color: var(--amber); }
+.cbk__chip--bad { background: var(--red-50); color: var(--red); }
+.cbk__chip--sk { background: #E8F7EE; color: #17804A; }
+.cbk__act { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.cbk .cbk__act { margin: 0; padding: 8px 12px; border-top: 1px solid #EEF3FA; }
+.cb-btn { border: 1px solid #CFE0FA; background: #fff; color: var(--blue-700); border-radius: 10px; padding: 7px 12px; font: 700 12.5px/1.2 var(--f); cursor: pointer; white-space: nowrap; }
+.cb-btn:hover { background: var(--blue-50); }
+.cb-btn--go { background: var(--blue); border-color: var(--blue); color: #fff; }
+.cb-btn--go:hover { background: var(--blue-700); }
+
+.cb__form { display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px 12px; border-top: 1px solid var(--card-b); background: #fff; }
+.cb__form textarea { flex: 1; resize: none; min-height: 44px; max-height: 120px; border: 1px solid #D5E2F4; border-radius: 14px; padding: 11px 14px; font: 14px/1.45 var(--f); color: var(--ink); background: #F7FAFE; outline: none; }
+.cb__form textarea:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px rgba(21, 101, 245, .12); }
+.cb__send { flex: none; width: 44px; height: 44px; border: 0; border-radius: 14px; background: var(--grad); color: #fff; display: grid; place-items: center; cursor: pointer; }
+.cb__send svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (max-width: 640px) {
+  .cb-fab { right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); height: 52px; width: 52px; padding: 0; justify-content: center; }
+  .cb-fab__lbl { display: none; }
+  .cb { inset: 0; width: 100%; height: 100%; height: 100dvh; border-radius: 0; border: 0; animation: none; }
+  body.cb-open .cb-fab { display: none; }
+  body.cb-open { overflow: hidden; }
+  .cb__head { padding-top: calc(12px + env(safe-area-inset-top)); }
+  .cb__form { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+  .cb__form textarea { font-size: 16px; }
+}
+
+/* Pengaturan → Chatbot */
+.cset__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.cset__key { border: 1px solid var(--card-b); border-radius: 16px; padding: 14px; background: #FAFCFF; display: flex; flex-direction: column; gap: 10px; }
+.cset__kh { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.cset__kh b { font-size: 15px; }
+.cset__tag { font-size: 12px; color: var(--ink-3); flex: 1; }
+.cset__st { font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 99px; background: #EEF2F8; color: var(--ink-2); }
+.cset__st.is-on { background: var(--mint-50); color: var(--mint-700); }
+.cset__row { display: flex; gap: 8px; }
+.cset__row input { flex: 1; min-width: 0; height: 42px; border: 1px solid #D5E2F4; border-radius: 12px; padding: 0 12px; font: 14px var(--f); background: #fff; }
+.cset__row input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21, 101, 245, .12); }
+.cset__key small { font-size: 12px; color: var(--ink-3); }
+.cset__foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--card-b); }
+.cset__use { font-size: 13px; color: var(--ink-2); }
+.cset__note { margin: 12px 0 0; padding-left: 18px; font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
+@media (max-width: 900px) { .cset__grid { grid-template-columns: 1fr; } .cset__row { flex-wrap: wrap; } .cset__row input { flex-basis: 100%; } }
+body:not(.is-auth) .shell main { padding-bottom: 84px; }
+
 </style>
 </head>
 <body class="is-auth">
@@ -2504,6 +2623,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
             <button role="tab" aria-selected="true" data-p="ro">Rekening RO</button>
             <button role="tab" aria-selected="false" data-p="sk">Surat kuasa</button>
             <button role="tab" aria-selected="false" data-p="user">Pengguna</button>
+            <button role="tab" aria-selected="false" data-p="chat">Chatbot</button>
             <button role="tab" aria-selected="false" data-p="about">Tentang</button>
           </div>
 
@@ -2547,6 +2667,33 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
             </article>
           </div>
 
+          <div class="ppane" data-pp="chat" hidden>
+            <article class="card cset">
+              <div class="card__head"><div><h2>Chatbot Moneywise</h2><p>Pertanyaan data (nama, no rekening, site, RO, surat kuasa, riwayat) dijawab langsung dari spreadsheet, gratis tanpa batas. API key di bawah hanya untuk pertanyaan bebas yang dibantu AI.</p></div></div>
+              <div class="cset__grid">
+                <form class="cset__key" id="csGroq" data-jenis="groq" novalidate>
+                  <div class="cset__kh"><b>Groq</b><span class="cset__tag">AI utama · ±1.000 pertanyaan/hari gratis</span><span class="cset__st" id="csGroqSt">Belum diisi</span></div>
+                  <div class="cset__row"><input type="password" autocomplete="off" spellcheck="false" placeholder="Tempel API key Groq (gsk_…)" aria-label="API key Groq"><button class="btn btn--primary" type="submit">Simpan</button><button class="btn btn--ghost" type="button" data-hapus hidden>Hapus</button></div>
+                  <small>Buat gratis di <b>console.groq.com</b> → API Keys → Create API Key.</small>
+                </form>
+                <form class="cset__key" id="csGemini" data-jenis="gemini" novalidate>
+                  <div class="cset__kh"><b>Gemini</b><span class="cset__tag">Cadangan otomatis bila kuota Groq habis</span><span class="cset__st" id="csGeminiSt">Belum diisi</span></div>
+                  <div class="cset__row"><input type="password" autocomplete="off" spellcheck="false" placeholder="Tempel API key Gemini (AIza…)" aria-label="API key Gemini"><button class="btn btn--primary" type="submit">Simpan</button><button class="btn btn--ghost" type="button" data-hapus hidden>Hapus</button></div>
+                  <small>Opsional. Buat di <b>aistudio.google.com</b> → Get API key.</small>
+                </form>
+              </div>
+              <p class="err" id="csErr" hidden></p>
+              <div class="cset__foot">
+                <div class="cset__use" id="csUse">Pemakaian hari ini: –</div>
+                <button class="btn btn--white" type="button" id="csTes">Tes koneksi</button>
+              </div>
+              <ul class="cset__note">
+                <li>Key disimpan di server Apps Script (Script Properties), tidak pernah tampil di web atau di GitHub.</li>
+                <li>Nama dan nomor rekening karyawan <b>tidak pernah dikirim ke AI</b>. AI hanya membantu memahami pertanyaan; datanya diambil dan ditampilkan oleh Moneywise sendiri.</li>
+                <li>Kalau kuota AI habis atau key kosong, chatbot tetap menjawab pertanyaan data dan panduan.</li>
+              </ul>
+            </article>
+          </div>
           <div class="ppane" data-pp="about" hidden>
             <article class="card vset">
               <div class="card__head"><div><h2>Video tutorial di halaman login</h2><p>Cukup pilih file video (MP4). Video disimpan otomatis ke Google Drive aplikasi dan langsung diputar dari tombol <b>Tutorial</b> di halaman login.</p></div></div>
@@ -5619,6 +5766,7 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
     if (pTab === 'sk') muatSK();
     if (pTab === 'user') muatUser();
     if (pTab === 'about') muatVideoSet();
+    if (pTab === 'chat' && A.muatChatSet) A.muatChatSet();
   }
   async function muatRO() {
     try { var out = await A.post({ action: 'daftarRO' }); if (!out.ok) throw new Error(out.error); renderRO(out.ro); }
@@ -5878,6 +6026,25 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
 })();
 
 </script>
+  <!-- ================= CHATBOT ================= -->
+  <button class="cb-fab" type="button" id="cbFab" aria-label="Buka asisten Moneywise" aria-expanded="false" aria-controls="cbPanel">
+    <svg viewBox="0 0 24 24" aria-hidden="true" class="cb-fab__i"><path d="M7.5 4h9A2.5 2.5 0 0 1 19 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4 3.5V16h.5A2.5 2.5 0 0 1 5 13.5v-7A2.5 2.5 0 0 1 7.5 4z"/><path d="M9 9.6h.01M12 9.6h.01M15 9.6h.01" stroke-width="2.6" stroke-linecap="round"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true" class="cb-fab__x"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    <span class="cb-fab__lbl">Tanya Moneywise</span>
+  </button>
+  <section class="cb" id="cbPanel" role="dialog" aria-modal="false" aria-labelledby="cbTitle" hidden>
+    <header class="cb__head">
+      <span class="cb__ava" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.5l1.9 4.6 4.6 1.9-4.6 1.9L12 16.5l-1.9-4.6L5.5 10l4.6-1.9z"/><path d="M18.5 15.5l.8 1.9 1.9.8-1.9.8-.8 1.9-.8-1.9-1.9-.8 1.9-.8z"/></svg></span>
+      <div class="cb__ttl"><b id="cbTitle">Asisten Moneywise</b><small id="cbSub">Tanya data rekening &amp; cara pakai</small></div>
+      <button class="cb__ib" type="button" id="cbBaru" title="Percakapan baru" aria-label="Percakapan baru"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/></svg></button>
+      <button class="cb__ib" type="button" id="cbTutup" title="Tutup" aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </header>
+    <div class="cb__body" id="cbBody" aria-live="polite"></div>
+    <form class="cb__form" id="cbForm" novalidate>
+      <textarea id="cbIn" rows="1" placeholder="Tanya apa saja tentang Moneywise…" aria-label="Pertanyaan" maxlength="1500"></textarea>
+      <button class="cb__send" type="submit" id="cbSend" aria-label="Kirim"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6.5 18.5 12 13 17.5"/></svg></button>
+    </form>
+  </section>
   <script>
 /* Moneywise — Tambah Karyawan: upload Excel/CSV (dengan template) atau ketik manual.
  * Kolom tetap 5: Nama | Bank | No Rekening | Site Bisnis | Site Penempatan (sama dengan sheet Data Upah). */
@@ -6157,6 +6324,210 @@ th[aria-sort="descending"] .th-sort i { opacity: 1; } th[aria-sort="descending"]
 
   A.karyawanTampil = function () { if (st.tab === 'manual') muatSaran(); };
   barisAwal();
+})();
+
+</script>
+  <script>
+/* Chatbot Moneywise: panel tanya-jawab di semua halaman + pengaturan API key. */
+(function () {
+  'use strict';
+  var A = window.APP, $ = function (id) { return document.getElementById(id); };
+  if (!A || !$('cbFab')) return;
+  var esc = A.esc, KUNCI = 'mw_chat_v1';
+  var SARAN_AWAL = ['Rekening Budi atas nama siapa?', 'Berapa rekening per bank?', 'Site apa saja?', 'Crosscheck terakhir', 'Daftar rekening RO', 'Cara upload surat kuasa'];
+  var VIEW_LBL = { dashboard: 'Dashboard', crosscheck: 'Crosscheck MCM', riwayat: 'Riwayat', update: 'Update Database', karyawan: 'Tambah Karyawan', database: 'Database Bank', pengaturan: 'Pengaturan' };
+  var log = [], tanya = [], sibuk = false;
+
+  function simpan() { try { sessionStorage.setItem(KUNCI, JSON.stringify({ log: log.slice(-40), tanya: tanya.slice(-8) })); } catch (e) { /* abaikan */ } }
+  function muat() { try { var o = JSON.parse(sessionStorage.getItem(KUNCI) || 'null'); if (o) { log = o.log || []; tanya = o.tanya || []; } } catch (e) { log = []; tanya = []; } }
+
+  /* teks sederhana: **tebal**, baris baru, daftar "- " */
+  function teksHtml(t) {
+    var baris = String(t || '').split('\n'), out = '', dalamList = false;
+    baris.forEach(function (b) {
+      var x = esc(b).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+      if (/^\s*[-•]\s+/.test(b)) { if (!dalamList) { out += '<ul>'; dalamList = true; } out += '<li>' + x.replace(/^\s*[-•]\s+/, '') + '</li>'; return; }
+      if (dalamList) { out += '</ul>'; dalamList = false; }
+      if (b.trim()) out += '<p>' + x + '</p>';
+    });
+    if (dalamList) out += '</ul>';
+    return out;
+  }
+  function samar(a) { a = String(a || ''); return a.length <= 4 ? a : '•'.repeat(Math.min(6, a.length - 4)) + a.slice(-4); }
+
+  var CHIP = { COCOK: ['ok', 'cocok'], MIRIP: ['warn', 'mirip'], BEDA_NOSK: ['bad', 'beda nama'], TIDAK_ADA: ['bad', 'tidak ada'], RO_NOSK: ['warn', 'via RO'], SK: ['sk', 'surat kuasa'] };
+  function kartuHtml(k, idx) {
+    var h = '<div class="cbk"><div class="cbk__h"><b>' + esc(k.judul || '') + '</b>';
+    if (k.tipe === 'tabel') {
+      h += '<span>' + A.num(k.total != null ? k.total : k.baris.length) + ' baris</span>';
+      if (k.rek != null && k.baris.length) h += '<button type="button" class="cbk__rev" data-rev="' + idx + '">Tampilkan nomor</button>';
+      h += '</div>';
+      if (!k.baris.length) return h + '<p class="cbk__nol">Tidak ada data.</p></div>';
+      h += '<div class="cbk__tw"><table><thead><tr>' + k.kolom.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        k.baris.map(function (r) {
+          return '<tr>' + r.map(function (c, j) { return j === k.rek ? '<td class="cbk__rek" data-asli="' + esc(c) + '">' + esc(samar(c)) + '</td>' : '<td>' + esc(c) + '</td>'; }).join('') + '</tr>';
+        }).join('') + '</tbody></table></div>';
+      if (k.catatan) h += '<p class="cbk__cat">' + esc(k.catatan) + '</p>';
+      if (k.ccId) h += '<div class="cbk__act"><button type="button" class="cb-btn" data-cc="' + esc(k.ccId) + '">Buka laporan</button></div>';
+      else if (k.view && VIEW_LBL[k.view]) h += '<div class="cbk__act"><button type="button" class="cb-btn" data-go="' + esc(k.view) + '">Buka ' + esc(VIEW_LBL[k.view]) + ' <span aria-hidden="true">→</span></button></div>';
+      return h + '</div>';
+    }
+    if (k.tipe === 'angka') {
+      var maks = Math.max.apply(null, k.items.map(function (x) { return Number(String(x.nilai).replace(/\./g, '')) || 0; }).concat([1]));
+      h += '</div><ul class="cbk__bars">' + k.items.map(function (x) {
+        var v = Number(String(x.nilai).replace(/\./g, '')) || 0;
+        return '<li><span class="cbk__bl">' + esc(x.label) + '</span><span class="cbk__bv">' + esc(x.nilai) + '</span><i style="width:' + Math.max(2, Math.round(v / maks * 100)) + '%"></i></li>';
+      }).join('') + '</ul>' + (k.lebih > 0 ? '<p class="cbk__cat">+' + A.num(k.lebih) + ' lainnya</p>' : '');
+      return h + '</div>';
+    }
+    if (k.tipe === 'cc') {
+      h += '</div><ul class="cbk__cc">' + k.baris.map(function (c) {
+        var g = c.g || {};
+        var chips = Object.keys(CHIP).filter(function (s) { return g[s]; }).map(function (s) { return '<span class="cbk__chip cbk__chip--' + CHIP[s][0] + '">' + A.num(g[s]) + ' ' + CHIP[s][1] + '</span>'; }).join('');
+        return '<li><div><b>' + esc(c.file) + '</b><small>' + esc(c.waktu) + ' WIB · ' + A.num(c.jumlah) + ' baris' + (c.oleh ? ' · ' + esc(c.oleh) : '') + '</small><div class="cbk__chips">' + chips + '</div></div>' +
+          '<button type="button" class="cb-btn" data-cc="' + esc(c.id) + '">Buka</button></li>';
+      }).join('') + '</ul>';
+      return h + '</div>';
+    }
+    return '';
+  }
+  function pesanHtml(m, i) {
+    if (m.dari === 'aku') return '<div class="cbm cbm--aku"><div class="cbm__b">' + esc(m.teks).replace(/\n/g, '<br>') + '</div></div>';
+    var h = '<div class="cbm cbm--bot" data-i="' + i + '"><div class="cbm__b">' + teksHtml(m.teks);
+    (m.kartu || []).forEach(function (k, j) { h += kartuHtml(k, i + ':' + j); });
+    if (m.buka) h += '<div class="cbk__act"><button type="button" class="cb-btn cb-btn--go" data-go="' + esc(m.buka.view) + '">Buka ' + esc(m.buka.label || VIEW_LBL[m.buka.view] || m.buka.view) + ' <span aria-hidden="true">→</span></button></div>';
+    h += '</div>';
+    if (m.sumber) h += '<small class="cbm__src">' + (m.sumber === 'lokal' ? 'Dijawab dari data Moneywise' : 'Dibantu AI (' + (m.sumber === 'groq' ? 'Groq' : 'Gemini') + ')') + (m.aiGagal ? ' · AI sedang tidak tersedia' : '') + '</small>';
+    if (m.saran && m.saran.length) h += '<div class="cb-chips">' + m.saran.map(function (s) { return '<button type="button" data-q="' + esc(s) + '">' + esc(s) + '</button>'; }).join('') + '</div>';
+    return h + '</div>';
+  }
+  function sapaan() {
+    var nama = '';
+    try { var s = A.sesi && A.sesi(); nama = s && (s.nama || '') || ''; } catch (e) { nama = ''; }
+    return { dari: 'bot', teks: 'Halo' + (nama ? ' ' + nama.split(' ')[0] : '') + '! Aku asisten Moneywise.\nAku bisa mencari rekening karyawan, menghitung data per site atau bank, membaca hasil crosscheck, surat kuasa, RO, dan riwayat, juga menjelaskan cara pakai semua menu.', saran: SARAN_AWAL };
+  }
+  function render(scroll) {
+    var b = $('cbBody');
+    if (!log.length) log.push(sapaan());
+    b.innerHTML = log.map(pesanHtml).join('') + (sibuk ? '<div class="cbm cbm--bot"><div class="cbm__b cbm__ty"><i></i><i></i><i></i></div></div>' : '');
+    if (scroll !== false) b.scrollTop = b.scrollHeight;
+  }
+
+  async function kirim(q) {
+    q = String(q || '').trim();
+    if (!q || sibuk) return;
+    log.push({ dari: 'aku', teks: q }); sibuk = true; render();
+    $('cbIn').value = ''; ukur();
+    var dulu = tanya.slice(-4);
+    tanya.push(q);
+    var jawab;
+    try {
+      var out = await A.post({ action: 'chat', pesan: q, riwayat: dulu });
+      if (!out.ok) throw new Error(out.error || 'Server menolak.');
+      jawab = { dari: 'bot', teks: out.teks, kartu: out.kartu, buka: out.buka, sumber: out.sumber, saran: out.saran, aiGagal: out.aiGagal };
+    } catch (e) {
+      jawab = { dari: 'bot', teks: 'Maaf, aku gagal menghubungi server: ' + (e.message || e) + '\nCoba lagi sebentar lagi.' };
+    }
+    sibuk = false;
+    var awal = log.length;
+    log.push(jawab); simpan(); render(false);
+    // gulir ke awal jawaban (jawaban panjang tetap terbaca dari atas)
+    var el = $('cbBody').querySelector('[data-i="' + awal + '"]');
+    if (el) $('cbBody').scrollTop = Math.max(0, el.offsetTop - 12);
+  }
+
+  function ukur() { var t = $('cbIn'); t.style.height = 'auto'; t.style.height = Math.min(120, t.scrollHeight) + 'px'; }
+  var hp = window.matchMedia('(max-width: 640px)');
+  function buka() {
+    $('cbPanel').hidden = false; $('cbFab').setAttribute('aria-expanded', 'true'); document.body.classList.add('cb-open');
+    render(); if (!hp.matches) setTimeout(function () { $('cbIn').focus(); }, 30);
+  }
+  function tutup() { $('cbPanel').hidden = true; $('cbFab').setAttribute('aria-expanded', 'false'); document.body.classList.remove('cb-open'); }
+
+  $('cbFab').addEventListener('click', function () { if ($('cbPanel').hidden) buka(); else tutup(); });
+  $('cbTutup').addEventListener('click', tutup);
+  $('cbBaru').addEventListener('click', function () { log = []; tanya = []; simpan(); render(); $('cbIn').focus(); });
+  $('cbForm').addEventListener('submit', function (e) { e.preventDefault(); kirim($('cbIn').value); });
+  $('cbIn').addEventListener('input', ukur);
+  $('cbIn').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); kirim($('cbIn').value); } });
+  $('cbPanel').addEventListener('keydown', function (e) { if (e.key === 'Escape') { tutup(); $('cbFab').focus(); } });
+  $('cbBody').addEventListener('click', async function (e) {
+    var q = e.target.closest('[data-q]');
+    if (q) { kirim(q.dataset.q); return; }
+    var go = e.target.closest('[data-go]');
+    if (go) { location.hash = '#/' + go.dataset.go; if (hp.matches) tutup(); return; }
+    var rev = e.target.closest('[data-rev]');
+    if (rev) {
+      var kartu = rev.closest('.cbk'), lihat = rev.dataset.on !== '1';
+      kartu.querySelectorAll('.cbk__rek').forEach(function (td) { td.textContent = lihat ? td.dataset.asli : samar(td.dataset.asli); });
+      rev.dataset.on = lihat ? '1' : ''; rev.textContent = lihat ? 'Samarkan nomor' : 'Tampilkan nomor';
+      return;
+    }
+    var cc = e.target.closest('[data-cc]');
+    if (cc && A.bukaLaporan) {
+      var lbl = cc.textContent; cc.disabled = true; cc.textContent = 'Membuka…';
+      try { await A.bukaLaporan(cc.dataset.cc); if (hp.matches) tutup(); } finally { cc.disabled = false; cc.textContent = lbl; }
+    }
+  });
+  // keluar / sesi habis: percakapan dihapus dari browser
+  A.onConn(function (on) { if (!on) { log = []; tanya = []; try { sessionStorage.removeItem(KUNCI); } catch (e) { /* abaikan */ } tutup(); } });
+  muat();
+
+  /* ---------- Pengaturan → Chatbot ---------- */
+  function tampilInfo(o) {
+    [['groq', 'csGroq', 'csGroqSt'], ['gemini', 'csGemini', 'csGeminiSt']].forEach(function (x) {
+      var f = $(x[1]), st = $(x[2]), ada = !!o[x[0]];
+      st.textContent = ada ? 'Tersimpan ' + o[x[0]] : 'Belum diisi';
+      st.className = 'cset__st' + (ada ? ' is-on' : '');
+      f.querySelector('[data-hapus]').hidden = !ada;
+      f.querySelector('input').placeholder = ada ? 'Ganti key (tempel key baru)' : (x[0] === 'groq' ? 'Tempel API key Groq (gsk_…)' : 'Tempel API key Gemini (AIza…)');
+    });
+    var p = o.pakai || {};
+    $('csUse').innerHTML = 'Pemakaian hari ini: <b>' + A.num(p.lokal || 0) + '</b> dijawab dari data · <b>' + A.num(p.groq || 0) + '</b> Groq · <b>' + A.num(p.gemini || 0) + '</b> Gemini' + (p.gagal ? ' · <span class="t-bad">' + A.num(p.gagal) + ' AI gagal</span>' : '');
+  }
+  A.muatChatSet = async function () {
+    $('csErr').hidden = true;
+    try { var o = await A.post({ action: 'chatInfo' }); if (o.ok) tampilInfo(o); } catch (e) { /* abaikan */ }
+  };
+  ['csGroq', 'csGemini'].forEach(function (id) {
+    var f = $(id);
+    f.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var inp = f.querySelector('input'), btn = f.querySelector('[type=submit]'), key = inp.value.trim();
+      $('csErr').hidden = true;
+      if (!key) { inp.focus(); return; }
+      btn.disabled = true; btn.textContent = 'Menyimpan…';
+      try {
+        var o = await A.post({ action: 'chatAtur', jenis: f.dataset.jenis, key: key });
+        if (!o.ok) throw new Error(o.error);
+        inp.value = ''; tampilInfo(o); A.toast('API key ' + (f.dataset.jenis === 'groq' ? 'Groq' : 'Gemini') + ' tersimpan. Klik Tes koneksi untuk memastikan.', true);
+      } catch (err) { $('csErr').textContent = err.message; $('csErr').hidden = false; }
+      finally { btn.disabled = false; btn.textContent = 'Simpan'; }
+    });
+    f.querySelector('[data-hapus]').addEventListener('click', async function () {
+      var jenis = f.dataset.jenis, nama = jenis === 'groq' ? 'Groq' : 'Gemini';
+      var ok = await A.konfirmasi({ judul: 'Hapus API key ' + nama + '?', isi: '<p>Chatbot tetap menjawab pertanyaan data dan panduan, tetapi pertanyaan bebas tidak lagi dibantu ' + nama + '.</p>', ok: 'Ya, hapus',
+        jalankan: async function () { var o = await A.post({ action: 'chatAtur', jenis: jenis, hapus: true }); if (!o.ok) throw new Error(o.error); tampilInfo(o); } });
+      if (ok) A.toast('API key ' + nama + ' dihapus.', true);
+    });
+  });
+  $('csTes').addEventListener('click', async function () {
+    var b = this; b.disabled = true; b.textContent = 'Mengetes…'; $('csErr').hidden = true;
+    try {
+      var o = await A.post({ action: 'chatTes' });
+      if (!o.ok) throw new Error(o.error);
+      var t = o.tes, teks = [];
+      [['groq', 'Groq'], ['gemini', 'Gemini']].forEach(function (x) {
+        var r = t[x[0]];
+        if (!r || !r.ada) return;
+        teks.push(x[1] + ': ' + (r.ok ? 'tersambung (' + (r.ms / 1000).toFixed(1) + ' dtk, ' + r.model + ')' : r.error));
+      });
+      if (!teks.length) teks.push('Belum ada API key. Chatbot tetap menjawab dari data Moneywise.');
+      var gagal = [t.groq, t.gemini].some(function (r) { return r && r.ada && !r.ok; });
+      if (gagal) { $('csErr').textContent = teks.join(' · '); $('csErr').hidden = false; } else A.toast(teks.join(' · '), true);
+    } catch (e) { $('csErr').textContent = e.message; $('csErr').hidden = false; }
+    finally { b.disabled = false; b.textContent = 'Tes koneksi'; }
+  });
 })();
 
 </script>
