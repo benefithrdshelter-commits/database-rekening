@@ -1833,6 +1833,45 @@ body.is-auth .cb-fab, body.is-auth .cb { display: none !important; }
 @media (max-width: 900px) { .cset__grid { grid-template-columns: 1fr; } .cset__row { flex-wrap: wrap; } .cset__row input { flex-basis: 100%; } }
 body:not(.is-auth) .shell main { padding-bottom: 84px; }
 
+/* ===================== v13: animasi menunggu login ===================== */
+.lw { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 24px;
+  background: radial-gradient(800px 520px at 50% 40%, rgba(234, 246, 255, .92), rgba(222, 238, 252, .88)); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  opacity: 0; transition: opacity .25s ease; }
+.lw[hidden] { display: none; }
+.lw.is-on { opacity: 1; }
+.lw.is-out { opacity: 0; }
+.lw__box { display: flex; flex-direction: column; align-items: center; text-align: center; width: min(420px, 100%); transform: translateY(8px) scale(.98); transition: transform .3s ease; }
+.lw.is-on .lw__box { transform: none; }
+.lw__svg { width: min(420px, 78vw, 52vh); height: auto; overflow: visible; }
+.lw__cap { margin: 34px 0 0; font: 800 clamp(18px, 2.4vh + 6px, 24px)/1.3 var(--f); color: #0B1736; letter-spacing: -.01em; transition: opacity .2s ease, transform .2s ease; min-height: 1.3em; }
+.lw__cap.is-ganti { opacity: 0; transform: translateY(6px); }
+.lw__bar { position: relative; width: 190px; height: 6px; margin-top: 16px; border-radius: 99px; background: rgba(21, 101, 245, .14); overflow: hidden; }
+.lw__bar i { position: absolute; top: 0; bottom: 0; width: 40%; border-radius: inherit; background: var(--grad); animation: lwBar 1.3s ease-in-out infinite; }
+.lw__sub { margin-top: 12px; font-size: 13px; color: #5B6B85; }
+@keyframes lwBar { 0% { left: -40%; } 100% { left: 100%; } }
+
+.lw__spin { transform-box: view-box; transform-origin: 200px 262px; animation: lwSpin 9s linear infinite; }
+@keyframes lwSpin { to { transform: rotate(-360deg); } }
+.lw__body { animation: lwBob .5s ease-in-out infinite alternate; }
+@keyframes lwBob { from { transform: translateY(0); } to { transform: translateY(-2.5px); } }
+.lw__wheel { transform-box: view-box; animation: lwWheel .55s linear infinite; }
+@keyframes lwWheel { to { transform: rotate(360deg); } }
+.lw__puff { animation: lwPuff 1s ease-out infinite; transform-box: view-box; transform-origin: 140px 134px; }
+@keyframes lwPuff { 0% { opacity: .9; transform: translateX(0) scale(.8); } 100% { opacity: 0; transform: translateX(-22px) scale(1.4); } }
+.lw__coin { animation: lwCoin 1.6s ease-out infinite; }
+.lw__coin--b { animation-delay: .8s; }
+@keyframes lwCoin { 0% { opacity: 0; transform: translate(0, 10px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(-26px, -46px) rotate(-30deg); } }
+.lw__cloud { animation: lwCloud 6s ease-in-out infinite alternate; }
+.lw__cloud--b { animation-duration: 7.5s; animation-direction: alternate-reverse; }
+@keyframes lwCloud { from { transform: translateX(-10px); } to { transform: translateX(14px); } }
+.lw__spark { transform-box: fill-box; transform-origin: center; animation: lwSpark 1.8s ease-in-out infinite; }
+.lw__spark--b { animation-delay: .9s; }
+@keyframes lwSpark { 0%, 100% { opacity: .2; transform: scale(.6); } 50% { opacity: 1; transform: scale(1.1); } }
+@media (prefers-reduced-motion: reduce) {
+  .lw__spin, .lw__body, .lw__wheel, .lw__puff, .lw__coin, .lw__cloud, .lw__spark { animation: none; }
+  .lw__bar i { animation-duration: 3s; }
+}
+
 </style>
 </head>
 <body class="is-auth">
@@ -1891,6 +1930,68 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
           </button>
         </form>
         <button type="button" class="auth__tut" id="tutBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 015.5 4H10a2 2 0 012 2v14a2 2 0 00-2-2H4z"/><path d="M20 5.5A1.5 1.5 0 0018.5 4H14a2 2 0 00-2 2v14a2 2 0 012-2h6z"/></svg><span class="t-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg></span><span class="t-q">Baru pertama kali?</span> <b id="tutBtnTxt">Lihat tutorial</b></button>
+      </div>
+    </div>
+    <!-- animasi menunggu login (muncul hanya bila server lambat) -->
+    <div class="lw" id="loginWait" role="status" aria-live="polite" hidden>
+      <div class="lw__box">
+        <svg class="lw__svg" viewBox="0 0 400 400" aria-hidden="true">
+          <defs>
+            <radialGradient id="lwPlanet" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#8FE3D1"/><stop offset=".55" stop-color="#4CC3B0"/><stop offset="1" stop-color="#1E8F95"/></radialGradient>
+            <linearGradient id="lwShade" x1="0" x2="1"><stop offset=".45" stop-color="#0B3D6B" stop-opacity="0"/><stop offset="1" stop-color="#0B3D6B" stop-opacity=".35"/></linearGradient>
+            <linearGradient id="lwVan" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2E8BFF"/><stop offset="1" stop-color="#1565F5"/></linearGradient>
+            <linearGradient id="lwBank" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DCEBFF"/></linearGradient>
+            <clipPath id="lwClip"><circle cx="200" cy="262" r="118"/></clipPath>
+          </defs>
+          <!-- awan & kilau -->
+          <g class="lw__cloud lw__cloud--a"><ellipse cx="70" cy="92" rx="30" ry="11" fill="#fff"/><ellipse cx="88" cy="84" rx="18" ry="12" fill="#fff"/></g>
+          <g class="lw__cloud lw__cloud--b"><ellipse cx="330" cy="70" rx="26" ry="9" fill="#fff"/><ellipse cx="316" cy="63" rx="14" ry="10" fill="#fff"/></g>
+          <path class="lw__spark lw__spark--a" d="M318 150l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#22C9A0"/>
+          <path class="lw__spark lw__spark--b" d="M78 196l2.4 6 6 2.4-6 2.4-2.4 6-2.4-6-6-2.4 6-2.4z" fill="#1E9BF0"/>
+          <!-- bayangan planet -->
+          <ellipse cx="200" cy="392" rx="96" ry="7" fill="#0B3D6B" opacity=".12"/>
+          <!-- planet berputar -->
+          <g class="lw__spin">
+            <circle cx="200" cy="262" r="118" fill="url(#lwPlanet)"/>
+            <circle cx="200" cy="262" r="104" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="5" stroke-linecap="round" stroke-dasharray="16 22"/>
+            <g clip-path="url(#lwClip)" opacity=".35"><circle cx="150" cy="300" r="40" fill="#BFF3E7"/><circle cx="262" cy="214" r="26" fill="#BFF3E7"/><circle cx="236" cy="338" r="18" fill="#BFF3E7"/></g>
+            <!-- isi di permukaan planet (diputar mengelilingi pusat) -->
+            <g transform="rotate(40 200 262)"><g transform="translate(200 144)">
+              <rect x="-22" y="-44" width="44" height="44" rx="3" fill="url(#lwBank)" stroke="#9CC2F5"/><path d="M-27-44h54L0-62z" fill="#1565F5"/>
+              <rect x="-15" y="-36" width="6" height="30" fill="#BFD6F7"/><rect x="-3" y="-36" width="6" height="30" fill="#BFD6F7"/><rect x="9" y="-36" width="6" height="30" fill="#BFD6F7"/>
+            </g></g>
+            <g transform="rotate(95 200 262)"><g transform="translate(200 144)"><rect x="-4" y="-16" width="8" height="16" fill="#7A5A3A"/><circle cy="-26" r="15" fill="#2FB36B"/><circle cx="9" cy="-18" r="10" fill="#45C77F"/></g></g>
+            <g transform="rotate(150 200 262)"><g transform="translate(200 144)"><rect x="-13" y="-70" width="26" height="70" rx="2" fill="#7FB6F2"/><path d="M-8-62v56M0-62v56M8-62v56" stroke="#fff" stroke-opacity=".55" stroke-width="2"/></g></g>
+            <g transform="rotate(205 200 262)"><g transform="translate(200 144)">
+              <ellipse cx="0" cy="-4" rx="14" ry="5" fill="#E9A400"/><rect x="-14" y="-16" width="28" height="12" fill="#F6C343"/><ellipse cx="0" cy="-16" rx="14" ry="5" fill="#FFD966"/>
+              <rect x="-14" y="-28" width="28" height="12" fill="#F6C343"/><ellipse cx="0" cy="-28" rx="14" ry="5" fill="#FFE68A"/></g></g>
+            <g transform="rotate(255 200 262)"><g transform="translate(200 144)"><rect x="-4" y="-14" width="8" height="14" fill="#7A5A3A"/><circle cy="-24" r="13" fill="#2FB36B"/></g></g>
+            <g transform="rotate(305 200 262)"><g transform="translate(200 144)"><rect x="-20" y="-30" width="40" height="30" rx="2" fill="#fff" stroke="#9CC2F5"/><path d="M-24-30h48L0-48z" fill="#22C9A0"/><rect x="-5" y="-16" width="10" height="16" fill="#1565F5"/></g></g>
+          </g>
+          <circle cx="200" cy="262" r="118" fill="url(#lwShade)" pointer-events="none"/>
+          <!-- koin yang beterbangan dari van -->
+          <g class="lw__coin lw__coin--a"><circle cx="168" cy="118" r="7" fill="#F6C343" stroke="#E9A400" stroke-width="1.5"/><text x="168" y="121.5" font-size="9" font-weight="800" text-anchor="middle" fill="#B07800" font-family="sans-serif">Rp</text></g>
+          <g class="lw__coin lw__coin--b"><circle cx="180" cy="118" r="6" fill="#F6C343" stroke="#E9A400" stroke-width="1.5"/></g>
+          <!-- van Moneywise -->
+          <g class="lw__van">
+            <g class="lw__body">
+              <path d="M150 140V104a8 8 0 0 1 8-8h58a6 6 0 0 1 6 6v38z" fill="url(#lwVan)"/>
+              <path d="M222 108h20a8 8 0 0 1 7 4.2l9 16.3a8 8 0 0 1 1 3.8V140h-37z" fill="#EAF3FF" stroke="#BFD6F7"/>
+              <path d="M229 113h13l8 14h-21z" fill="#8FD0FF"/>
+              <rect x="162" y="106" width="44" height="22" rx="5" fill="#fff" opacity=".95"/>
+              <circle cx="174" cy="117" r="7" fill="#F6C343"/><text x="174" y="120" font-size="8" font-weight="800" text-anchor="middle" fill="#B07800" font-family="sans-serif">Rp</text>
+              <rect x="185" y="112" width="16" height="3" rx="1.5" fill="#1565F5"/><rect x="185" y="118" width="11" height="3" rx="1.5" fill="#22C9A0"/>
+              <rect x="148" y="136" width="114" height="7" rx="3.5" fill="#0F2348" opacity=".85"/>
+              <circle cx="257" cy="131" r="2.5" fill="#FFD966"/>
+            </g>
+            <g class="lw__wheel" style="transform-origin:176px 144px"><circle cx="176" cy="144" r="10" fill="#0F2348"/><circle cx="176" cy="144" r="4.5" fill="#DCE7F6"/><path d="M176 136v16M168 144h16" stroke="#DCE7F6" stroke-width="1.6"/></g>
+            <g class="lw__wheel" style="transform-origin:238px 144px"><circle cx="238" cy="144" r="10" fill="#0F2348"/><circle cx="238" cy="144" r="4.5" fill="#DCE7F6"/><path d="M238 136v16M230 144h16" stroke="#DCE7F6" stroke-width="1.6"/></g>
+            <g class="lw__puff"><circle cx="140" cy="134" r="4" fill="#C9D9EE"/><circle cx="131" cy="131" r="3" fill="#DCE7F6"/></g>
+          </g>
+        </svg>
+        <p class="lw__cap" id="loginWaitCap">Sabar yaa… lagi dicek dulu 😆</p>
+        <div class="lw__bar" aria-hidden="true"><i></i></div>
+        <small class="lw__sub">Memeriksa akun & menyiapkan data rekening</small>
       </div>
     </div>
   </section>
@@ -3584,6 +3685,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Format email belum benar, contoh: nama@gmail.com'; err.hidden = false; $('loginEmail').focus(); return; }
     if (!urlReady()) { err.textContent = 'Alamat server (SCRIPT_URL) belum diatur. Hubungi admin.'; err.hidden = false; return; }
     btn.disabled = true; btn.classList.add('is-busy'); btn.querySelector('span').textContent = 'Memeriksa…';
+    var tunggu = animasiTunggu();
     try {
       var out = await post({ action: 'login', email: email, kode: kode });
       if (!out.ok) throw new Error(out.error || 'Gagal masuk.');
@@ -3596,9 +3698,36 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
       err.textContent = x.message; err.hidden = false;
       $('loginPass').select();
     } finally {
+      tunggu.selesai();
       btn.disabled = false; btn.classList.remove('is-busy'); btn.querySelector('span').textContent = 'Masuk';
     }
   });
+  /* animasi menunggu: hanya muncul bila login belum selesai setelah 0,7 detik (login cepat tidak terganggu) */
+  var CAP_TUNGGU = ['Sabar yaa… lagi dicek dulu 😆', 'Van Moneywise lagi jalan ke bank 🚚', 'Lagi buka brankas data rekening 🔐', 'Dikit lagi sampai, janji wkwk 🤭', 'Ngitung koin dulu sebentar 🪙'];
+  function animasiTunggu() {
+    var el = $('loginWait'), cap = $('loginWaitCap'), mulai = Date.now(), iCap = 0, tCap = null, tutup = false;
+    var tMuncul = setTimeout(function () {
+      if (tutup || !el) return;
+      cap.textContent = CAP_TUNGGU[0]; el.hidden = false; el.classList.remove('is-out');
+      requestAnimationFrame(function () { el.classList.add('is-on'); });
+      tCap = setInterval(function () {
+        var lama = Date.now() - mulai;
+        cap.classList.add('is-ganti');
+        setTimeout(function () {
+          cap.textContent = lama > 12000 ? 'Server Google lagi bangun tidur, tunggu sebentar ya 😴' : CAP_TUNGGU[(++iCap) % CAP_TUNGGU.length];
+          cap.classList.remove('is-ganti');
+        }, 220);
+      }, 2400);
+    }, 700);
+    return {
+      selesai: function () {
+        tutup = true; clearTimeout(tMuncul); clearInterval(tCap);
+        if (!el || el.hidden) return;
+        el.classList.remove('is-on'); el.classList.add('is-out');
+        setTimeout(function () { el.hidden = true; el.classList.remove('is-out'); }, 260);
+      }
+    };
+  }
   $('loginEye').addEventListener('click', function () {
     var on = this.getAttribute('aria-pressed') !== 'true';
     this.setAttribute('aria-pressed', on ? 'true' : 'false');
