@@ -575,11 +575,12 @@ body:not(.is-auth) > .auth { display: none; }
 @media (min-width: 641px) and (min-aspect-ratio: 1001/1000) {
   body.is-auth { background: #EEF5FD; }
   .auth {
-    --u: min(calc(100vw / 1672), calc(100vh / 941));
+    /* isi login (logo s.d. kartu) setinggi ±770 unit: dasar 830 supaya di tab browser (layar lebih pendek) tetap memenuhi lebar seperti di aplikasi desktop */
+    --u: min(calc(100vw / 1672), calc(100vh / 830));
     position: relative; display: block; padding: 0; height: 100vh; overflow: hidden; background: #EEF5FD;
   }
   .auth__stage {
-    position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+    position: absolute; left: 50%; top: 50%; translate: -50% -50%; margin-top: calc(var(--u) * 37);
     width: calc(var(--u) * 1672); height: calc(var(--u) * 941); aspect-ratio: auto;
     border: 0; border-radius: 0; box-shadow: none; background: transparent; overflow: visible; container-type: normal;
   }
