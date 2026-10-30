@@ -1872,6 +1872,35 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
   .lw__bar i { animation-duration: 3s; }
 }
 
+/* ===== v14: progres "Sudah 5/10" (upload, tambah karyawan, crosscheck) ===== */
+.prg-host { margin-top: 16px; }
+.prg-host--card { margin-top: 0; margin-bottom: 18px; }
+.prg { padding: 14px 16px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: #fff; box-shadow: var(--shadow-sm); animation: pop .2s ease-out; }
+.prg__top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.prg__lbl { font-size: 14px; font-weight: 600; color: var(--ink); min-width: 0; }
+.prg__pct { flex: none; font-size: 18px; font-weight: 700; color: var(--blue-700); font-variant-numeric: tabular-nums; }
+.prg__bar { height: 10px; margin-top: 10px; border-radius: 999px; background: var(--blue-50); overflow: hidden; }
+.prg__bar i { position: relative; display: block; height: 100%; width: 0; background: var(--grad); border-radius: inherit; transition: width .25s ease-out; overflow: hidden; }
+.prg__bar i::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.45), rgba(255,255,255,0)); transform: translateX(-100%); animation: prg-kilau 1.3s linear infinite; }
+@keyframes prg-kilau { to { transform: translateX(100%); } }
+.prg__bot { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.prg__num { min-width: 0; }
+.prg__time { flex: none; color: var(--ink-3); }
+.prg.is-done .prg__pct { color: var(--mint-700); }
+.prg.is-done .prg__bar i::after, .prg.is-bad .prg__bar i::after { animation: none; display: none; }
+.prg.is-bad { border-color: #F3C2C6; background: var(--red-50); }
+.prg.is-bad .prg__pct { color: var(--red); }
+.rsave { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; padding: 2px 10px 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; line-height: 20px; background: var(--amber-50); color: var(--amber); vertical-align: middle; white-space: nowrap; }
+.rsave .spin { width: 12px; height: 12px; border-width: 2px; border-color: rgba(162, 101, 12, .25); border-top-color: var(--amber); }
+.rsave.is-ok { background: var(--mint-50); color: var(--mint-700); }
+.rsave.is-bad { background: var(--red-50); color: var(--red); }
+.rsave button { border: 0; background: none; padding: 0; margin-left: 4px; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
+@media (max-width: 640px) {
+  .rsave { margin: 6px 0 0; }
+  .prg { padding: 12px 14px 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .prg__bar i { transition: none; } .prg__bar i::after { animation: none; display: none; } }
+
 </style>
 </head>
 <body class="is-auth">
@@ -2242,13 +2271,14 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
             <button class="btn btn--ghost btn--lg" type="button" id="xCancelRun" hidden>Batalkan</button>
             <button class="btn btn--primary btn--lg" type="button" id="xRunBtn" disabled>Cocokkan dengan database</button>
           </div>
+          <div class="prg-host" id="xProg" hidden></div>
         </div>
 
         <div class="state" id="xReport" hidden>
           <div class="file-bar">
             <div class="file-bar__name">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
-              <div><b id="rName"></b><small id="rMeta"></small></div>
+              <div><b id="rName"></b><small id="rMeta"></small><span class="rsave" id="rSave" role="status" aria-live="polite" hidden></span></div>
             </div>
             <div class="file-bar__actions">
               <button class="btn btn--primary btn--sm" type="button" id="rFix">
@@ -2527,6 +2557,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
             <button class="btn btn--ghost btn--lg" type="button" id="sendCancel" hidden>Batalkan</button>
             <button class="btn btn--primary btn--lg" type="button" id="sendBtn" disabled>Kirim ke spreadsheet</button>
           </div>
+          <div class="prg-host" id="sendProg" hidden></div>
         </div>
 
         <!-- state: terkirim -->
@@ -2661,6 +2692,8 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
             </article>
           </div>
 
+          <div class="prg-host prg-host--card" id="kProg" hidden></div>
+
           <article class="card kprev" id="kPrev" hidden>
             <div class="card__head card__head--row">
               <h2 id="kPrevTitle">Periksa dulu</h2>
@@ -2670,6 +2703,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
               <table class="tbl"><thead><tr><th scope="col">#</th><th scope="col">Nama</th><th scope="col">Bank</th><th scope="col">No rekening</th><th scope="col">Site bisnis</th><th scope="col">Site penempatan</th><th scope="col">Status</th></tr></thead><tbody id="kBody"></tbody></table>
             </div>
             <p class="err" id="kErr" hidden></p>
+            <div class="prg-host" id="kSaveProg" hidden></div>
             <div class="kprev__cta">
               <button class="btn btn--ghost" type="button" id="kBatal">Batal</button>
               <button class="btn btn--primary" type="button" id="kSimpan">Simpan</button>
@@ -3362,18 +3396,30 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     return { format: 'BNI', batches: [b], rows: rows, failed: failed, errors: errors, warnings: warnings };
   }
 
-  // Ambil items dari dokumen pdf.js
+  // Ambil items dari dokumen pdf.js. Beberapa halaman diminta bersamaan (bukan satu per satu menunggu),
+  // urutan hasil tetap per halaman. onProgress(jumlahSelesai, total).
   async function extractPages(pdfDoc, onProgress) {
-    var pages = [];
-    for (var p = 1; p <= pdfDoc.numPages; p++) {
-      var page = await pdfDoc.getPage(p);
-      var vp = page.getViewport({ scale: 1 });
-      var tc = await page.getTextContent();
-      pages.push(tc.items.map(function (it) {
-        return { str: it.str, x: it.transform[4], y: vp.height - it.transform[5], w: it.width };
-      }));
-      if (onProgress) onProgress(p, pdfDoc.numPages);
+    var n = pdfDoc.numPages, pages = new Array(n), next = 1, done = 0, stop = null;
+    async function jalur() {
+      while (next <= n && !stop) {
+        var p = next++;
+        try {
+          var page = await pdfDoc.getPage(p);
+          var vp = page.getViewport({ scale: 1 });
+          var tc = await page.getTextContent();
+          pages[p - 1] = tc.items.map(function (it) {
+            return { str: it.str, x: it.transform[4], y: vp.height - it.transform[5], w: it.width };
+          });
+          if (page.cleanup) page.cleanup();
+          done++;
+          if (onProgress && !stop) onProgress(done, n);
+        } catch (e) { if (!stop) stop = e; }
+      }
     }
+    var j = [];
+    for (var i = 0; i < Math.min(4, n); i++) j.push(jalur());
+    await Promise.all(j);
+    if (stop) throw stop;
     return pages;
   }
 
@@ -3549,6 +3595,274 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
 
 </script>
   <script>
+/* DIBUAT OTOMATIS oleh cocok_build.py dari gas/Code.gs (blok COCOK). Jangan diedit di sini:
+ * ubah di Code.gs supaya aturan di server dan di browser tetap sama persis. */
+(function (root) {
+/* ==COCOK:MULAI== — bagian murni (tanpa layanan Google). Build menyalinnya PERSIS ke browser (cocok.js),
+ * jadi crosscheck & cek karyawan di browser memakai aturan yang sama dengan server. */
+
+// rekening dibandingkan tanpa nol di depan (nol sering hilang kalau sel tersimpan sebagai angka)
+function kunciRek_(a) { return String(a).replace(/\D/g, '').replace(/^0+/, ''); }
+
+/* ================= aturan pencocokan nama ================= */
+
+var GELAR_ = { SDR: 1, SDRI: 1, SAUDARA: 1, SAUDARI: 1, BPK: 1, BAPAK: 1, IBU: 1, NY: 1, NYONYA: 1, TN: 1, TUAN: 1, MR: 1, MRS: 1, MS: 1 };
+// variasi ejaan/singkatan umum -> bentuk baku (hanya dipakai untuk kategori MIRIP, bukan COCOK)
+var SINGKATAN_ = {
+  M: 'MUHAMMAD', MUH: 'MUHAMMAD', MUCH: 'MUHAMMAD', MOHCH: 'MUHAMMAD', MOHD: 'MUHAMMAD', MUHAMMAT: 'MUHAMMAD', MUHAMAT: 'MUHAMMAD', MUHAMM: 'MUHAMMAD', MOCHAMMAT: 'MUHAMMAD', MOH: 'MUHAMMAD', MOCH: 'MUHAMMAD', MHD: 'MUHAMMAD', MUHAMAD: 'MUHAMMAD', MOHAMAD: 'MUHAMMAD',
+  MOHAMMAD: 'MUHAMMAD', MOCHAMAD: 'MUHAMMAD', MOCHAMMAD: 'MUHAMMAD', MUCHAMMAD: 'MUHAMMAD', MUCHAMAD: 'MUHAMMAD', MOKHAMAD: 'MUHAMMAD',
+  MOKHAMMAD: 'MUHAMMAD', MOHAMMED: 'MUHAMMAD', MUHAMMED: 'MUHAMMAD', MOHAMED: 'MUHAMMAD', MUHHAMMAD: 'MUHAMMAD',
+  A: 'AHMAD', ACH: 'AHMAD', ACHMAD: 'AHMAD', AHMAT: 'AHMAD', ACHMAT: 'AHMAD', AHMED: 'AHMAD', AKHMAD: 'AHMAD', AKHMAT: 'AHMAD',
+  ABD: 'ABDUL', ABDUL: 'ABDUL', NUR: 'NUR', NOOR: 'NUR', NURUL: 'NURUL'
+};
+
+function tokensNama_(s) {
+  return String(s || '').toUpperCase()
+    .replace(/\s*_\s*[A-Z0-9]+\s*$/, '')      // akhiran tambahan payroll, mis. "_DWSIG", "_110SIG"
+    .replace(/\(\s*\d+\s*\)/g, ' ')            // penanda seperti "(2)"
+    .replace(/[^A-Z0-9]+/g, ' ').trim().split(' ')
+    .filter(function (t) { return t && !GELAR_[t]; });
+}
+
+// penyederhanaan ejaan Indonesia: y=i, dd=d, oe=u, dj=j, ch/kh=k, v=f, z=s, h di tengah diabaikan
+function ejaan_(t) {
+  return t.replace(/OE/g, 'U').replace(/DJ/g, 'J').replace(/TJ/g, 'C').replace(/CH/g, 'K').replace(/KH/g, 'K')
+    .replace(/PH/g, 'F').replace(/V/g, 'F').replace(/Y/g, 'I').replace(/Q/g, 'K').replace(/Z/g, 'S')
+    .replace(/(.)H/g, '$1').replace(/(.)\1+/g, '$1');
+}
+
+// skor kecocokan dua kata: 1 = sama, 0.9 = singkatan/terpotong, >=0.75 = salah ketik kecil
+function skorKata_(x, y) {
+  if (x === y) return 1;
+  var ex = ejaan_(x), ey = ejaan_(y);
+  if (ex === ey) return 1;
+  var p = x.length <= y.length ? x : y, l = p === x ? y : x;
+  if (p.length === 1) return l.charAt(0) === p ? 0.9 : 0;
+  var ep = ejaan_(p), el = ejaan_(l);
+  if (p.length >= 2 && (l.indexOf(p) === 0 || (ep.length >= 3 && el.indexOf(ep) === 0))) return 0.9;   // kata terpotong
+  var n = Math.max(ex.length, ey.length);
+  return n >= 4 ? 1 - levenshtein_(ex, ey) / n : 0;
+}
+
+/** kecocokan per kata: berapa bagian kata nama yang lebih pendek ditemukan di nama yang lain */
+function cocokPerKata_(x, y) {
+  var pendek = x.length <= y.length ? x : y, panjang = pendek === x ? y : x;
+  var dipakai = {}, cocok = 0, kuat = false, batas = pendek.length === 1 ? 0.85 : 0.75;
+  pendek.forEach(function (t) {
+    var best = 0, bi = -1;
+    panjang.forEach(function (u, j) { if (dipakai[j]) return; var sk = skorKata_(t, u); if (sk > best) { best = sk; bi = j; } });
+    if (best >= batas) {
+      dipakai[bi] = 1; cocok++;
+      if (t.length >= 3 && panjang[bi].length >= 3 && (pendek.length === 1 || !UMUM_[SINGKATAN_[t] || t])) kuat = true;
+    }
+  });
+  return { kuat: kuat, rasio: pendek.length ? cocok / pendek.length : 0 };
+}
+
+var UMUM_ = { MUHAMMAD: 1, AHMAD: 1, SITI: 1, NUR: 1, NURUL: 1, DWI: 1, TRI: 1, EKA: 1, ABDUL: 1, DEWI: 1, SRI: 1, PUTRA: 1, PUTRI: 1, AGUS: 1, ADI: 1 };
+
+function levenshtein_(a, b) {
+  if (a === b) return 0;
+  var m = a.length, n = b.length, prev = [], cur = [], i, j;
+  for (j = 0; j <= n; j++) prev[j] = j;
+  for (i = 1; i <= m; i++) {
+    cur = [i];
+    for (j = 1; j <= n; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+
+/**
+ * Bandingkan nama di MCM dengan nama pemilik rekening di database (nama dari bank).
+ * return { status: 'COCOK'|'MIRIP'|'BEDA', ket: '...' }
+ */
+function bandingkanNama_(namaMcm, namaDb) {
+  var a = tokensNama_(namaMcm), b = tokensNama_(namaDb);
+  var ca = a.join(''), cb = b.join('');
+  if (!ca || !cb) return { status: 'BEDA', ket: 'Nama kosong.' };
+
+  // 1) sama persis (huruf besar-kecil, spasi, titik/koma, gelar diabaikan)
+  if (ca === cb) return { status: 'COCOK', ket: 'Nama sama.' };
+
+  // 2) nama di database terpotong oleh sistem bank (bank memotong nama panjang)
+  if (cb.length >= 14 && ca.length > cb.length && ca.indexOf(cb) === 0) {
+    return { status: 'COCOK', ket: 'Nama sama; nama di database terpotong oleh bank.' };
+  }
+
+  // ---- di bawah ini: tidak sama, cek apakah MIRIP ----
+  var na = a.map(function (t) { return SINGKATAN_[t] || t; });
+  var nb = b.map(function (t) { return SINGKATAN_[t] || t; });
+  var cna = na.join(''), cnb = nb.join('');
+  if (cna === cnb || (cnb.length >= 14 && cna.indexOf(cnb) === 0)) {
+    return { status: 'MIRIP', ket: 'Perbedaan singkatan/ejaan (misalnya M = MUHAMMAD).' };
+  }
+
+  // inisial: setiap kata di salah satu sisi sama atau berupa huruf depan kata di sisi lain
+  function inisialCocok(x, y) {
+    if (x.length !== y.length) return false;
+    var adaInisial = false;
+    for (var i = 0; i < x.length; i++) {
+      if (x[i] === y[i]) continue;
+      if (x[i].length === 1 && y[i].charAt(0) === x[i]) { adaInisial = true; continue; }
+      if (y[i].length === 1 && x[i].charAt(0) === y[i]) { adaInisial = true; continue; }
+      return false;
+    }
+    return adaInisial;
+  }
+  if (inisialCocok(na, nb)) return { status: 'MIRIP', ket: 'Sebagian nama disingkat menjadi huruf depan.' };
+
+  // salah satu nama berisi semua kata nama yang lain (nama tidak lengkap / ada tambahan)
+  var setA = {}, setB = {};
+  na.forEach(function (t) { setA[t] = 1; });
+  nb.forEach(function (t) { setB[t] = 1; });
+  var aDiB = na.every(function (t) { return setB[t]; });
+  var bDiA = nb.every(function (t) { return setA[t]; });
+  var panjangMin = Math.min(cna.length, cnb.length);
+  if ((aDiB || bDiA) && panjangMin >= 4) {
+    if (aDiB && bDiA) return { status: 'MIRIP', ket: 'Kata-kata nama sama, urutannya berbeda.' };
+    return { status: 'MIRIP', ket: aDiB ? 'Nama di MCM lebih pendek dari nama di rekening.' : 'Nama di rekening lebih pendek dari nama di MCM.' };
+  }
+
+  // satu nama adalah awal dari nama yang lain (mis. "CHOIRUN NISA" vs "CHOIRUNNISA NUR FITRIYA")
+  if (Math.min(ca.length, cb.length) >= 8 && (ca.indexOf(cb) === 0 || cb.indexOf(ca) === 0)) {
+    return { status: 'MIRIP', ket: ca.length < cb.length ? 'Nama di MCM lebih pendek dari nama di rekening.' : 'Nama di rekening lebih pendek dari nama di MCM.' };
+  }
+
+  // kecocokan per kata (dicek pada nama asli dan nama yang singkatannya sudah dibakukan)
+  var k1 = cocokPerKata_(a, b), k2 = cocokPerKata_(na, nb);
+  if ((k1.kuat && k1.rasio >= 0.6) || (k2.kuat && k2.rasio >= 0.6)) {
+    return { status: 'MIRIP', ket: 'Sebagian besar kata nama sama, tetapi ada perbedaan ejaan/singkatan/kata yang tidak lengkap.' };
+  }
+
+  // kemiripan huruf (salah ketik). Bandingkan juga dengan nama MCM yang dipotong sepanjang nama bank.
+  function rasio(x, y) { var l = Math.max(x.length, y.length); return l ? 1 - levenshtein_(x, y) / l : 0; }
+  var r1 = rasio(cna, cnb);
+  var r2 = cnb.length >= 14 && cna.length > cnb.length ? rasio(cna.substring(0, cnb.length), cnb) : 0;
+  var r = Math.max(r1, r2, rasio(ca, cb), rasio(ejaan_(ca), ejaan_(cb)));
+  if (r >= 0.8) return { status: 'MIRIP', ket: 'Kemungkinan salah ketik (kemiripan ' + Math.round(r * 100) + '%).' };
+
+  return { status: 'BEDA', ket: 'Rekening ini tercatat atas nama orang lain.' };
+}
+
+/* ================= proses crosscheck ================= */
+
+/** rows: [{line, acct, acctFromNumber, name, amountCents, remark}] */
+function jalankanCrosscheck_(rows, db, ro, sk) {
+  var hitung = hitungRek_(rows);
+  return rows.map(function (r) { return cocokSatu_(r, db, ro, sk, hitung); });
+}
+function hitungRek_(rows) {
+  var hitung = {};
+  rows.forEach(function (r) { hitung[r.acct] = (hitung[r.acct] || 0) + 1; });
+  return hitung;
+}
+var URUT_COCOK_ = { BEDA: 0, TIDAK_ADA: 1, MIRIP: 2, COCOK: 3 };
+function cocokSatu_(r, db, ro, sk, hitung) {
+  ro = ro || {}; sk = sk || {};
+  var urut = URUT_COCOK_;
+    var acct = String(r.acct), catatan = [];
+    var e = db.map[acct];
+    if (!e) {
+      var kandidat = db.tanpaNol[acct.replace(/^0+/, '')] || [];
+      if (kandidat.length === 1) {
+        e = db.map[kandidat[0]];
+        catatan.push('No rekening cocok setelah angka 0 di depan diabaikan (file MCM: ' + r.acct + ', database: ' + kandidat[0] + ').');
+        acct = kandidat[0];
+      }
+    }
+    if (hitung[r.acct] > 1) catatan.push('Rekening ini muncul ' + hitung[r.acct] + ' kali di file MCM.');
+    var out = { line: r.line, acct: acct, namaMcm: r.name, namaDb: '', status: 'TIDAK_ADA', ket: '', site: r.remark || '', amountCents: r.amountCents || 0 };
+    if (!e) {
+      out.ket = 'Rekening tidak ditemukan di database rekening.';
+    } else {
+      out.namaDb = e.nama.join(' / ');
+      var best = null;
+      e.nama.forEach(function (nm) {
+        var c = bandingkanNama_(r.name, nm);
+        if (!best || urut[c.status] > urut[best.status]) best = c;
+      });
+      out.status = best.status;
+      out.ket = best.ket;
+    }
+    // rekening RO: dipakai untuk menampung gaji karyawan yang belum punya rekening
+    var r0 = ro[kunciRek_(acct)];
+    if (r0 && out.status !== 'COCOK' && out.status !== 'MIRIP') {
+      var cR = bandingkanNama_(r.name, r0.nama);
+      if (cR.status === 'COCOK' || cR.status === 'MIRIP') { out.status = cR.status; out.ket = cR.ket; }
+      else {
+        out.status = 'RO';
+        out.ket = 'Dibayarkan melalui rekening RO ' + r0.nama + (r0.bank ? ' (' + r0.bank + ')' : '') + '. Perlu surat kuasa dari karyawan.';
+      }
+      if (!out.namaDb) out.namaDb = r0.nama;
+    }
+    // surat kuasa: beda nama tetapi sudah ada izin tertulis (mis. memakai rekening istri)
+    if (out.status === 'BEDA' || out.status === 'RO') {
+      (sk[kunciRek_(acct)] || []).some(function (x) {
+        var c = bandingkanNama_(r.name, x.namaMcm);
+        if (c.status === 'COCOK' || c.status === 'MIRIP') { out.sk = { id: x.id, label: x.label }; return true; }
+        return false;
+      });
+    }
+    if (catatan.length) out.ket += ' ' + catatan.join(' ');
+    return out;
+}
+
+/* peta database untuk crosscheck: rows = [[nama, bank, rek, siteBisnis, sitePenempatan], ...] */
+function petaDatabase_(vals) {
+  var n = vals.length, map = {}, tanpaNol = {};
+  if (n <= 0) return { map: map, tanpaNol: tanpaNol, jumlah: 0 };
+  for (var i = 0; i < vals.length; i++) {
+    var acct = vals[i][2];
+    if (!acct) continue;
+    var e = map[acct] || (map[acct] = { nama: [], bank: vals[i][1], site: [] });
+    if (e.nama.indexOf(vals[i][0]) === -1) e.nama.push(vals[i][0]);
+    if (vals[i][4] && e.site.indexOf(vals[i][4]) === -1) e.site.push(vals[i][4]);
+    var z = acct.replace(/^0+/, '');
+    (tanpaNol[z] = tanpaNol[z] || []).indexOf(acct) === -1 && tanpaNol[z].push(acct);
+  }
+  return { map: map, tanpaNol: tanpaNol, jumlah: n };
+}
+/* rekening -> nama pertama yang terdaftar (untuk cek "sudah ada di database") */
+function petaRekening_(vals) {
+  var map = {};
+  vals.forEach(function (v) {
+    var k = kunciRek_(v[2]);
+    if (k && !map[k]) map[k] = v[0];
+  });
+  return map;
+}
+/* cek baris Tambah Karyawan terhadap peta rekening (petaRekening_) */
+function cekKaryawanMurni_(rows, db) {
+  var lihat = {}, hasil = [];
+  (rows || []).forEach(function (r, i) {
+    var d = [0, 1, 2, 3, 4].map(function (c) { return String((r || [])[c] == null ? '' : r[c]).trim().replace(/\s+/g, ' '); });
+    d[0] = d[0].toUpperCase(); d[3] = d[3].toUpperCase(); d[4] = d[4].toUpperCase();
+    d[2] = d[2].replace(/[\s.\-]/g, '');
+    var x = { baris: i + 1, data: d, status: 'baru', alasan: '' };
+    var kosong = ['Nama', 'Bank', 'No Rekening', 'Site Bisnis', 'Site Penempatan'].filter(function (lbl, c) { return !d[c]; });
+    if (kosong.length) { x.status = 'salah'; x.alasan = 'Kolom kosong: ' + kosong.join(', '); }
+    else if (!/^\d{5,20}$/.test(d[2])) { x.status = 'salah'; x.alasan = 'No rekening harus 5–20 digit angka'; }
+    else {
+      var k = kunciRek_(d[2]);
+      if (db[k]) { x.status = 'ada'; x.alasan = 'Sudah ada di database atas nama ' + db[k]; }
+      else if (lihat[k]) { x.status = 'dobel'; x.alasan = 'Dobel dengan baris ' + lihat[k] + ' di daftar ini'; }
+      else lihat[k] = i + 1;
+    }
+    hasil.push(x);
+  });
+  return hasil;
+}
+
+  root.COCOK = { kunciRek: kunciRek_, bandingkanNama: bandingkanNama_, petaDatabase: petaDatabase_, petaRekening: petaRekening_,
+    hitungRek: hitungRek_, cocokSatu: cocokSatu_, jalankan: jalankanCrosscheck_, cekKaryawan: cekKaryawanMurni_ };
+  if (typeof module !== "undefined" && module.exports) module.exports = root.COCOK;
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+  <script>
 /* Moneywise — logika halaman */
 (function () {
   'use strict';
@@ -3638,8 +3952,11 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
       out = await resp.json();
     }
     if (out && out.sesiHabis) { logout(out.error || 'Sesi berakhir. Silakan masuk lagi.'); throw new Error(out.error || 'Sesi berakhir.'); }
+    // data rekening/RO/surat kuasa berubah: database di browser perlu diambil ulang sebelum dipakai lagi
+    if (out && out.ok && (UBAH_DB[payload.action] || !payload.action || (payload.action === 'bersihkanDobel' && out.dihapus))) dataBasi();
     return out;
   }
+  var UBAH_DB = { tambahRO: 1, editRO: 1, hapusRO: 1, uploadSK: 1, cabutSK: 1, hapusSK: 1, tambahKaryawan: 1, hapusRiwayat: 1, hapusSemuaRiwayat: 1 };
 
   function showLogin(msg) {
     var e = $('loginErr');
@@ -3650,11 +3967,76 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
   function logout(msg) {
     var t = getToken();
     setSesi(null);
+    dbs.isi = null; dbs.gen++;
     if (t && !msg) post({ action: 'logout', sesi: t }).catch(function () { });
     showLogin(msg);
     window.scrollTo(0, 0);
   }
   var openSettings = function () { showLogin(''); };
+
+  /* ---------- progres bersama: "Sudah 5/10 · 50%" + lama berjalan ----------
+   * hitung(x, n): kemajuan nyata (baris/halaman yang benar-benar sudah diproses)
+   * tahap(label): menunggu server (lamanya tidak bisa dihitung per baris), bar maju pelan + jam berjalan */
+  function progres(host, opsi) {
+    opsi = opsi || {};
+    var el = document.createElement('div');
+    el.className = 'prg'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+    el.innerHTML = '<div class="prg__top"><b class="prg__lbl"></b><span class="prg__pct">0%</span></div>' +
+      '<div class="prg__bar"><i></i></div><div class="prg__bot"><span class="prg__num"></span><span class="prg__time"></span></div>';
+    host.innerHTML = ''; host.appendChild(el); host.hidden = false;
+    var q = function (c) { return el.querySelector(c); };
+    var t0 = Date.now(), pct = 0, rayap = null, jam = setInterval(waktu, 500);
+    function waktu() { var d = Math.floor((Date.now() - t0) / 1000); q('.prg__time').textContent = d >= 1 ? d + ' detik' : ''; }
+    function atur(v) { pct = Math.max(pct, Math.min(100, v)); q('.prg__bar i').style.width = pct.toFixed(1) + '%'; q('.prg__pct').textContent = Math.floor(pct) + '%'; }
+    function henti() { if (rayap) { clearInterval(rayap); rayap = null; } }
+    return {
+      hitung: function (x, n, lbl, dari, ke) {
+        henti(); dari = dari || 0; ke = ke == null ? 100 : ke;
+        if (lbl) q('.prg__lbl').textContent = lbl;
+        q('.prg__num').textContent = 'Sudah ' + num(x) + '/' + num(n) + (opsi.satuan ? ' ' + opsi.satuan : '');
+        atur(dari + (n ? Math.min(1, x / n) : 1) * (ke - dari));
+      },
+      tahap: function (lbl, ke, ms, ket) {
+        henti(); q('.prg__lbl').textContent = lbl; q('.prg__num').textContent = ket || '';
+        var mulai = pct, t = Date.now(); ms = ms || 4000; ke = ke == null ? 96 : ke;
+        rayap = setInterval(function () { atur(mulai + (ke - mulai) * (1 - Math.exp(-(Date.now() - t) / ms))); }, 120);
+      },
+      selesai: function (lbl, ket) { henti(); if (lbl) q('.prg__lbl').textContent = lbl; if (ket != null) q('.prg__num').textContent = ket; atur(100); el.classList.add('is-done'); clearInterval(jam); },
+      gagal: function (lbl) { henti(); q('.prg__lbl').textContent = lbl; el.classList.add('is-bad'); clearInterval(jam); },
+      tutup: function () { henti(); clearInterval(jam); host.hidden = true; host.innerHTML = ''; }
+    };
+  }
+  // beri kesempatan browser menggambar progres di sela pekerjaan berat
+  function jeda() { return new Promise(function (r) { setTimeout(r, 0); }); }
+
+  /* ---------- database di browser ----------
+   * Diambil sekali (aksi "database"), dipakai Database Bank, cek Tambah Karyawan, dan crosscheck,
+   * supaya pengecekan langsung jalan di browser tanpa menunggu server. Dianggap basi setelah ada
+   * upload/tambah/hapus dari aplikasi, atau setelah 5 menit. Server tetap mengecek ulang saat menyimpan. */
+  var dbs = { isi: null, waktu: 0, gen: 0, isiGen: -1, janji: null }, DB_UMUR = 5 * 60 * 1000;
+  function databaseSegar() { return dbs.isi && dbs.isiGen === dbs.gen && Date.now() - dbs.waktu < DB_UMUR ? dbs.isi : null; }
+  function ambilDatabase(paksa) {
+    if (!paksa && databaseSegar()) return Promise.resolve(dbs.isi);
+    if (dbs.janji && dbs.janjiGen === dbs.gen) return dbs.janji;
+    var gen = dbs.gen;
+    var j = post({ action: 'database' }).then(function (out) {
+      if (!out || !out.ok) throw new Error((out && out.error) || 'Database tidak bisa dimuat.');
+      if (gen >= dbs.isiGen) { dbs.isi = out; dbs.waktu = Date.now(); dbs.isiGen = gen; }
+      return out;
+    });
+    dbs.janji = j; dbs.janjiGen = gen;
+    j.then(function () { if (dbs.janji === j) dbs.janji = null; }, function () { if (dbs.janji === j) dbs.janji = null; });
+    return j;
+  }
+  function dataBasi() { dbs.gen++; }
+  // peta pencocokan dari isi database (dibuat sekali per isi): aturan sama persis dengan server (cocok.js)
+  function petaDari(isi) {
+    if (isi._peta) return isi._peta;
+    var K = window.COCOK, ro = {}, sk = {};
+    (isi.roRinci || []).forEach(function (r) { ro[K.kunciRek(r[0])] = { acct: r[0], nama: r[1], bank: r[2] }; });
+    (isi.skRinci || []).forEach(function (x) { var k = K.kunciRek(x[0]); (sk[k] = sk[k] || []).push({ acct: x[0], namaMcm: x[1], id: x[2], label: x[3] }); });
+    return (isi._peta = { db: K.petaDatabase(isi.rows), rek: K.petaRekening(isi.rows), ro: ro, sk: sk, lengkap: !!(isi.roRinci && isi.skRinci) });
+  }
 
   /* dialog konfirmasi: konfirmasi({judul, isi(html), ok, jalankan: async fn}) -> true bila berhasil */
   function konfirmasi(o) {
@@ -3767,6 +4149,20 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
 
   function pickError(msg) { var e = $('pickErr'); e.textContent = msg; e.hidden = !msg; }
 
+  // pekerja pdf.js dipakai ulang (tidak dibuat baru setiap file) dan dua file dibaca bersamaan
+  var pdfPekerja = [];
+  function pekerjaPdf(i) {
+    if (pdfPekerja[i] === undefined) { try { pdfPekerja[i] = new pdfjsLib.PDFWorker({ name: 'mw-pdf-' + i }); } catch (e) { pdfPekerja[i] = null; } }
+    return pdfPekerja[i];
+  }
+  async function kolam(n, lebar, kerja) {
+    var berikut = 0, gagal = null;
+    async function jalur(slot) { while (berikut < n && !gagal) { var i = berikut++; try { await kerja(i, slot); } catch (e) { gagal = e; } } }
+    var j = []; for (var s = 0; s < lebar; s++) j.push(jalur(s));
+    await Promise.all(j);
+    if (gagal) throw gagal;
+  }
+
   async function handle(files) {
     pickError('');
     var bukan = files.filter(function (f) { return !/\.pdf$/i.test(f.name) && f.type !== 'application/pdf'; });
@@ -3781,25 +4177,45 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     meter.firstElementChild.style.width = '0'; meter.setAttribute('aria-valuenow', '0');
     $('readTxt').textContent = 'Membuka PDF…';
     var gab = { formats: {}, batches: [], rows: [], failed: [], errors: [], warnings: [], dilewati: [], dipakai: 0 }, sudahId = {}, kembar = 0;
-    var banyak = files.length > 1;
+    var banyak = files.length > 1, hasilFile = [], selesai = 0, halN = {}, halOk = {};
+    function kabar() {
+      if (me.batal) throw new Error('__batal');
+      var tot = 0, sel = 0, frac = 0;
+      files.forEach(function (f, i) { if (halN[i]) { tot += halN[i]; sel += halOk[i] || 0; frac += (halOk[i] || 0) / halN[i]; } });
+      var pct = Math.round(banyak ? frac / files.length * 100 : (tot ? sel / tot * 100 : 0));
+      meter.firstElementChild.style.width = pct + '%'; meter.setAttribute('aria-valuenow', String(pct));
+      $('readTxt').textContent = banyak
+        ? 'Sudah ' + selesai + '/' + files.length + ' file selesai · ' + num(sel) + ' halaman terbaca · ' + pct + '%'
+        : 'Sudah ' + num(sel) + '/' + num(tot) + ' halaman · ' + pct + '%';
+    }
+    async function bacaSatu(i, slot) {
+      var f = files[i], w = pekerjaPdf(slot), doc = null;
+      try {
+        var opsi = { data: await f.arrayBuffer() };
+        if (w) opsi.worker = w;
+        doc = await pdfjsLib.getDocument(opsi).promise;
+        halN[i] = doc.numPages;
+        if (state.file === me) state.pages += doc.numPages;
+        var pages = await MandiriParser.extractPages(doc, function (p) { halOk[i] = p; kabar(); });
+        hasilFile[i] = { r: MandiriParser.parse(pages) };
+      } catch (e) {
+        if (me.batal || e.message === '__batal') throw e;
+        hasilFile[i] = { err: e };
+      } finally {
+        selesai++;
+        if (doc) { try { doc.destroy(); } catch (x) { /* abaikan */ } }
+        try { kabar(); } catch (x) { /* dibatalkan */ }
+      }
+    }
     try {
+      try { await kolam(files.length, Math.min(2, files.length), bacaSatu); }
+      catch (eK) { if (me.batal || eK.message === '__batal') { batalBaca(); return; } throw eK; }
+      if (state.file !== me) return;
       for (var fi = 0; fi < files.length; fi++) {
-        var f = files[fi], r;
-        try {
-          var doc = await pdfjsLib.getDocument({ data: await f.arrayBuffer() }).promise;
-          state.pages += doc.numPages;
-          var pages = await MandiriParser.extractPages(doc, function (p, n) {
-            if (me.batal) throw new Error('__batal');
-            var pct = Math.round(((fi + p / n) / files.length) * 100);
-            meter.firstElementChild.style.width = pct + '%'; meter.setAttribute('aria-valuenow', String(pct));
-            $('readTxt').textContent = (banyak ? 'File ' + (fi + 1) + ' dari ' + files.length + ' · ' : '') + 'Membaca halaman ' + p + ' dari ' + n;
-          });
-          if (state.file !== me) return;
-          r = MandiriParser.parse(pages);
-        } catch (e1) {
-          if (me.batal || e1.message === '__batal') { batalBaca(); return; }
-          if (!banyak) throw e1;
-          gab.dilewati.push({ name: f.name, why: 'PDF tidak bisa dibuka (' + e1.message + '). Mungkin rusak atau terkunci kata sandi.' });
+        var f = files[fi], h = hasilFile[fi] || { err: new Error('tidak terbaca') }, r = h.r;
+        if (h.err) {
+          if (!banyak) throw h.err;
+          gab.dilewati.push({ name: f.name, why: 'PDF tidak bisa dibuka (' + h.err.message + '). Mungkin rusak atau terkunci kata sandi.' });
           continue;
         }
         // satu file bermasalah tidak menahan file lain: file itu saja yang dilewati, dengan alasannya
@@ -4091,6 +4507,9 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     var r = state.res, btn = $('sendBtn'), kirim = state.kirim = { batal: false };
     btn.disabled = true; btn.textContent = 'Mengirim…'; setStep(3);
     $('sendCancel').hidden = false; $('sendCancel').disabled = false; $('sendCancel').textContent = 'Batalkan';
+    var pg = progres($('sendProg'));
+    try { $('sendProg').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (x) { /* abaikan */ }
+    pg.tahap('Menyimpan ' + num(r.rows.length) + ' baris ke spreadsheet…', 96, 2500 + r.rows.length * 1.5, num(r.batches.length) + ' batch · rekening yang sudah ada dilewati otomatis');
     try {
       var out = await post({
         token: getToken(),
@@ -4102,6 +4521,9 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
       });
       if (!out.ok) throw new Error(out.error || 'Server menolak data.');
       $('sendCancel').hidden = true;
+      pg.tutup();
+      dataBasi();
+      if (window.APP && APP.dbBasi) APP.dbBasi();
       if (kirim.batal) {
         // data sudah masuk: tarik lagi supaya benar-benar batal
         var und = out.waktu ? await post({ action: 'hapusRiwayat', jenis: 'pdf', waktu: out.waktu, pengunggah: out.oleh || '' }).catch(function () { return null; }) : null;
@@ -4131,6 +4553,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
       $('doneTitle').focus();
     } catch (err) {
       $('sendCancel').hidden = true;
+      pg.tutup();
       setStep(2);
       updateAction();
       if (!kirim.batal) toast('Gagal mengirim: ' + err.message);
@@ -4336,6 +4759,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     spark: spark, seriHarian: seriHarian, seriKumulatif: seriKumulatif,
     bukaVideo: function (v) { if (A_bukaVideo) A_bukaVideo(v); }, setVideo: function (v) { VIDEO = v || null; },
     post: post, getToken: getToken, connected: connected, openSettings: openSettings, logout: logout, konfirmasi: konfirmasi,
+    progres: progres, jeda: jeda, ambilDatabase: ambilDatabase, databaseSegar: databaseSegar, dataBasi: dataBasi, petaDari: petaDari,
     esc: esc, num: num, rp: rp, toast: toast, cfg: CFG, sesi: getSesi, gas: !!GAS,
     onConn: function (f) { connListeners.push(f); f(connected()); }
   };
@@ -4450,6 +4874,8 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
         '</td><td data-label="Keterangan">' + esc(x.remark || '-') + '</td></tr>';
     }).join('') + (r.rows.length > 8 ? '<tr class="more"><td colspan="5">dan ' + num(r.rows.length - 8) + ' baris lainnya</td></tr>' : '');
     updateRun();
+    // siapkan database di belakang selagi pratinjau dilihat, supaya klik "Cocokkan" langsung jalan
+    if (!r.errors.length && A.connected() && !A.databaseSegar()) A.ambilDatabase().catch(function () { });
   }
 
   function updateRun() {
@@ -4462,36 +4888,145 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     txt.textContent = 'Hasilnya langsung tersimpan di riwayat dan di sheet Hasil Crosscheck.';
   }
 
-  /* ---------- jalankan crosscheck (bisa dibatalkan) ---------- */
-  var run = null;
+  /* ---------- jalankan crosscheck ----------
+   * Cara cepat: dicocokkan langsung di browser (aturan sama persis dengan server, dari cocok.js) dengan
+   * progres nyata "Sudah 120/1.000 baris". Laporan langsung tampil, lalu disimpan ke riwayat di belakang;
+   * server menghitung ulang sebagai acuan akhir dan mengoreksi kalau database sempat berubah.
+   * Kalau database belum bisa dimuat ke browser, server yang mencocokkan seperti sebelumnya. */
+  var run = null, menyimpan = 0;
+  function cegahTutup(e) { if (menyimpan > 0) { e.preventDefault(); e.returnValue = ''; } }
+  window.addEventListener('beforeunload', cegahTutup);
   $('xRunBtn').addEventListener('click', async function () {
-    var btn = this, r = st.parsed, me = run = { batal: false };
+    var btn = this, r = st.parsed, file = st.file, me = run = { batal: false };
     btn.disabled = true; btn.textContent = 'Mencocokkan…';
     $('xCancelRun').hidden = false; $('xCancelRun').disabled = false; $('xCancelRun').textContent = 'Batalkan';
+    var pg = A.progres($('xProg'), { satuan: 'baris' }), n = r.rows.length;
+    try { $('xProg').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (x) { /* abaikan */ }
     try {
-      var fileData = null;
-      try { if (st.file.size < 8 * 1024 * 1024) fileData = { name: st.file.name, mime: st.file.type || 'application/octet-stream', data: await bacaBase64(st.file) }; } catch (e) { fileData = null; }
-      var out = await A.post({ action: 'crosscheck', fileName: st.file.name, remark: r.remark, rows: r.rows, file: fileData });
-      if (!out.ok) throw new Error(out.error || 'Server menolak data.');
-      if (me.batal) {
-        // hasil sudah tersimpan di server: hapus lagi supaya benar-benar batal
-        await A.post({ action: 'hapusRiwayat', jenis: 'cc', id: out.id, alasan: 'Dibatalkan saat proses' }).catch(function () { });
-        A.toast('Crosscheck dibatalkan. Tidak ada hasil yang disimpan.', true);
-        updateRun();
-        return;
+      var isi = A.databaseSegar();
+      if (!isi && window.COCOK) {
+        pg.tahap('Mengambil database rekening…', 30, 2500, 'Sekali saja, berikutnya langsung');
+        try { isi = await A.ambilDatabase(); } catch (e) { isi = null; }
       }
-      openReport(out);
-      loadHistory();
+      if (me.batal) throw new Error('__batal');
+      var peta = isi && window.COCOK ? A.petaDari(isi) : null;
+      if (peta && peta.lengkap && peta.db.jumlah) {
+        var hitungRek = COCOK.hitungRek(r.rows), hasil = [], t = performance.now(), lbl = 'Mencocokkan dengan ' + num(peta.db.jumlah) + ' rekening di database…';
+        pg.hitung(0, n, lbl);
+        for (var i = 0; i < n; i++) {
+          hasil.push(COCOK.cocokSatu(r.rows[i], peta.db, peta.ro, peta.sk, hitungRek));
+          if (i === n - 1 || performance.now() - t > 24) {
+            pg.hitung(i + 1, n, lbl);
+            await A.jeda(); t = performance.now();
+            if (me.batal) throw new Error('__batal');
+          }
+        }
+        pg.selesai('Selesai dicocokkan', 'Sudah ' + num(n) + '/' + num(n) + ' baris');
+        var total = 0; hasil.forEach(function (h) { total += h.amountCents; });
+        var sesi = A.sesi() || {};
+        var lap = { id: '', waktu: new Date().toISOString(), oleh: sesi.email || '', fileName: file.name, remark: r.remark, adaFile: false,
+          totalCents: total, hasil: hasil, jumlahDatabase: peta.db.jumlah, _r: r, _file: file };
+        openReport(lap);
+        simpanLaporan(lap);
+      } else {
+        if (isi && !peta.db.jumlah) throw new Error('Database rekening masih kosong.');
+        pg.tahap('Mencocokkan ' + num(n) + ' baris di server…', 96, 3500 + n * 2);
+        var out = await A.post({ action: 'crosscheck', fileName: file.name, remark: r.remark, rows: r.rows });
+        if (!out.ok) throw new Error(out.error || 'Server menolak data.');
+        if (me.batal) {
+          // hasil sudah tersimpan di server: hapus lagi supaya benar-benar batal
+          await A.post({ action: 'hapusRiwayat', jenis: 'cc', id: out.id, alasan: 'Dibatalkan saat proses' }).catch(function () { });
+          A.toast('Crosscheck dibatalkan. Tidak ada hasil yang disimpan.', true);
+          updateRun();
+          return;
+        }
+        pg.selesai('Selesai dicocokkan', 'Sudah ' + num(n) + '/' + num(n) + ' baris');
+        openReport(out);
+        loadHistory();
+        simpanFileMCM(out, file);
+      }
     } catch (err) {
       updateRun();
-      if (!me.batal) A.toast('Gagal mencocokkan: ' + err.message);
+      if (err.message === '__batal') A.toast('Crosscheck dibatalkan. Tidak ada hasil yang disimpan.', true);
+      else if (!me.batal) A.toast('Gagal mencocokkan: ' + err.message);
     } finally {
       $('xCancelRun').hidden = true; run = null;
+      setTimeout(function () { pg.tutup(); }, 600);
     }
   });
   $('xCancelRun').addEventListener('click', function () {
     if (!run) return;
     run.batal = true; this.disabled = true; this.textContent = 'Membatalkan…';
+  });
+
+  // simpan ke riwayat di belakang; server mencocokkan ulang = acuan akhir
+  function simpanLaporan(rep) {
+    var r = rep._r, file = rep._file;
+    rep.simpanStatus = 'proses'; rep.simpanError = '';
+    if (st.report === rep) tulisMeta(rep);
+    menyimpan++;
+    rep.simpan = A.post({ action: 'crosscheck', fileName: file.name, remark: r.remark, rows: r.rows }).then(function (out) {
+      if (!out.ok) throw new Error(out.error || 'Server menolak data.');
+      rep.id = out.id; rep.waktu = out.waktu; rep.waktuTeks = out.waktuTeks; rep.oleh = out.oleh || rep.oleh;
+      var beda = bedaHasil(rep.hasil, out.hasil);
+      if (beda) {
+        rep.hasil = out.hasil;
+        rep.hasil.sort(function (a, b) { return (URUT[a.status] - URUT[b.status]) || (a.line - b.line); });
+        if (st.report === rep) { renderFigures(); renderRows(); }
+        A.toast(num(beda) + ' baris disesuaikan dengan database terbaru di server.', true);
+      }
+      rep.simpanStatus = 'ok';
+      if (st.report === rep) tulisMeta(rep);
+      setTimeout(function () { rep.simpanLama = true; if (st.report === rep) tulisMeta(rep); }, 5000);
+      loadHistory();
+      simpanFileMCM(rep, file);
+      return rep;
+    }).catch(function (e) {
+      rep.simpanStatus = 'gagal'; rep.simpanError = e.message;
+      if (st.report === rep) tulisMeta(rep);
+      throw e;
+    });
+    rep.simpan.then(function () { menyimpan--; }, function () { menyimpan--; });
+  }
+  function bedaHasil(a, b) {
+    if (!b || a.length !== b.length) return Math.max(a.length, (b || []).length);
+    var peta = {}, n = 0;
+    b.forEach(function (h) { peta[h.line + '|' + h.acct + '|' + h.namaMcm] = h; });
+    a.forEach(function (h) {
+      var x = peta[h.line + '|' + h.acct + '|' + h.namaMcm];
+      if (!x || x.status !== h.status || x.namaDb !== h.namaDb || x.ket !== h.ket || (x.sk ? x.sk.id : '') !== (h.sk ? h.sk.id : '')) n++;
+    });
+    return n;
+  }
+  // file MCM asli disimpan ke Drive di belakang (untuk "MCM benar" dari riwayat); tidak menahan laporan
+  async function simpanFileMCM(rep, file) {
+    if (!file || !rep.id || file.size >= 8 * 1024 * 1024) return;
+    try {
+      var sv = await A.post({ action: 'simpanFileMCM', id: rep.id, otomatis: true, file: { name: file.name, mime: file.type || 'application/octet-stream', data: await bacaBase64(file) } });
+      if (sv && sv.ok) rep.adaFile = true;
+    } catch (e) { /* MCM benar tetap bisa dibuka dari file yang masih ada di halaman ini */ }
+  }
+  // tindakan yang butuh ID laporan menunggu sampai tersimpan
+  async function pastikanTersimpan(rep) {
+    if (!rep || rep.id) return true;
+    if (rep.simpanStatus === 'gagal') { A.toast('Hasil crosscheck belum tersimpan ke riwayat. Klik "Coba simpan lagi" dulu.'); return false; }
+    if (!rep.simpan) return false;
+    A.toast('Sebentar, hasil crosscheck sedang disimpan ke riwayat…', true);
+    try { await rep.simpan; return !!rep.id; } catch (e) { return false; }
+  }
+  function tulisMeta(rep) {
+    $('rMeta').textContent = waktuRep(rep) + (rep.oleh ? ', oleh ' + rep.oleh : '') + ', ' + num(rep.hasil.length) + ' baris' + (rep.id ? ', ID ' + rep.id : '');
+    var c = $('rSave'), s = rep.simpanStatus;
+    if (!s || (s === 'ok' && rep.simpanLama)) { c.hidden = true; return; }
+    c.hidden = false; c.className = 'rsave' + (s === 'ok' ? ' is-ok' : s === 'gagal' ? ' is-bad' : '');
+    c.innerHTML = s === 'proses' ? '<span class="spin" aria-hidden="true"></span>Menyimpan ke riwayat…'
+      : s === 'ok' ? '✓ Tersimpan di riwayat'
+        : 'Belum tersimpan ke riwayat <button type="button" data-ulang>Coba simpan lagi</button>';
+    if (s === 'gagal') c.title = rep.simpanError || ''; else c.removeAttribute('title');
+  }
+  $('rSave').addEventListener('click', function (e) {
+    if (!e.target.closest('[data-ulang]') || !st.report || st.report.id || !st.report._r) return;
+    simpanLaporan(st.report);
   });
 
   /* ---------- laporan ---------- */
@@ -4512,7 +5047,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     A.go('crosscheck');
     show('xReport'); setStep(3);
     $('rName').textContent = rep.fileName || 'File MCM';
-    $('rMeta').textContent = waktuRep(rep) + (rep.oleh ? ', oleh ' + rep.oleh : '') + ', ' + num(rep.hasil.length) + ' baris, ID ' + rep.id;
+    tulisMeta(rep);
     $('rQ').value = '';
     renderFigures();
     selectTab(rep.ringkas.CEK ? 'rt-cek' : 'rt-ok');
@@ -4622,7 +5157,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
   /* batalkan crosscheck yang sudah selesai = hapus hasilnya */
   $('rCancel').addEventListener('click', async function () {
     var rep = st.report;
-    if (!rep) return;
+    if (!rep || !(await pastikanTersimpan(rep))) return;
     var ok = await A.konfirmasi({
       judul: 'Batalkan crosscheck ini?',
       isi: '<p>Hasil crosscheck <b>' + esc(rep.fileName || '-') + '</b> (' + esc(waktuRep(rep)) + ') akan dihapus dari riwayat dan sheet Hasil Crosscheck.</p><p class="confirm__note">Surat kuasa yang sudah diupload tetap tersimpan dan tetap berlaku.</p>',
@@ -4659,13 +5194,13 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
       ]
     };
   }
-  $('rPdf').addEventListener('click', function () { if (st.report) A.laporan.pdf(specLaporan(), this); });
-  $('rPrint').addEventListener('click', function () { if (st.report) A.laporan.cetak(specLaporan()); });
+  $('rPdf').addEventListener('click', async function () { if (st.report && await pastikanTersimpan(st.report)) A.laporan.pdf(specLaporan(), this); });
+  $('rPrint').addEventListener('click', async function () { if (st.report && await pastikanTersimpan(st.report)) A.laporan.cetak(specLaporan()); });
 
   /* ---------- download laporan Excel ---------- */
-  $('rDownload').addEventListener('click', function () {
+  $('rDownload').addEventListener('click', async function () {
     var rep = st.report;
-    if (!rep) return;
+    if (!rep || !(await pastikanTersimpan(rep))) return;
     if (typeof XLSX === 'undefined') { A.toast('Pembuat file Excel belum termuat. Periksa koneksi internet.'); return; }
     var head = ['Baris di File', 'No Rekening', 'Nama di MCM', 'Nama di Database', 'Status', 'Surat Kuasa', 'Keterangan', 'Site Penempatan (MCM)', 'Nominal (Rp)'];
     function data(list) { return [head].concat(list.map(function (h) { return [h.line, String(h.acct), h.namaMcm, h.namaDb, LABEL[h.status], h.sk ? h.sk.label : '', h.ket, h.site, h.amountCents / 100]; })); }
@@ -4766,6 +5301,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     if ($('skHub').value === 'Lainnya' && !$('skLain').value.trim()) { err.textContent = 'Tulis dulu hubungan "Lainnya" itu apa.'; err.hidden = false; $('skLain').focus(); return; }
     btn.disabled = true; btn.textContent = 'Mengupload…';
     try {
+      if (!(await pastikanTersimpan(st.report))) throw new Error('Hasil crosscheck belum tersimpan ke riwayat. Coba simpan lagi dulu.');
       var uploadId = null, dataLangsung = null;
       try { uploadId = await uploadBertahap(skFile, function (p) { btn.textContent = 'Mengupload ' + Math.round(p * 100) + '%…'; }); }
       catch (exUp) {
@@ -4905,6 +5441,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
   function grupSk(id) { return String(id).split('-').slice(0, 4).join('-'); }
   async function hapusSkLaporan(h) {
     var rep = st.report, g = grupSk(h.sk.id);
+    if (!(await pastikanTersimpan(rep))) return;
     var lain = rep.hasil.filter(function (x) { return x !== h && x.sk && grupSk(x.sk.id) === g && x.sk.id !== h.sk.id; });
     var namaLain = {}; lain.forEach(function (x) { namaLain[x.sk.id] = 1; });
     var nLain = Object.keys(namaLain).length, hasil = null;
@@ -5737,13 +6274,13 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
   var db = { rows: null, ro: {}, sk: {}, q: '', site: '', bank: '', page: 1, reveal: false, busy: false, basi: true, sortCol: -1, sortDir: 1 };
   var PER = 50;
   function kunci(a) { return String(a).replace(/\D/g, '').replace(/^0+/, ''); }
-  A.dbBasi = function () { db.basi = true; if (current === 'database') muatDatabase(); };
+  A.dbBasi = function () { db.basi = true; if (A.dataBasi) A.dataBasi(); if (current === 'database') muatDatabase(); };
   async function muatDatabase(paksa) {
     if (db.busy || (!db.basi && !paksa && db.rows)) return;
     db.busy = true;
     $('bMeta').textContent = 'Memuat database…';
     try {
-      var out = await A.post({ action: 'database' });
+      var out = await A.ambilDatabase(!!paksa);   // database yang sama dipakai crosscheck & Tambah Karyawan
       if (!out.ok) throw new Error(out.error || 'Gagal memuat database.');
       db.rows = out.rows; db.ro = {}; db.sk = {}; db.basi = false;
       out.ro.forEach(function (k) { db.ro[k] = 1; }); out.sk.forEach(function (k) { db.sk[k] = 1; });
@@ -6287,17 +6824,24 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     if (!rows.length) throw new Error('File tidak berisi data karyawan. Isi mulai baris ke-2 di bawah judul kolom.');
     return { rows: rows, angka: angka };
   }
+  var JUDUL_DROP = null;
   async function pilihFile(f) {
     if (!f) return;
     if (!/\.(xlsx|xls|csv|txt)$/i.test(f.name)) { A.toast('Pilih file Excel (.xlsx/.xls) atau CSV.'); return; }
-    var drop = $('kDrop'), judul = drop.querySelector('.drop__title'), asal = judul.innerHTML;
+    var judul = $('kDrop').querySelector('.drop__title');
+    if (JUDUL_DROP == null) JUDUL_DROP = judul.innerHTML;
+    var tok = st.tok = {};
     judul.textContent = 'Membaca ' + f.name + '…';
+    $('kPrev').hidden = true; $('kDone').hidden = true;
+    var pg = A.progres($('kProg'), { satuan: 'baris' });
+    pg.tahap('Membaca ' + f.name + '…', 15, 600);
     try {
       var b = await bacaFile(f);
+      if (st.tok !== tok) return;
       st.sumber = 'file'; st.fileName = f.name; st.angka = b.angka;
-      await periksa(b.rows);
-    } catch (e) { A.toast(e.message || 'File tidak bisa dibaca.'); }
-    finally { judul.innerHTML = asal; $('kFile').value = ''; }
+      await periksa(b.rows, pg, tok);
+    } catch (e) { if (st.tok === tok) { pg.tutup(); A.toast(e.message || 'File tidak bisa dibaca.'); } }
+    finally { if (st.tok === tok) judul.innerHTML = JUDUL_DROP; $('kFile').value = ''; }
   }
   $('kFile').addEventListener('change', function () { pilihFile(this.files[0]); });
   ['dragenter', 'dragover'].forEach(function (ev) { $('kDrop').addEventListener(ev, function (e) { e.preventDefault(); this.classList.add('is-over'); }); });
@@ -6363,12 +6907,13 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     if (!m.rows.length) { A.toast('Isi minimal satu karyawan.'); $('kRows').querySelector('input').focus(); return; }
     st.sumber = 'manual'; st.fileName = ''; st.angka = {}; st.elManual = m.el;
     var b = $('kCek'); b.disabled = true; b.textContent = 'Memeriksa…';
-    try { await periksa(m.rows); } finally { b.disabled = false; b.textContent = 'Periksa'; }
+    var tok = st.tok = {};
+    try { await periksa(m.rows, null, tok); } finally { b.disabled = false; b.textContent = 'Periksa'; }
   });
   async function muatSaran() {
     if (st.saran) return;
     try {
-      var out = await A.post({ action: 'database' });
+      var out = await A.ambilDatabase();
       if (!out.ok) return;
       var u = [{}, {}, {}];
       out.rows.forEach(function (r) { u[0][r[1]] = 1; u[1][r[3]] = 1; u[2][r[4]] = 1; });
@@ -6381,11 +6926,34 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
 
   /* ---------- periksa & simpan ---------- */
   var LBL = { baru: 'Baru', ada: 'Sudah ada', dobel: 'Dobel', salah: 'Perlu diperbaiki' };
-  async function periksa(rows) {
+  /* cek langsung di browser memakai database yang sudah dimuat (aturan sama persis dengan server);
+   * kalau database belum bisa dimuat, cek lewat server seperti biasa. Server tetap mengecek ulang saat Simpan. */
+  async function periksa(rows, pg, tok) {
     $('kDone').hidden = true;
-    var out = await A.post({ action: 'cekKaryawan', rows: rows });
-    if (!out.ok) { A.toast(out.error || 'Gagal memeriksa.'); return; }
-    st.rows = rows; st.hasil = out.hasil;
+    pg = pg || A.progres($('kProg'), { satuan: 'baris' });
+    var hasil = null, isi = A.databaseSegar();
+    try {
+      if (!isi && window.COCOK) {
+        pg.tahap('Mengambil database rekening…', 70, 2500, 'Sekali saja, berikutnya langsung');
+        try { isi = await A.ambilDatabase(); } catch (e) { isi = null; }
+        if (tok && st.tok !== tok) return;
+      }
+      if (isi && window.COCOK) {
+        pg.hitung(0, rows.length, 'Memeriksa ' + A.num(rows.length) + ' baris…', 70, 70);
+        await A.jeda();
+        hasil = COCOK.cekKaryawan(rows, A.petaDari(isi).rek);
+        pg.hitung(rows.length, rows.length, 'Selesai diperiksa', 70, 100);
+      } else {
+        pg.tahap('Memeriksa ' + A.num(rows.length) + ' baris ke database…', 96, 3000);
+        var out = await A.post({ action: 'cekKaryawan', rows: rows });
+        if (!out.ok) throw new Error(out.error || 'Gagal memeriksa.');
+        hasil = out.hasil;
+      }
+    } catch (e) { if (!tok || st.tok === tok) { pg.tutup(); A.toast(e.message || 'Gagal memeriksa.'); } return; }
+    if (tok && st.tok !== tok) return;
+    pg.selesai('Selesai diperiksa', 'Sudah ' + A.num(rows.length) + '/' + A.num(rows.length) + ' baris');
+    setTimeout(function () { if (!tok || st.tok === tok) pg.tutup(); }, 900);
+    st.rows = rows; st.hasil = hasil;
     renderPreview();
     if (st.sumber === 'manual' && st.elManual) {
       out.hasil.forEach(function (x, i) {
@@ -6418,12 +6986,18 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
   function tutupPreview() { $('kPrev').hidden = true; st.rows = null; st.hasil = null; }
   $('kBatal').addEventListener('click', tutupPreview);
   $('kSimpan').addEventListener('click', async function () {
-    if (!st.rows) return;
-    var b = this, lbl = b.textContent;
-    b.disabled = true; b.textContent = 'Menyimpan…';
+    if (!st.rows || st.menyimpan) return;
+    var b = this, lbl = b.textContent, nBaru = st.hasil.filter(function (x) { return x.status === 'baru'; }).length;
+    st.menyimpan = true;
+    b.disabled = true; b.textContent = 'Menyimpan…'; $('kBatal').disabled = true; $('kErr').hidden = true;
+    var pg = A.progres($('kSaveProg'));
+    try { $('kSaveProg').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (x) { /* abaikan */ }
+    pg.tahap('Menyimpan ' + A.num(nBaru) + ' karyawan baru ke spreadsheet…', 96, 3000, 'Jangan tutup halaman ini dulu');
     try {
       var out = await A.post({ action: 'tambahKaryawan', rows: st.rows, sumber: st.sumber, fileName: st.fileName });
       if (!out.ok) throw new Error(out.error);
+      pg.tutup();
+      A.dataBasi();
       st.terakhir = out;
       var lewat = out.hasil.length - out.barisMasuk;
       $('kDoneTitle').textContent = num(out.barisMasuk) + ' karyawan masuk ke Data Upah';
@@ -6434,7 +7008,8 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
       st.rows = null; st.saran = null;
       if (A.dbBasi) A.dbBasi();
       A.toast(num(out.barisMasuk) + ' karyawan berhasil ditambahkan.', true);
-    } catch (e) { $('kErr').textContent = 'Gagal menyimpan: ' + e.message; $('kErr').hidden = false; b.disabled = false; b.textContent = lbl; }
+    } catch (e) { pg.tutup(); $('kErr').textContent = 'Gagal menyimpan: ' + e.message; $('kErr').hidden = false; b.disabled = false; b.textContent = lbl; }
+    finally { st.menyimpan = false; $('kBatal').disabled = false; }
   });
   $('kLagi').addEventListener('click', function () { $('kDone').hidden = true; if (st.tab === 'manual') $('kRows').querySelector('.krow:not(.krow--head) input').focus(); });
   $('kUndo').addEventListener('click', async function () {
