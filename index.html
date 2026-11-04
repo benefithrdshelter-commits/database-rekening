@@ -1901,6 +1901,9 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
 }
 @media (prefers-reduced-motion: reduce) { .prg__bar i { transition: none; } .prg__bar i::after { animation: none; display: none; } }
 
+/* v15: baris yang ditemukan di data personalia */
+.pill__asal--ps { color: var(--blue-700); font-weight: 600; }
+
 </style>
 </head>
 <body class="is-auth">
@@ -3750,9 +3753,9 @@ function bandingkanNama_(namaMcm, namaDb) {
 /* ================= proses crosscheck ================= */
 
 /** rows: [{line, acct, acctFromNumber, name, amountCents, remark}] */
-function jalankanCrosscheck_(rows, db, ro, sk) {
+function jalankanCrosscheck_(rows, db, ro, sk, ps) {
   var hitung = hitungRek_(rows);
-  return rows.map(function (r) { return cocokSatu_(r, db, ro, sk, hitung); });
+  return rows.map(function (r) { return cocokSatu_(r, db, ro, sk, hitung, ps); });
 }
 function hitungRek_(rows) {
   var hitung = {};
@@ -3760,8 +3763,8 @@ function hitungRek_(rows) {
   return hitung;
 }
 var URUT_COCOK_ = { BEDA: 0, TIDAK_ADA: 1, MIRIP: 2, COCOK: 3 };
-function cocokSatu_(r, db, ro, sk, hitung) {
-  ro = ro || {}; sk = sk || {};
+function cocokSatu_(r, db, ro, sk, hitung, ps) {
+  ro = ro || {}; sk = sk || {}; var adaPs = !!ps; ps = ps || {};
   var urut = URUT_COCOK_;
     var acct = String(r.acct), catatan = [];
     var e = db.map[acct];
@@ -3775,8 +3778,23 @@ function cocokSatu_(r, db, ro, sk, hitung) {
     }
     if (hitung[r.acct] > 1) catatan.push('Rekening ini muncul ' + hitung[r.acct] + ' kali di file MCM.');
     var out = { line: r.line, acct: acct, namaMcm: r.name, namaDb: '', status: 'TIDAK_ADA', ket: '', site: r.remark || '', amountCents: r.amountCents || 0 };
-    if (!e) {
-      out.ket = 'Rekening tidak ditemukan di database rekening.';
+    var pList = !e ? ps[kunciRek_(acct)] : null;
+    if (!e && pList && pList.length) {
+      // tidak ada di database Moneywise, tetapi ada di data personalia (Nomor Rekening Direct): cocokkan nama lengkapnya
+      out.sumber = 'personalia';
+      out.namaDb = pList.map(function (x) { return x.nama; }).join(' / ');
+      var bestP = null, pakai = null;
+      pList.forEach(function (x) {
+        var c = bandingkanNama_(r.name, x.nama);
+        if (!bestP || urut[c.status] > urut[bestP.status]) { bestP = c; pakai = x; }
+      });
+      var tidakAktif = pakai.status && !/^AKTIF$/i.test(pakai.status);
+      out.status = bestP.status === 'COCOK' && tidakAktif ? 'MIRIP' : bestP.status;   // nama cocok tapi sudah tidak aktif: tetap perlu dicek
+      out.ket = (bestP.status === 'BEDA' ? 'Di data personalia, rekening ini tercatat atas nama orang lain.' : bestP.ket) +
+        ' Sumber: data personalia (Nomor Rekening Direct), belum ada di database Moneywise.' +
+        (tidakAktif ? ' Perlu dicek: status karyawan di personalia ' + pakai.status + '.' : '');
+    } else if (!e) {
+      out.ket = adaPs ? 'Rekening tidak ditemukan di database rekening maupun di data personalia.' : 'Rekening tidak ditemukan di database rekening.';
     } else {
       out.namaDb = e.nama.join(' / ');
       var best = null;
@@ -3825,6 +3843,17 @@ function petaDatabase_(vals) {
   }
   return { map: map, tanpaNol: tanpaNol, jumlah: n };
 }
+/* peta data personalia: rows = [[nama, rek, status, site], ...] -> kunci rekening -> [{nama, status, site}] */
+function petaPersonalia_(rows) {
+  var map = {};
+  (rows || []).forEach(function (v) {
+    var k = kunciRek_(v[1]), nama = String(v[0] || '').trim();
+    if (!k || !nama) return;
+    var l = map[k] || (map[k] = []);
+    if (!l.some(function (x) { return x.nama === nama; })) l.push({ nama: nama, status: String(v[2] || '').trim(), site: String(v[3] || '').trim() });
+  });
+  return map;
+}
 /* rekening -> nama pertama yang terdaftar (untuk cek "sudah ada di database") */
 function petaRekening_(vals) {
   var map = {};
@@ -3856,7 +3885,7 @@ function cekKaryawanMurni_(rows, db) {
   return hasil;
 }
 
-  root.COCOK = { kunciRek: kunciRek_, bandingkanNama: bandingkanNama_, petaDatabase: petaDatabase_, petaRekening: petaRekening_,
+  root.COCOK = { kunciRek: kunciRek_, bandingkanNama: bandingkanNama_, petaDatabase: petaDatabase_, petaRekening: petaRekening_, petaPersonalia: petaPersonalia_,
     hitungRek: hitungRek_, cocokSatu: cocokSatu_, jalankan: jalankanCrosscheck_, cekKaryawan: cekKaryawanMurni_ };
   if (typeof module !== "undefined" && module.exports) module.exports = root.COCOK;
 })(typeof window !== "undefined" ? window : globalThis);
@@ -4035,7 +4064,8 @@ function cekKaryawanMurni_(rows, db) {
     var K = window.COCOK, ro = {}, sk = {};
     (isi.roRinci || []).forEach(function (r) { ro[K.kunciRek(r[0])] = { acct: r[0], nama: r[1], bank: r[2] }; });
     (isi.skRinci || []).forEach(function (x) { var k = K.kunciRek(x[0]); (sk[k] = sk[k] || []).push({ acct: x[0], namaMcm: x[1], id: x[2], label: x[3] }); });
-    return (isi._peta = { db: K.petaDatabase(isi.rows), rek: K.petaRekening(isi.rows), ro: ro, sk: sk, lengkap: !!(isi.roRinci && isi.skRinci) });
+    return (isi._peta = { db: K.petaDatabase(isi.rows), rek: K.petaRekening(isi.rows), ro: ro, sk: sk, ps: isi.personaliaError ? null : K.petaPersonalia(isi.personalia || []),
+      lengkap: !!(isi.roRinci && isi.skRinci && isi.personalia) });
   }
 
   /* dialog konfirmasi: konfirmasi({judul, isi(html), ok, jalankan: async fn}) -> true bila berhasil */
@@ -4914,7 +4944,7 @@ function cekKaryawanMurni_(rows, db) {
         var hitungRek = COCOK.hitungRek(r.rows), hasil = [], t = performance.now(), lbl = 'Mencocokkan dengan ' + num(peta.db.jumlah) + ' rekening di database…';
         pg.hitung(0, n, lbl);
         for (var i = 0; i < n; i++) {
-          hasil.push(COCOK.cocokSatu(r.rows[i], peta.db, peta.ro, peta.sk, hitungRek));
+          hasil.push(COCOK.cocokSatu(r.rows[i], peta.db, peta.ro, peta.sk, hitungRek, peta.ps));
           if (i === n - 1 || performance.now() - t > 24) {
             pg.hitung(i + 1, n, lbl);
             await A.jeda(); t = performance.now();
@@ -5088,7 +5118,7 @@ function cekKaryawanMurni_(rows, db) {
   }
   function statusCell(h) {
     if (h.sk) return '<span class="pill pill--sk">Surat kuasa</span><small class="pill__asal">awalnya ' + LABEL[h.status] + '</small>';
-    return '<span class="pill ' + PILL[h.status] + '">' + LABEL[h.status] + '</span>';
+    return '<span class="pill ' + PILL[h.status] + '">' + LABEL[h.status] + '</span>' + (h.sumber === 'personalia' ? '<small class="pill__asal pill__asal--ps">dari data personalia</small>' : '');
   }
   function grupRO(h) {
     return st.report.hasil.filter(function (x) { return x.status === 'RO' && !x.sk && x.acct === h.acct; });
