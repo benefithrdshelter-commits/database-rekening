@@ -3995,8 +3995,9 @@ function cekKaryawanMurni_(rows, db) {
   }
   function logout(msg) {
     var t = getToken();
+    try { idbSimpan(kunciIdb(), null); } catch (e) { /* abaikan */ }   // data rekening tidak ditinggal di komputer setelah keluar
     setSesi(null);
-    dbs.isi = null; dbs.gen++;
+    dbs.isi = null; dbs.gen++; idbMuat = null;
     if (t && !msg) post({ action: 'logout', sesi: t }).catch(function () { });
     showLogin(msg);
     window.scrollTo(0, 0);
@@ -4042,14 +4043,37 @@ function cekKaryawanMurni_(rows, db) {
    * Diambil sekali (aksi "database"), dipakai Database Bank, cek Tambah Karyawan, dan crosscheck,
    * supaya pengecekan langsung jalan di browser tanpa menunggu server. Dianggap basi setelah ada
    * upload/tambah/hapus dari aplikasi, atau setelah 5 menit. Server tetap mengecek ulang saat menyimpan. */
-  var dbs = { isi: null, waktu: 0, gen: 0, isiGen: -1, janji: null }, DB_UMUR = 5 * 60 * 1000;
+  var dbs = { isi: null, waktu: 0, gen: 0, isiGen: -1, janji: null }, DB_UMUR = 60 * 1000;   // lebih dari 1 menit: dicek ulang ke server dulu (cepat kalau tidak berubah)
   function databaseSegar() { return dbs.isi && dbs.isiGen === dbs.gen && Date.now() - dbs.waktu < DB_UMUR ? dbs.isi : null; }
+  // isi database juga disimpan di browser (IndexedDB), jadi buka aplikasi berikutnya tidak perlu mengunduh ulang:
+  // server cukup menjawab "masih sama" (sangat kecil) kalau datanya belum berubah
+  var IDB = { nama: 'moneywise', toko: 'data' };
+  function idbBuka() {
+    return new Promise(function (ok, no) {
+      try {
+        var r = indexedDB.open(IDB.nama, 1);
+        r.onupgradeneeded = function () { r.result.createObjectStore(IDB.toko); };
+        r.onsuccess = function () { ok(r.result); }; r.onerror = function () { no(r.error); };
+      } catch (e) { no(e); }
+    });
+  }
+  function idbAmbil(k) { return idbBuka().then(function (d) { return new Promise(function (ok) { var q = d.transaction(IDB.toko).objectStore(IDB.toko).get(k); q.onsuccess = function () { ok(q.result || null); }; q.onerror = function () { ok(null); }; }); }).catch(function () { return null; }); }
+  function idbSimpan(k, v) { return idbBuka().then(function (d) { d.transaction(IDB.toko, 'readwrite').objectStore(IDB.toko).put(v, k); }).catch(function () { }); }
+  function kunciIdb() { var s = getSesi(); return 'db:' + ((s && s.email) || ''); }
+  var idbMuat = null;
   function ambilDatabase(paksa) {
     if (!paksa && databaseSegar()) return Promise.resolve(dbs.isi);
     if (dbs.janji && dbs.janjiGen === dbs.gen) return dbs.janji;
     var gen = dbs.gen;
-    var j = post({ action: 'database' }).then(function (out) {
+    var j = (dbs.isi ? Promise.resolve(null) : (idbMuat || (idbMuat = idbAmbil(kunciIdb())))).then(function (simpan) {
+      if (simpan && !dbs.isi && simpan.versi) dbs.isi = simpan;
+      var punya = dbs.isi && dbs.isi.versi;
+      return post({ action: 'database', versi: punya || undefined });
+    }).then(function (out) {
       if (!out || !out.ok) throw new Error((out && out.error) || 'Database tidak bisa dimuat.');
+      if (out.personaliaBasi) segarkanPersonalia();
+      if (out.tetap && dbs.isi) out = dbs.isi;
+      else { idbSimpan(kunciIdb(), out); }
       if (gen >= dbs.isiGen) { dbs.isi = out; dbs.waktu = Date.now(); dbs.isiGen = gen; }
       return out;
     });
@@ -4058,6 +4082,14 @@ function cekKaryawanMurni_(rows, db) {
     return j;
   }
   function dataBasi() { dbs.gen++; }
+  function dbJanji() { return dbs.janji || null; }
+  // data personalia di cache server sudah > 15 menit: server membaca ulang di belakang (pengguna tidak menunggu)
+  var segarPs = 0;
+  function segarkanPersonalia() {
+    if (Date.now() - segarPs < 5 * 60 * 1000) return;
+    segarPs = Date.now();
+    post({ action: 'segarkanPersonalia' }).then(function (o) { if (o && o.ok) dataBasi(); }).catch(function () { });
+  }
   // peta pencocokan dari isi database (dibuat sekali per isi): aturan sama persis dengan server (cocok.js)
   function petaDari(isi) {
     if (isi._peta) return isi._peta;
@@ -4789,7 +4821,7 @@ function cekKaryawanMurni_(rows, db) {
     spark: spark, seriHarian: seriHarian, seriKumulatif: seriKumulatif,
     bukaVideo: function (v) { if (A_bukaVideo) A_bukaVideo(v); }, setVideo: function (v) { VIDEO = v || null; },
     post: post, getToken: getToken, connected: connected, openSettings: openSettings, logout: logout, konfirmasi: konfirmasi,
-    progres: progres, jeda: jeda, ambilDatabase: ambilDatabase, databaseSegar: databaseSegar, dataBasi: dataBasi, petaDari: petaDari,
+    progres: progres, jeda: jeda, ambilDatabase: ambilDatabase, dbJanji: dbJanji, databaseSegar: databaseSegar, dataBasi: dataBasi, petaDari: petaDari,
     esc: esc, num: num, rp: rp, toast: toast, cfg: CFG, sesi: getSesi, gas: !!GAS,
     onConn: function (f) { connListeners.push(f); f(connected()); }
   };
@@ -4905,7 +4937,8 @@ function cekKaryawanMurni_(rows, db) {
     }).join('') + (r.rows.length > 8 ? '<tr class="more"><td colspan="5">dan ' + num(r.rows.length - 8) + ' baris lainnya</td></tr>' : '');
     updateRun();
     // siapkan database di belakang selagi pratinjau dilihat, supaya klik "Cocokkan" langsung jalan
-    if (!r.errors.length && A.connected() && !A.databaseSegar()) A.ambilDatabase().catch(function () { });
+    // selalu dicek ke server saat file dipilih: kalau database/personalia berubah sedetik lalu pun, ikut terbaru
+    if (!r.errors.length && A.connected()) A.ambilDatabase(true).catch(function () { });
   }
 
   function updateRun() {
@@ -4933,10 +4966,11 @@ function cekKaryawanMurni_(rows, db) {
     var pg = A.progres($('xProg'), { satuan: 'baris' }), n = r.rows.length;
     try { $('xProg').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (x) { /* abaikan */ }
     try {
-      var isi = A.databaseSegar();
-      if (!isi && window.COCOK) {
-        pg.tahap('Mengambil database rekening…', 30, 2500, 'Sekali saja, berikutnya langsung');
-        try { isi = await A.ambilDatabase(); } catch (e) { isi = null; }
+      var isi = null;
+      if (window.COCOK) {
+        // pastikan memakai data terbaru (database rekening & personalia); biasanya sudah selesai dicek saat file dipilih
+        if (A.dbJanji() || !A.databaseSegar()) pg.tahap('Memastikan data terbaru…', 30, 2000, 'Database rekening & data personalia');
+        try { isi = await (A.dbJanji() || A.ambilDatabase()); } catch (e) { isi = A.databaseSegar(); }
       }
       if (me.batal) throw new Error('__batal');
       var peta = isi && window.COCOK ? A.petaDari(isi) : null;
@@ -5353,7 +5387,9 @@ function cekKaryawanMurni_(rows, db) {
     try {
       if (!(await pastikanTersimpan(st.report))) throw new Error('Hasil crosscheck belum tersimpan ke riwayat. Coba simpan lagi dulu.');
       var uploadId = null, dataLangsung = null;
-      try { uploadId = await uploadBertahap(skFile, function (p) { btn.textContent = 'Mengupload ' + Math.round(p * 100) + '%…'; }); }
+      // file kecil (≤ 5 MB, umumnya scan surat kuasa) langsung dikirim bersama datanya: cukup sekali ke server
+      if (skFile.size <= 5 * 1024 * 1024) dataLangsung = await bacaBase64(skFile);
+      else try { uploadId = await uploadBertahap(skFile, function (p) { btn.textContent = 'Mengupload ' + Math.round(p * 100) + '%…'; }); }
       catch (exUp) {
         // cadangan: file sampai 20 MB dikirim langsung (tanpa upload bertahap)
         if (skFile.size > 20 * 1024 * 1024) throw exUp;
@@ -6735,6 +6771,8 @@ function cekKaryawanMurni_(rows, db) {
     try { history.replaceState({ mw: 0 }, '', '#/' + dariHash()); } catch (e) { /* abaikan */ }
     tampil(dariHash(), { noScroll: true });
     muatBell();
+    // siapkan database untuk crosscheck & Tambah Karyawan di belakang, supaya klik pertama langsung jalan
+    setTimeout(function () { if (A.connected() && A.ambilDatabase) A.ambilDatabase().catch(function () { }); }, 2500);
     // bersihkan baris dobel lama (nama & no rekening sama) sekali per sesi, diam-diam di belakang
     if (!A.__dobelCek) {
       A.__dobelCek = true;
@@ -6982,11 +7020,11 @@ function cekKaryawanMurni_(rows, db) {
   async function periksa(rows, pg, tok) {
     $('kDone').hidden = true;
     pg = pg || A.progres($('kProg'), { satuan: 'baris' });
-    var hasil = null, isi = A.databaseSegar();
+    var hasil = null, isi = null;
     try {
-      if (!isi && window.COCOK) {
-        pg.tahap('Mengambil database rekening…', 70, 2500, 'Sekali saja, berikutnya langsung');
-        try { isi = await A.ambilDatabase(); } catch (e) { isi = null; }
+      if (window.COCOK) {
+        pg.tahap('Memastikan database terbaru…', 70, 1500);
+        try { isi = await A.ambilDatabase(true); } catch (e) { isi = A.databaseSegar(); }
         if (tok && st.tok !== tok) return;
       }
       if (isi && window.COCOK) {
