@@ -4971,6 +4971,7 @@ function cekKaryawanMurni_(rows, db) {
           return;
         }
         pg.selesai('Selesai dicocokkan', 'Sudah ' + num(n) + '/' + num(n) + ' baris');
+        ingatLaporan(out);
         openReport(out);
         loadHistory();
         simpanFileMCM(out, file);
@@ -5006,6 +5007,7 @@ function cekKaryawanMurni_(rows, db) {
         A.toast(num(beda) + ' baris disesuaikan dengan database terbaru di server.', true);
       }
       rep.simpanStatus = 'ok';
+      ingatLaporan(rep);
       if (st.report === rep) tulisMeta(rep);
       setTimeout(function () { rep.simpanLama = true; if (st.report === rep) tulisMeta(rep); }, 5000);
       loadHistory();
@@ -5083,10 +5085,28 @@ function cekKaryawanMurni_(rows, db) {
     selectTab(rep.ringkas.CEK ? 'rt-cek' : 'rt-ok');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+  // laporan yang sudah pernah dibuka/dibuat di sesi ini disimpan di memori: dibuka lagi = langsung tampil,
+  // lalu dicek ulang ke server di belakang (kalau ada perubahan, misalnya surat kuasa, tampilan diperbarui)
+  var simpananLap = {};
+  function ingatLaporan(rep) { if (rep && rep.id) simpananLap[rep.id] = rep; }
   A.bukaLaporan = async function (id) {
+    var lama = simpananLap[id];
+    if (lama) {
+      openReport(lama);
+      A.post({ action: 'detail', id: id }).then(function (out) {
+        if (!out || !out.ok) { if (out && /tidak ditemukan/i.test(out.error || '')) delete simpananLap[id]; return; }
+        if (bedaHasil(lama.hasil, out.hasil)) {
+          lama.hasil = out.hasil; lama.adaFile = out.adaFile || lama.adaFile;
+          lama.hasil.sort(function (a, b) { return (URUT[a.status] - URUT[b.status]) || (a.line - b.line); });
+          if (st.report === lama) { renderFigures(); renderRows(); }
+        }
+      }).catch(function () { });
+      return;
+    }
     try {
       var out = await A.post({ action: 'detail', id: id });
       if (!out.ok) throw new Error(out.error || 'Gagal membuka.');
+      ingatLaporan(out);
       openReport(out);
     } catch (err) { A.toast('Laporan tidak bisa dibuka: ' + err.message); }
   };
@@ -5197,7 +5217,7 @@ function cekKaryawanMurni_(rows, db) {
         if (!out.ok) throw new Error(out.error || 'Server menolak.');
       }
     });
-    if (ok) { resetX(); A.toast('Crosscheck dibatalkan dan hasilnya dihapus.', true); loadHistory(); }
+    if (ok) { delete simpananLap[rep.id]; resetX(); A.toast('Crosscheck dibatalkan dan hasilnya dihapus.', true); loadHistory(); }
   });
 
   /* ---------- menu unduh / cetak ---------- */
@@ -5860,6 +5880,7 @@ function cekKaryawanMurni_(rows, db) {
           (h.jenis === 'cc' ? '<p>Laporan crosscheck ini juga dihapus dari sheet Hasil Crosscheck.</p>' : catatanPdf(h)),
         ok: h.jenis === 'pdf' && h.dataTercatat ? 'Ya, hapus beserta datanya' : 'Ya, hapus',
         jalankan: async function () {
+          if (h.jenis === 'cc') delete simpananLap[h.id];
           var out = await A.post(h.jenis === 'cc' ? { action: 'hapusRiwayat', jenis: 'cc', id: h.id } : { action: 'hapusRiwayat', jenis: 'pdf', waktu: h.waktu, pengunggah: h.oleh || '' });
           if (!out.ok) throw new Error(out.error || 'Server menolak.');
           hasil = out;
