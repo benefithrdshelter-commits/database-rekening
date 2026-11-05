@@ -4989,7 +4989,7 @@ function cekKaryawanMurni_(rows, db) {
         var total = 0; hasil.forEach(function (h) { total += h.amountCents; });
         var sesi = A.sesi() || {};
         var lap = { id: '', waktu: new Date().toISOString(), oleh: sesi.email || '', fileName: file.name, remark: r.remark, adaFile: false,
-          totalCents: total, hasil: hasil, jumlahDatabase: peta.db.jumlah, _r: r, _file: file };
+          totalCents: total, hasil: hasil, jumlahDatabase: peta.db.jumlah, _r: r, _file: file, _urut: hasil.slice() };
         openReport(lap);
         simpanLaporan(lap);
       } else {
@@ -5030,10 +5030,12 @@ function cekKaryawanMurni_(rows, db) {
     rep.simpanStatus = 'proses'; rep.simpanError = '';
     if (st.report === rep) tulisMeta(rep);
     menyimpan++;
-    rep.simpan = A.post({ action: 'crosscheck', fileName: file.name, remark: r.remark, rows: r.rows }).then(function (out) {
+    // hasil browser ikut dikirim (urutan asli baris file) supaya server tidak perlu mencocokkan ulang
+    var kirimHasil = (rep._urut || []).map(function (h) { return { line: h.line, acct: h.acct, namaMcm: h.namaMcm, namaDb: h.namaDb, status: h.status, ket: h.ket, sk: h.sk || undefined, sumber: h.sumber || undefined }; });
+    rep.simpan = A.post({ action: 'crosscheck', fileName: file.name, remark: r.remark, rows: r.rows, hasil: kirimHasil.length ? kirimHasil : undefined, jumlahDb: rep.jumlahDatabase }).then(function (out) {
       if (!out.ok) throw new Error(out.error || 'Server menolak data.');
       rep.id = out.id; rep.waktu = out.waktu; rep.waktuTeks = out.waktuTeks; rep.oleh = out.oleh || rep.oleh;
-      var beda = bedaHasil(rep.hasil, out.hasil);
+      var beda = out.hasil ? bedaHasil(rep.hasil, out.hasil) : 0;
       if (beda) {
         rep.hasil = out.hasil;
         rep.hasil.sort(function (a, b) { return (URUT[a.status] - URUT[b.status]) || (a.line - b.line); });
