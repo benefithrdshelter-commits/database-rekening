@@ -5304,7 +5304,6 @@ function cekKaryawanMurni_(rows, db) {
   var URUT_DL = ['CEK', 'BEDA', 'MIRIP', 'TIDAK_ADA', 'RO', 'SK', 'COCOK'];
   var KOLOM_DL = ['No', 'Baris di file', 'No rekening', 'Nama di MCM', 'Nama di database', 'Status', 'Surat kuasa', 'Sumber data', 'Keterangan', 'Site penempatan (MCM)', 'Nominal (Rp)'];
   var LEBAR_DL = [6, 9, 19, 30, 30, 22, 34, 19, 60, 24, 16];
-  var WARNA_ST = { COCOK: ['E1F8F0', '0E7A5F'], MIRIP: ['FFF4DC', '8A5A0B'], BEDA: ['FDECEE', 'B4232D'], TIDAK_ADA: ['EEF1F6', '4A5B7A'], RO: ['EFE9FF', '5B3FC4'], SK: ['DFF7EC', '0B8A5A'] };
   function barisKat(f) {
     return st.report.hasil.filter(function (h) {
       return f === 'CEK' ? perluCek(h) : f === 'SK' ? !!h.sk : f === 'SEMUA' ? true : (h.status === f && !((f === 'BEDA' || f === 'RO') && h.sk));
@@ -5341,81 +5340,75 @@ function cekKaryawanMurni_(rows, db) {
     });
     return janjiExcelJS;
   }
-  // satu sheet rapi: judul, info laporan, tabel bergaris dengan kepala berwarna, baris total
+  // satu sheet rapi tanpa warna: teks hitam, judul & kepala tabel tebal, garis tipis, baris total
+  var HITAM = { argb: 'FF000000' };
   function sheetRapi(wb, namaSheet, judulKat, list, rep) {
-    var ws = wb.addWorksheet(namaSheet.slice(0, 31), { properties: { defaultRowHeight: 18 }, pageSetup: { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9 } });
+    var H = 6;
+    // kepala tabel dibekukan; topLeftCell wajib diisi supaya Excel tidak menampilkan baris atas dua kali
+    var ws = wb.addWorksheet(namaSheet.slice(0, 31), {
+      views: [{ state: 'frozen', xSplit: 0, ySplit: H, topLeftCell: 'A' + (H + 1), activeCell: 'A' + (H + 1) }],
+      pageSetup: { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9 }
+    });
     var n = KOLOM_DL.length, akhir = String.fromCharCode(64 + n);
     ws.columns = LEBAR_DL.map(function (w) { return { width: w }; });
     var total = 0; list.forEach(function (h) { total += h.amountCents || 0; });
     var info = [
-      ['Laporan Crosscheck MCM — ' + judulKat, { bold: true, size: 15, color: { argb: 'FFFFFFFF' } }, '1565F5'],
-      ['File: ' + (rep.fileName || '-'), { bold: true, size: 11, color: { argb: 'FF0F2348' } }, 'EAF2FF'],
-      ['ID ' + (rep.id || '-') + '   ·   ' + waktuRep(rep) + (rep.oleh ? '   ·   oleh ' + rep.oleh : ''), { size: 10, color: { argb: 'FF4A5B7A' } }, 'EAF2FF'],
-      [num(list.length) + ' baris   ·   total nominal Rp ' + rp(total), { size: 10, color: { argb: 'FF4A5B7A' } }, 'EAF2FF']
+      ['Laporan Crosscheck MCM — ' + judulKat, { bold: true, size: 14, color: HITAM }],
+      ['File: ' + (rep.fileName || '-'), { bold: true, size: 11, color: HITAM }],
+      ['ID ' + (rep.id || '-') + '   ·   ' + waktuRep(rep) + (rep.oleh ? '   ·   oleh ' + rep.oleh : ''), { size: 10, color: HITAM }],
+      [num(list.length) + ' baris   ·   total nominal Rp ' + rp(total), { size: 10, color: HITAM }]
     ];
     info.forEach(function (x, i) {
-      var r = i + 1; ws.mergeCells('A' + r + ':' + akhir + r);
-      var c = ws.getCell('A' + r); c.value = x[0]; c.font = x[1]; c.alignment = { vertical: 'middle', indent: 1 };
-      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + x[2] } };
-      ws.getRow(r).height = i === 0 ? 28 : 18;
+      var c = ws.getCell('A' + (i + 1)); c.value = x[0]; c.font = x[1]; c.alignment = { vertical: 'middle' };
+      ws.getRow(i + 1).height = i === 0 ? 22 : 16;
     });
-    var garis = { style: 'thin', color: { argb: 'FFD5DFEE' } }, kotak = { top: garis, left: garis, bottom: garis, right: garis };
-    var H = 6, head = ws.getRow(H);
-    head.values = KOLOM_DL; head.height = 24;
+    var garis = { style: 'thin', color: HITAM }, kotak = { top: garis, left: garis, bottom: garis, right: garis };
+    var head = ws.getRow(H);
+    head.values = KOLOM_DL; head.height = 30;
     head.eachCell(function (c) {
-      c.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 10.5 };
-      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F2348' } };
+      c.font = { bold: true, size: 10.5, color: HITAM };
       c.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }; c.border = kotak;
     });
     if (!list.length) {
       ws.mergeCells('A' + (H + 1) + ':' + akhir + (H + 1));
-      var k = ws.getCell('A' + (H + 1)); k.value = 'Tidak ada baris di kategori ini.'; k.font = { italic: true, color: { argb: 'FF7A8AA6' } }; k.alignment = { horizontal: 'center' };
+      var k = ws.getCell('A' + (H + 1)); k.value = 'Tidak ada baris di kategori ini.'; k.font = { italic: true, color: HITAM }; k.alignment = { horizontal: 'center' }; k.border = kotak;
     }
     list.forEach(function (h, i) {
       var row = ws.getRow(H + 1 + i); row.values = isiBaris(h, i);
-      var zebra = i % 2 ? 'FFF7FAFE' : 'FFFFFFFF', st0 = h.sk ? 'SK' : h.status;
-      row.eachCell({ includeEmpty: true }, function (c, col) {
-        c.border = kotak; c.font = { size: 10, color: { argb: 'FF0F2348' } };
-        c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: zebra } };
-        c.alignment = { vertical: 'top', wrapText: col === 9 || col === 7 || col === 4 || col === 5, horizontal: col <= 2 ? 'center' : col === 11 ? 'right' : 'left' };
-      });
+      for (var col = 1; col <= n; col++) {
+        var c = row.getCell(col);
+        c.border = kotak; c.font = { size: 10, color: HITAM };
+        c.alignment = { vertical: 'top', wrapText: col === 9 || col === 7, horizontal: col <= 2 ? 'center' : col === 11 ? 'right' : 'left' };
+      }
       row.getCell(3).numFmt = '@';
       row.getCell(11).numFmt = '#,##0';
-      var w = WARNA_ST[st0] || WARNA_ST.TIDAK_ADA, cs = row.getCell(6);
-      cs.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + w[0] } }; cs.font = { size: 10, bold: true, color: { argb: 'FF' + w[1] } };
     });
     if (list.length) {
       var t = ws.getRow(H + 1 + list.length);
       ws.mergeCells('A' + t.number + ':J' + t.number);
       t.getCell(1).value = 'TOTAL (' + num(list.length) + ' baris)'; t.getCell(11).value = total / 100; t.getCell(11).numFmt = '#,##0';
-      [1, 11].forEach(function (col) {
-        var c = t.getCell(col); c.font = { bold: true, color: { argb: 'FF0F2348' } }; c.border = kotak;
-        c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEAF2FF' } }; c.alignment = { horizontal: col === 1 ? 'right' : 'right', indent: 1 };
-      });
+      [1, 11].forEach(function (col) { var c = t.getCell(col); c.font = { bold: true, color: HITAM }; c.border = kotak; c.alignment = { horizontal: 'right' }; });
       ws.autoFilter = { from: { row: H, column: 1 }, to: { row: H + list.length, column: n } };
     }
-    ws.views = [{ state: 'frozen', ySplit: H, xSplit: 0, showGridLines: false }];
     return ws;
   }
   function sheetRingkasan(wb, rep) {
-    var ws = wb.addWorksheet('Ringkasan', { views: [{ showGridLines: false }] });
+    var ws = wb.addWorksheet('Ringkasan');
     ws.columns = [{ width: 34 }, { width: 14 }, { width: 22 }];
-    ws.mergeCells('A1:C1'); var j = ws.getCell('A1'); j.value = 'Laporan Crosscheck MCM'; j.font = { bold: true, size: 15, color: { argb: 'FFFFFFFF' } };
-    j.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1565F5' } }; j.alignment = { vertical: 'middle', indent: 1 }; ws.getRow(1).height = 28;
+    var j = ws.getCell('A1'); j.value = 'Laporan Crosscheck MCM'; j.font = { bold: true, size: 14, color: HITAM }; ws.getRow(1).height = 22;
     var info = [['Nama file', rep.fileName || '-'], ['ID crosscheck', rep.id || '-'], ['Waktu', waktuRep(rep)], ['Oleh', rep.oleh || '-'], ['Jumlah baris', num(rep.hasil.length)], ['Total nominal', 'Rp ' + rp(rep.totalCents || 0)]];
-    info.forEach(function (x, i) { var r = ws.getRow(3 + i); r.values = x; r.getCell(1).font = { color: { argb: 'FF4A5B7A' } }; r.getCell(2).font = { bold: true }; ws.mergeCells('B' + (3 + i) + ':C' + (3 + i)); });
+    info.forEach(function (x, i) { var r = ws.getRow(3 + i); r.values = x; r.getCell(1).font = { color: HITAM }; r.getCell(2).font = { bold: true, color: HITAM }; });
+    var garis = { style: 'thin', color: HITAM }, kotak = { top: garis, left: garis, bottom: garis, right: garis };
     var h = ws.getRow(10); h.values = ['Kategori', 'Jumlah baris', 'Total nominal (Rp)'];
-    var garis = { style: 'thin', color: { argb: 'FFD5DFEE' } }, kotak = { top: garis, left: garis, bottom: garis, right: garis };
-    h.eachCell(function (c) { c.font = { bold: true, color: { argb: 'FFFFFFFF' } }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F2348' } }; c.border = kotak; c.alignment = { horizontal: 'center' }; });
+    h.eachCell(function (c) { c.font = { bold: true, color: HITAM }; c.border = kotak; c.alignment = { horizontal: 'center' }; });
     URUT_DL.forEach(function (k, i) {
       var l = barisKat(k), tot = 0; l.forEach(function (x) { tot += x.amountCents || 0; });
       var r = ws.getRow(11 + i); r.values = [KAT_DL[k] + (k === 'CEK' ? ' (gabungan)' : ''), l.length, tot / 100];
       r.getCell(3).numFmt = '#,##0';
-      r.eachCell(function (c, col) { c.border = kotak; c.alignment = { horizontal: col === 1 ? 'left' : 'right' }; });
-      var w = WARNA_ST[k]; if (w) { r.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + w[0] } }; r.getCell(1).font = { bold: true, color: { argb: 'FF' + w[1] } }; }
+      r.eachCell(function (c, col) { c.border = kotak; c.font = { color: HITAM }; c.alignment = { horizontal: col === 1 ? 'left' : 'right' }; });
     });
     ws.getCell('A19').value = 'Setiap kategori ada di sheet tersendiri. "Perlu dicek" = gabungan Mirip, Tidak ada, serta Beda nama / Via RO yang belum punya surat kuasa.';
-    ws.getCell('A19').font = { italic: true, size: 9.5, color: { argb: 'FF7A8AA6' } };
+    ws.getCell('A19').font = { italic: true, size: 9.5, color: HITAM };
   }
   async function unduhExcel(kats, namaFile, tombol) {
     var rep = st.report;
