@@ -1904,6 +1904,12 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
 /* v15: baris yang ditemukan di data personalia */
 .pill__asal--ps { color: var(--blue-700); font-weight: 600; }
 
+/* v20: unduh per kategori di laporan crosscheck */
+.tools__dl { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.tools__dl .btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-right: 6px; vertical-align: -3px; }
+.tools__dl #rDlKat { font-weight: 700; margin-left: 4px; }
+@media (max-width: 640px) { .tools__dl { margin-left: 0; width: 100%; } .tools__dl .btn { flex: 1; } }
+
 </style>
 </head>
 <body class="is-auth">
@@ -2294,7 +2300,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
                 <div class="menu__pop" role="menu" hidden>
                   <button type="button" role="menuitem" id="rPdf">Unduh PDF</button>
                   <button type="button" role="menuitem" id="rPrint">Cetak</button>
-                  <button type="button" role="menuitem" id="rDownload">Unduh Excel</button>
+                  <button type="button" role="menuitem" id="rDownload">Excel lengkap (semua kategori, sheet terpisah)</button>
                 </div>
               </div>
               <button class="btn btn--ghost btn--sm" type="button" data-xreset>File lain</button>
@@ -2346,6 +2352,12 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
                 <input type="search" id="rQ" placeholder="Cari nama atau no rekening" autocomplete="off">
               </label>
               <span class="tools__meta" id="rQMeta"></span>
+              <div class="tools__dl" role="group" aria-label="Unduh kategori ini">
+                <button class="btn btn--ghost btn--sm" type="button" id="rDlXlsx" title="Unduh baris kategori ini sebagai Excel">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></svg>Excel <span id="rDlKat">Perlu dicek</span>
+                </button>
+                <button class="btn btn--ghost btn--sm" type="button" id="rDlCsv" title="Unduh baris kategori ini sebagai CSV">CSV</button>
+              </div>
             </div>
             <div class="tbl-wrap">
               <table class="tbl tbl--cc">
@@ -5222,6 +5234,7 @@ function cekKaryawanMurni_(rows, db) {
       t.tabIndex = on ? 0 : -1;
       if (on) { st.filter = t.dataset.filter; $('rPane').setAttribute('aria-labelledby', t.id); }
     });
+    $('rDlKat').textContent = KAT_DL[st.filter] || '';
     st.page = 1; renderRows();
   }
   tabs.forEach(function (t) {
@@ -5283,25 +5296,174 @@ function cekKaryawanMurni_(rows, db) {
   $('rPdf').addEventListener('click', async function () { if (st.report && await pastikanTersimpan(st.report)) A.laporan.pdf(specLaporan(), this); });
   $('rPrint').addEventListener('click', async function () { if (st.report && await pastikanTersimpan(st.report)) A.laporan.cetak(specLaporan()); });
 
-  /* ---------- download laporan Excel ---------- */
-  $('rDownload').addEventListener('click', async function () {
+  /* ---------- unduh Excel / CSV ----------
+   * Per kategori (tombol di atas tabel, ikut tab yang sedang dibuka) atau lengkap (semua kategori, sheet terpisah).
+   * Excel dibuat rapi dengan ExcelJS (judul, keterangan laporan, kepala tabel berwarna, garis, baris total, filter,
+   * kepala tabel tetap saat digulir). ExcelJS baru dimuat saat pertama kali mengunduh. */
+  var KAT_DL = { CEK: 'Perlu dicek', BEDA: 'Beda nama', MIRIP: 'Mirip', TIDAK_ADA: 'Tidak ada di database', RO: 'Via RO', SK: 'Surat kuasa', COCOK: 'Cocok' };
+  var URUT_DL = ['CEK', 'BEDA', 'MIRIP', 'TIDAK_ADA', 'RO', 'SK', 'COCOK'];
+  var KOLOM_DL = ['No', 'Baris di file', 'No rekening', 'Nama di MCM', 'Nama di database', 'Status', 'Surat kuasa', 'Sumber data', 'Keterangan', 'Site penempatan (MCM)', 'Nominal (Rp)'];
+  var LEBAR_DL = [6, 9, 19, 30, 30, 22, 34, 19, 60, 24, 16];
+  var WARNA_ST = { COCOK: ['E1F8F0', '0E7A5F'], MIRIP: ['FFF4DC', '8A5A0B'], BEDA: ['FDECEE', 'B4232D'], TIDAK_ADA: ['EEF1F6', '4A5B7A'], RO: ['EFE9FF', '5B3FC4'], SK: ['DFF7EC', '0B8A5A'] };
+  function barisKat(f) {
+    return st.report.hasil.filter(function (h) {
+      return f === 'CEK' ? perluCek(h) : f === 'SK' ? !!h.sk : f === 'SEMUA' ? true : (h.status === f && !((f === 'BEDA' || f === 'RO') && h.sk));
+    }).slice().sort(function (a, b) { return a.line - b.line; });
+  }
+  function sumberData(h) {
+    if (h.status === 'TIDAK_ADA') return '-';
+    if (h.sumber === 'personalia') return 'Data personalia';
+    if (h.status === 'RO') return 'Daftar RO';
+    return 'Database Moneywise';
+  }
+  function isiBaris(h, i) {
+    return [i + 1, h.line, String(h.acct), h.namaMcm, h.namaDb || '-', LABEL[h.status] + (h.sk ? ' (ada surat kuasa)' : ''),
+      h.sk ? h.sk.label.replace(/^Approved — /, '') : '', sumberData(h), h.ket || '', h.site || '', (h.amountCents || 0) / 100];
+  }
+  function namaDasar(rep) { return String(rep.fileName || 'MCM').replace(/\.[^.]+$/, '').replace(/[\\/:*?"<>|]+/g, ' ').trim(); }
+  function unduhBlob(blob, nama) {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nama;
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }
+  var janjiExcelJS = null;
+  function muatExcelJS() {
+    if (window.ExcelJS) return Promise.resolve(window.ExcelJS);
+    if (janjiExcelJS) return janjiExcelJS;
+    var url = ['https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js'];
+    janjiExcelJS = new Promise(function (ok, gagal) {
+      (function coba(i) {
+        if (i >= url.length) { janjiExcelJS = null; gagal(new Error('Pembuat Excel tidak bisa dimuat.')); return; }
+        var sc = document.createElement('script'); sc.src = url[i]; sc.async = true;
+        sc.onload = function () { window.ExcelJS ? ok(window.ExcelJS) : coba(i + 1); };
+        sc.onerror = function () { sc.remove(); coba(i + 1); };
+        document.head.appendChild(sc);
+      })(0);
+    });
+    return janjiExcelJS;
+  }
+  // satu sheet rapi: judul, info laporan, tabel bergaris dengan kepala berwarna, baris total
+  function sheetRapi(wb, namaSheet, judulKat, list, rep) {
+    var ws = wb.addWorksheet(namaSheet.slice(0, 31), { properties: { defaultRowHeight: 18 }, pageSetup: { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9 } });
+    var n = KOLOM_DL.length, akhir = String.fromCharCode(64 + n);
+    ws.columns = LEBAR_DL.map(function (w) { return { width: w }; });
+    var total = 0; list.forEach(function (h) { total += h.amountCents || 0; });
+    var info = [
+      ['Laporan Crosscheck MCM — ' + judulKat, { bold: true, size: 15, color: { argb: 'FFFFFFFF' } }, '1565F5'],
+      ['File: ' + (rep.fileName || '-'), { bold: true, size: 11, color: { argb: 'FF0F2348' } }, 'EAF2FF'],
+      ['ID ' + (rep.id || '-') + '   ·   ' + waktuRep(rep) + (rep.oleh ? '   ·   oleh ' + rep.oleh : ''), { size: 10, color: { argb: 'FF4A5B7A' } }, 'EAF2FF'],
+      [num(list.length) + ' baris   ·   total nominal Rp ' + rp(total), { size: 10, color: { argb: 'FF4A5B7A' } }, 'EAF2FF']
+    ];
+    info.forEach(function (x, i) {
+      var r = i + 1; ws.mergeCells('A' + r + ':' + akhir + r);
+      var c = ws.getCell('A' + r); c.value = x[0]; c.font = x[1]; c.alignment = { vertical: 'middle', indent: 1 };
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + x[2] } };
+      ws.getRow(r).height = i === 0 ? 28 : 18;
+    });
+    var garis = { style: 'thin', color: { argb: 'FFD5DFEE' } }, kotak = { top: garis, left: garis, bottom: garis, right: garis };
+    var H = 6, head = ws.getRow(H);
+    head.values = KOLOM_DL; head.height = 24;
+    head.eachCell(function (c) {
+      c.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 10.5 };
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F2348' } };
+      c.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }; c.border = kotak;
+    });
+    if (!list.length) {
+      ws.mergeCells('A' + (H + 1) + ':' + akhir + (H + 1));
+      var k = ws.getCell('A' + (H + 1)); k.value = 'Tidak ada baris di kategori ini.'; k.font = { italic: true, color: { argb: 'FF7A8AA6' } }; k.alignment = { horizontal: 'center' };
+    }
+    list.forEach(function (h, i) {
+      var row = ws.getRow(H + 1 + i); row.values = isiBaris(h, i);
+      var zebra = i % 2 ? 'FFF7FAFE' : 'FFFFFFFF', st0 = h.sk ? 'SK' : h.status;
+      row.eachCell({ includeEmpty: true }, function (c, col) {
+        c.border = kotak; c.font = { size: 10, color: { argb: 'FF0F2348' } };
+        c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: zebra } };
+        c.alignment = { vertical: 'top', wrapText: col === 9 || col === 7 || col === 4 || col === 5, horizontal: col <= 2 ? 'center' : col === 11 ? 'right' : 'left' };
+      });
+      row.getCell(3).numFmt = '@';
+      row.getCell(11).numFmt = '#,##0';
+      var w = WARNA_ST[st0] || WARNA_ST.TIDAK_ADA, cs = row.getCell(6);
+      cs.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + w[0] } }; cs.font = { size: 10, bold: true, color: { argb: 'FF' + w[1] } };
+    });
+    if (list.length) {
+      var t = ws.getRow(H + 1 + list.length);
+      ws.mergeCells('A' + t.number + ':J' + t.number);
+      t.getCell(1).value = 'TOTAL (' + num(list.length) + ' baris)'; t.getCell(11).value = total / 100; t.getCell(11).numFmt = '#,##0';
+      [1, 11].forEach(function (col) {
+        var c = t.getCell(col); c.font = { bold: true, color: { argb: 'FF0F2348' } }; c.border = kotak;
+        c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEAF2FF' } }; c.alignment = { horizontal: col === 1 ? 'right' : 'right', indent: 1 };
+      });
+      ws.autoFilter = { from: { row: H, column: 1 }, to: { row: H + list.length, column: n } };
+    }
+    ws.views = [{ state: 'frozen', ySplit: H, xSplit: 0, showGridLines: false }];
+    return ws;
+  }
+  function sheetRingkasan(wb, rep) {
+    var ws = wb.addWorksheet('Ringkasan', { views: [{ showGridLines: false }] });
+    ws.columns = [{ width: 34 }, { width: 14 }, { width: 22 }];
+    ws.mergeCells('A1:C1'); var j = ws.getCell('A1'); j.value = 'Laporan Crosscheck MCM'; j.font = { bold: true, size: 15, color: { argb: 'FFFFFFFF' } };
+    j.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1565F5' } }; j.alignment = { vertical: 'middle', indent: 1 }; ws.getRow(1).height = 28;
+    var info = [['Nama file', rep.fileName || '-'], ['ID crosscheck', rep.id || '-'], ['Waktu', waktuRep(rep)], ['Oleh', rep.oleh || '-'], ['Jumlah baris', num(rep.hasil.length)], ['Total nominal', 'Rp ' + rp(rep.totalCents || 0)]];
+    info.forEach(function (x, i) { var r = ws.getRow(3 + i); r.values = x; r.getCell(1).font = { color: { argb: 'FF4A5B7A' } }; r.getCell(2).font = { bold: true }; ws.mergeCells('B' + (3 + i) + ':C' + (3 + i)); });
+    var h = ws.getRow(10); h.values = ['Kategori', 'Jumlah baris', 'Total nominal (Rp)'];
+    var garis = { style: 'thin', color: { argb: 'FFD5DFEE' } }, kotak = { top: garis, left: garis, bottom: garis, right: garis };
+    h.eachCell(function (c) { c.font = { bold: true, color: { argb: 'FFFFFFFF' } }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F2348' } }; c.border = kotak; c.alignment = { horizontal: 'center' }; });
+    URUT_DL.forEach(function (k, i) {
+      var l = barisKat(k), tot = 0; l.forEach(function (x) { tot += x.amountCents || 0; });
+      var r = ws.getRow(11 + i); r.values = [KAT_DL[k] + (k === 'CEK' ? ' (gabungan)' : ''), l.length, tot / 100];
+      r.getCell(3).numFmt = '#,##0';
+      r.eachCell(function (c, col) { c.border = kotak; c.alignment = { horizontal: col === 1 ? 'left' : 'right' }; });
+      var w = WARNA_ST[k]; if (w) { r.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + w[0] } }; r.getCell(1).font = { bold: true, color: { argb: 'FF' + w[1] } }; }
+    });
+    ws.getCell('A19').value = 'Setiap kategori ada di sheet tersendiri. "Perlu dicek" = gabungan Mirip, Tidak ada, serta Beda nama / Via RO yang belum punya surat kuasa.';
+    ws.getCell('A19').font = { italic: true, size: 9.5, color: { argb: 'FF7A8AA6' } };
+  }
+  async function unduhExcel(kats, namaFile, tombol) {
     var rep = st.report;
     if (!rep || !(await pastikanTersimpan(rep))) return;
-    if (typeof XLSX === 'undefined') { A.toast('Pembuat file Excel belum termuat. Periksa koneksi internet.'); return; }
-    var head = ['Baris di File', 'No Rekening', 'Nama di MCM', 'Nama di Database', 'Status', 'Surat Kuasa', 'Keterangan', 'Site Penempatan (MCM)', 'Nominal (Rp)'];
-    function data(list) { return [head].concat(list.map(function (h) { return [h.line, String(h.acct), h.namaMcm, h.namaDb, LABEL[h.status], h.sk ? h.sk.label : '', h.ket, h.site, h.amountCents / 100]; })); }
-    function sheet(aoa) { var ws = XLSX.utils.aoa_to_sheet(aoa); ws['!cols'] = [{ wch: 8 }, { wch: 18 }, { wch: 30 }, { wch: 30 }, { wch: 20 }, { wch: 36 }, { wch: 60 }, { wch: 22 }, { wch: 14 }]; return ws; }
-    var g = rep.ringkas, wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([
-      ['Laporan Crosscheck MCM'], [],
-      ['ID Crosscheck', rep.id], ['Waktu', waktuRep(rep)], ['Oleh', rep.oleh || ''], ['Nama file', rep.fileName], ['Jumlah baris', rep.hasil.length], ['Total nominal (Rp)', rep.totalCents / 100], [],
-      ['Status', 'Jumlah'], ['Cocok', g.COCOK], ['Mirip', g.MIRIP], ['Beda nama (belum ada surat kuasa)', g.BEDA], ['Tidak ada di database', g.TIDAK_ADA], ['Via RO (belum ada surat kuasa)', g.RO], ['Surat kuasa (Approved)', g.SK]
-    ]), 'Ringkasan');
-    XLSX.utils.book_append_sheet(wb, sheet(data(rep.hasil.filter(perluCek))), 'Perlu Dicek');
-    XLSX.utils.book_append_sheet(wb, sheet(data(rep.hasil.filter(function (h) { return !perluCek(h); }))), 'Aman');
-    XLSX.utils.book_append_sheet(wb, sheet(data(rep.hasil.slice().sort(function (a, b) { return a.line - b.line; }))), 'Semua');
-    var base = String(rep.fileName || 'MCM').replace(/\.[^.]+$/, '').replace(/[\\/:*?"<>|]+/g, ' ');
-    XLSX.writeFile(wb, 'Laporan Crosscheck - ' + base + '.xlsx');
+    var lbl = tombol ? tombol.innerHTML : '';
+    if (tombol) { tombol.disabled = true; tombol.textContent = 'Menyiapkan…'; }
+    try {
+      var EJ = await muatExcelJS(), wb = new EJ.Workbook();
+      wb.creator = 'Moneywise'; wb.created = new Date();
+      if (kats.length > 1) sheetRingkasan(wb, rep);
+      kats.forEach(function (k) { sheetRapi(wb, k === 'SEMUA' ? 'Semua baris' : KAT_DL[k], k === 'SEMUA' ? 'Semua baris' : KAT_DL[k], barisKat(k), rep); });
+      var buf = await wb.xlsx.writeBuffer();
+      unduhBlob(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), namaFile);
+    } catch (e) {
+      // cadangan tanpa format (kalau pembuat Excel rapi tidak bisa dimuat)
+      if (typeof XLSX === 'undefined') { A.toast('File Excel tidak bisa dibuat: ' + e.message); return; }
+      var wb2 = XLSX.utils.book_new();
+      kats.forEach(function (k) {
+        var aoa = [KOLOM_DL].concat(barisKat(k).map(isiBaris)), ws = XLSX.utils.aoa_to_sheet(aoa);
+        ws['!cols'] = LEBAR_DL.map(function (w) { return { wch: w }; });
+        XLSX.utils.book_append_sheet(wb2, ws, (k === 'SEMUA' ? 'Semua baris' : KAT_DL[k]).slice(0, 31));
+      });
+      XLSX.writeFile(wb2, namaFile);
+    } finally { if (tombol) { tombol.disabled = false; tombol.innerHTML = lbl; } }
+  }
+  function unduhCsv(k) {
+    var rep = st.report; if (!rep) return;
+    var sel = function (v) {
+      if (typeof v === 'number') return String(v).replace('.', ',');
+      v = String(v == null ? '' : v);
+      return /[";\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+    };
+    var baris = barisKat(k).map(function (h, i) {
+      var d = isiBaris(h, i);
+      d[2] = '="' + d[2] + '"';   // no rekening tetap utuh (angka 0 di depan tidak hilang di Excel)
+      return d.map(function (v, j) { return j === 2 ? v : sel(v); }).join(';');
+    });
+    var teks = '﻿' + [KOLOM_DL.join(';')].concat(baris).join('\r\n');
+    unduhBlob(new Blob([teks], { type: 'text/csv;charset=utf-8' }), 'Crosscheck - ' + namaDasar(rep) + ' - ' + KAT_DL[k] + '.csv');
+  }
+  $('rDlXlsx').addEventListener('click', function () {
+    if (!st.report) return;
+    unduhExcel([st.filter], 'Crosscheck - ' + namaDasar(st.report) + ' - ' + KAT_DL[st.filter] + '.xlsx', this);
+  });
+  $('rDlCsv').addEventListener('click', async function () { if (st.report && await pastikanTersimpan(st.report)) unduhCsv(st.filter); });
+  $('rDownload').addEventListener('click', function () {
+    if (!st.report) return;
+    unduhExcel(URUT_DL.concat(['SEMUA']), 'Laporan Crosscheck - ' + namaDasar(st.report) + '.xlsx', null);
   });
 
   /* ---------- surat kuasa ---------- */
