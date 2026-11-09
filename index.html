@@ -3633,7 +3633,7 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
   <dialog class="dlg dlg--cu" id="dlgCustom" aria-labelledby="cuTitle">
     <form method="dialog">
       <h3 id="cuTitle">Unduh custom</h3>
-      <p class="cu__lead">Centang keterangan yang mau diunduh. Semua jadi <b>satu file CSV</b>, diurutkan per keterangan (Cocok paling atas).</p>
+      <p class="cu__lead">Centang keterangan yang mau diunduh. Hasilnya <b>satu file CSV format MCM</b>, sama persis seperti file aslinya (tanpa kolom keterangan). Baris <b>Cocok</b> di atas, keterangan lain menyusul di bawahnya. Jumlah &amp; total di baris ringkasan "P" ikut disesuaikan.</p>
       <div class="cu__list" id="cuList"></div>
       <p class="cu__sum" id="cuSum"></p>
       <div class="dlg__cta">
@@ -4181,9 +4181,10 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
   async function readFile(file) {
     var isCsv = /\.(csv|txt)$/i.test(file.name) || /csv|text\/plain/.test(file.type);
     if (isCsv) {
-      var aoa = parseCSV(await file.text());
+      var teks = await file.text(), aoa = parseCSV(teks);
       var res = parseTable(aoa);
       res.sheet = 'CSV'; res.kind = 'csv'; res.aoa = aoa; res.delim = aoa.delim || ',';
+      res.eol = /\r\n/.test(teks) ? '\r\n' : '\n';   // akhir baris asli dipertahankan saat menulis ulang
       return res;
     }
     if (typeof XLSX === 'undefined') throw new Error('Pembaca Excel belum termuat. Periksa koneksi internet lalu muat ulang halaman.');
@@ -6453,33 +6454,57 @@ function cekKaryawanMurni_(rows, db) {
     if (!st.report || !(await pastikanTersimpan(st.report))) return;
     cuRender(); $('dlgCustom').showModal();
   });
+  // file MCM asli harus ada (sesi ini, atau diambil dari Drive untuk laporan dari riwayat)
+  async function siapAsli(rep) {
+    var cocokFile = function () { return st.parsed && st.file && st.file.name === rep.fileName && st.parsed.rows.length === rep.hasil.length; };
+    if (cocokFile()) return true;
+    if (!rep.adaFile) return false;
+    try {
+      var fm = await A.post({ action: 'fileMCM', id: rep.id });
+      if (!fm.ok) throw new Error(fm.error || 'File tidak tersimpan.');
+      var bin = atob(fm.data), arr = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      var res = await handle(new File([arr], fm.fileName || rep.fileName, { type: fm.mime || '' }), true);
+      if (!res || res.rows.length !== rep.hasil.length) throw new Error('isi file berbeda dengan laporan');
+      return true;
+    } catch (e) { rep.adaFile = false; A.toast('File MCM asli tidak bisa diambil (' + e.message + '). Pilih file aslinya.'); return false; }
+  }
+  // hasil: file MCM dengan format sama persis seperti aslinya, hanya berisi baris keterangan yang dipilih
+  // (urut: Cocok, lalu Mirip, dst.), baris ringkasan "P" diperbarui jumlah & totalnya. Tanpa kolom keterangan.
+  function unduhMcmCustom(rep, p) {
+    var P = st.parsed, aoa = P.aoa, byLine = {};
+    rep.hasil.forEach(function (h) { byLine[h.line] = h; });
+    var pilih = P.rows.filter(function (r) { var h = byLine[r.line]; return h && p.indexOf(h.status) !== -1; })
+      .sort(function (a, b) { return CU_URUT.indexOf(byLine[a.line].status) - CU_URUT.indexOf(byLine[b.line].status) || a.line - b.line; });
+    var out = [], total = 0;
+    pilih.forEach(function (r) { total += r.amountCents || 0; });
+    if (P.meta && aoa[P.meta.line - 1]) {
+      var hdr = aoa[P.meta.line - 1].slice();
+      hdr[3] = String(pilih.length);
+      hdr[4] = total % 100 === 0 ? String(total / 100) : (total / 100).toFixed(2);
+      out.push(hdr);
+    } else if (P.rows.length) out = aoa.slice(0, P.rows[0].line - 1).map(function (r) { return (r || []).slice(); });
+    pilih.forEach(function (r) {
+      var row = (aoa[r.line - 1] || []).slice();
+      if (typeof row[r.acctCol] === 'number') row[r.acctCol] = r.acct;   // Excel: no rekening angka -> teks utuh
+      out.push(row);
+    });
+    var csv = MCMParser.toCSV(out, P.kind === 'csv' ? P.delim : ',');
+    if (P.eol === '\n') csv = csv.replace(/\r\n/g, '\n');
+    var label = CU_URUT.filter(function (k) { return p.indexOf(k) !== -1; }).map(function (k) { return LABEL[k]; }).join(' + ');
+    unduhBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), String(rep.fileName || 'MCM').replace(/\.[^.]+$/, '') + ' (' + label + ').csv', 'text/csv;charset=utf-8');
+    A.toast(num(pilih.length) + ' baris diunduh dalam format MCM (' + label + ').', true);
+  }
   $('cuGo').addEventListener('click', async function () {
-    var rep = st.report, p = cuDipilih();
+    var rep = st.report, p = cuDipilih(), tb = this;
     if (!rep || !p.length) return;
     try { localStorage.setItem('mw_cu_pilih', JSON.stringify(p)); } catch (e) { /* abaikan */ }
-    // nama bank dari database rekening (Data Upah) atau daftar RO
-    var isi = A.databaseSegar && A.databaseSegar();
-    if (!isi) { try { isi = await A.ambilDatabase(); } catch (e) { isi = null; } }
-    var K = window.COCOK, bank = {};
-    if (isi && K) {
-      (isi.rows || []).forEach(function (r) { var k = K.kunciRek(r[2]); if (k && !bank[k]) bank[k] = r[1]; });
-      (isi.roRinci || []).forEach(function (r) { var k = K.kunciRek(r[0]); if (k && !bank[k]) bank[k] = r[2]; });
-    }
-    var sel = function (v) { v = String(v == null ? '' : v); return /[";\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
-    var rows = [], no = 0;
-    CU_URUT.forEach(function (k) {
-      if (p.indexOf(k) === -1) return;
-      rep.hasil.filter(function (h) { return h.status === k; }).sort(function (a, b) { return a.line - b.line; }).forEach(function (h) {
-        no++;
-        var kunci = K ? K.kunciRek(h.acct) : String(h.acct);
-        rows.push([no, sel(LABEL[k] + (h.sk ? ' (ada surat kuasa)' : '')), sel(h.namaMcm), sel(h.namaDb || ''), '="' + String(h.acct) + '"', sel(bank[kunci] || ''), String((h.amountCents || 0) / 100).replace('.', ',')].join(';'));
-      });
-    });
-    var teks = '\ufeff' + ['No;Keterangan;Nama di MCM;Nama di database;No rekening;Nama bank;Nominal (Rp)'].concat(rows).join('\r\n');
-    var label = CU_URUT.filter(function (k) { return p.indexOf(k) !== -1; }).map(function (k) { return LABEL[k]; }).join(' + ');
-    unduhBlob(new Blob([teks], { type: 'text/csv;charset=utf-8' }), 'Crosscheck - ' + namaDasar(rep) + ' - ' + label + '.csv');
+    tb.disabled = true; tb.textContent = 'Menyiapkan…';
+    var ada = await siapAsli(rep);
+    tb.disabled = false; tb.textContent = 'Unduh CSV';
     $('dlgCustom').close();
-    A.toast(num(rows.length) + ' baris diunduh (' + label + ').', true);
+    if (ada) unduhMcmCustom(rep, p);
+    else mintaFileAsli(rep, function () { unduhMcmCustom(rep, p); });
   });
   $('rDownload').addEventListener('click', function () {
     if (!st.report) return;
@@ -6757,7 +6782,7 @@ function cekKaryawanMurni_(rows, db) {
     return { nama: h.namaMcm, kind: '', why: 'Sudah cocok.' };
   }
   // laporan lama tanpa file MCM tersimpan: jelaskan dulu, lalu minta file aslinya SEKALI (setelah itu disimpan ke laporan)
-  function mintaFileAsli(rep) {
+  function mintaFileAsli(rep, lanjut) {
     var dlg = $('dlgAsli'), err = $('asliErr'), ok = $('asliOk');
     $('asliTxt').innerHTML = '<p>File MCM asli untuk laporan ini belum tersimpan, karena laporan dibuat sebelum penyimpanan file ke Google Drive aktif.</p>' +
       '<div class="asli__file"><b>' + esc(rep.fileName || '-') + '</b><small>' + num(rep.hasil.length) + ' baris' + (rep.oleh ? ' · dibuat oleh ' + esc(rep.oleh) : '') + '</small></div>' +
@@ -6783,7 +6808,7 @@ function cekKaryawanMurni_(rows, db) {
             }
           } catch (e2) { /* tidak tersimpan pun, MCM benar tetap bisa dibuka sekarang */ }
           dlg.close();
-          bukaFix();
+          (lanjut || bukaFix)();
         } catch (ex) { err.textContent = ex.message; err.hidden = false; ok.disabled = false; ok.textContent = 'Pilih file lain'; }
       };
       pilih.click();
