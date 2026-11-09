@@ -1938,6 +1938,29 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
   .dlg--site .fix__foot > p { display: none; }
 }
 
+/* status site penempatan di Database Bank */
+.sitestat { margin: 0 0 14px; padding: 14px 16px; border-radius: 16px; background: linear-gradient(180deg, #F7FAFF, #F2F6FD); border: 1px solid #E3EAF6; }
+.sitestat__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.sitestat__txt b { display: block; font-size: 15.5px; }
+.sitestat__txt small { display: block; color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+.sitestat__num { color: #C2410C; }
+.sitestat__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.sschip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px; border: 1px solid transparent; font: inherit; font-size: 12.5px; cursor: pointer; transition: box-shadow .15s, border-color .15s; }
+.sschip b { font-size: 13.5px; }
+.sschip--x { background: #FFF1E6; color: #B4480C; }
+.sschip--siap { background: #FFF7E0; color: #976304; }
+.sschip--belum { background: #EEF1F6; color: #4B5567; }
+.sschip--beda { background: #FDECEE; color: #B4232D; }
+.sschip--ok { background: #E3F8F0; color: #0B7A5E; }
+.sschip:hover { box-shadow: 0 2px 8px rgba(20, 40, 80, .08); }
+.sschip.is-on { border-color: currentColor; box-shadow: 0 0 0 2px rgba(255, 255, 255, .9) inset; font-weight: 600; }
+.ss { display: block; font-size: 11.5px; margin-top: 2px; }
+.ss--siap { color: #976304; }
+.ss--beda { color: #B4232D; }
+.ss--belum { color: #7A8496; }
+.ss--ok { color: #0B7A5E; }
+@media (max-width: 640px) { .sitestat { padding: 12px; } .sitestat__head .btn { width: 100%; } }
+
 </style>
 </head>
 <body class="is-auth">
@@ -2634,7 +2657,6 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
               <div class="phead__actions"><button class="btn btn--primary" type="button" id="bRefresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 00-14.5-4.2M4 4v4h4M4 13a8 8 0 0014.5 4.2M20 20v-4h-4"/></svg>Muat ulang</button>
                 <button class="btn btn--white" type="button" id="bPdf"><span class="ico-pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5"/><path d="M8.5 13.5h7M8.5 17h5"/></svg></span>Unduh PDF</button>
                 <button class="btn btn--white" type="button" id="bXls"><span class="ico-xls" aria-hidden="true">X</span>Unduh Excel</button>
-                <button class="btn btn--white" type="button" id="bSiteFix" title="Ganti site penempatan di Data Upah dengan site dari file MCM (nama Cocok/Mirip)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Perbarui site dari MCM</button>
                 <button class="btn btn--white" type="button" id="bPrint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3.5h10V8"/><rect x="3.5" y="8" width="17" height="8.5" rx="2"/><path d="M7 14h10v6.5H7z"/></svg>Cetak</button></div>
             </div>
             <div class="phead__art" aria-hidden="true"></div>
@@ -2668,6 +2690,13 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
           </div>
           <div class="panel panel--list">
             <div class="notice notice--warn dobelbar" id="bDobel" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.3v.2"/></svg><div><b id="bDobelTxt"></b><span>Nama dan no rekening sama. Akan disisakan 1 baris per rekening; nama sama dengan no rekening beda tidak disentuh.</span></div><button class="btn btn--primary btn--sm" type="button" id="bDobelBtn">Bersihkan sekarang</button></div>
+            <div class="sitestat" id="bSiteStat">
+              <div class="sitestat__head">
+                <div class="sitestat__txt"><b id="bSsJudul">Status site penempatan</b><small id="bSsSub">Menghitung dari riwayat MCM…</small></div>
+                <button class="btn btn--primary btn--sm" type="button" id="bSsBtn">Perbarui site dari MCM</button>
+              </div>
+              <div class="sitestat__chips" id="bSsChips"></div>
+            </div>
             <div class="filters">
               <label class="search">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
@@ -2676,6 +2705,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
               </label>
               <label class="select"><span class="sr-only">Site bisnis</span><select id="bSite"><option value="">Semua site bisnis</option></select></label>
               <label class="select"><span class="sr-only">Bank</span><select id="bBank"><option value="">Semua bank</option></select></label>
+              <label class="select"><span class="sr-only">Status site penempatan</span><select id="bSiteSt"><option value="">Semua status site</option><option value="x">Belum diperbarui (semua)</option><option value="2">Siap diperbarui dari MCM</option><option value="0">Belum ada di MCM</option><option value="4">Nama di MCM tidak cocok</option><option value="1">Sudah sesuai MCM</option></select></label>
               <label class="toggle"><input type="checkbox" id="bReveal"><span class="toggle__ui" aria-hidden="true"></span>Tampilkan nomor lengkap</label>
             </div>
             <p class="tools__meta" id="bMeta">Memuat database…</p>
@@ -6373,7 +6403,7 @@ function cekKaryawanMurni_(rows, db) {
     if (ganti && !(opts && opts.noScroll)) window.scrollTo(0, 0);
     if (!A.connected()) return;
     if (v === 'dashboard') muatDashboard();
-    if (v === 'database') muatDatabase();
+    if (v === 'database') { if (db.rows && !db.basi && !db.busy) muatStatusSite(); muatDatabase(); }
     if (v === 'pengaturan') muatPengaturan();
     if (v === 'karyawan' && A.karyawanTampil) A.karyawanTampil();
     if (v === 'riwayat' && ganti && A.refreshHistory) A.refreshHistory();
@@ -6598,7 +6628,7 @@ function cekKaryawanMurni_(rows, db) {
   qd.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (f) A.crosscheckFile(f); });
 
   /* ---------- database bank ---------- */
-  var db = { rows: null, ro: {}, sk: {}, q: '', site: '', bank: '', page: 1, reveal: false, busy: false, basi: true, sortCol: -1, sortDir: 1 };
+  var db = { rows: null, ro: {}, sk: {}, q: '', site: '', bank: '', page: 1, reveal: false, busy: false, basi: true, sortCol: -1, sortDir: 1, ss: null, ssF: '' };
   var PER = 50;
   function kunci(a) { return String(a).replace(/\D/g, '').replace(/^0+/, ''); }
   A.dbBasi = function () { db.basi = true; if (A.dataBasi) A.dataBasi(); if (current === 'database') muatDatabase(); };
@@ -6625,6 +6655,7 @@ function cekKaryawanMurni_(rows, db) {
       A.spark('bRo', A.seriKumulatif(db.rows.map(function (r) { return !!db.ro[kunci(r[2])]; })));
       A.spark('bSk', A.seriKumulatif(db.rows.map(function (r) { return !!db.sk[kunci(r[2])]; })));
       renderDb();
+      muatStatusSite();
     } catch (e) { $('bMeta').textContent = e.message; }
     finally { db.busy = false; }
   }
@@ -6655,11 +6686,57 @@ function cekKaryawanMurni_(rows, db) {
     sel.innerHTML = '<option value="">' + semua + '</option>' + list.map(function (x) { return '<option' + (x === pilih ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('');
   }
   function samar(a) { a = String(a); return a.length <= 4 ? a : '•'.repeat(Math.min(6, a.length - 4)) + a.slice(-4); }
+  /* ---------- status site penempatan (dari riwayat MCM) ---------- */
+  var SS_LABEL = { 0: 'Belum ada di MCM', 1: 'Sudah sesuai MCM', 2: 'Siap diperbarui', 4: 'Nama di MCM tidak cocok' };
+  var ssJalan = 0;
+  async function muatStatusSite() {
+    var no = ++ssJalan;
+    $('bSsSub').textContent = 'Menghitung dari riwayat MCM…';
+    try {
+      var out = await A.post({ action: 'statusSite' });
+      if (no !== ssJalan) return;
+      if (!out.ok) throw new Error(out.error || 'Gagal menghitung.');
+      var map = {};
+      out.peta.forEach(function (x) { map[x[0]] = { k: x[1], site: x[2], file: x[3], waktu: x[4], nama: x[5] || '' }; });
+      db.ss = { map: map, g: out.ringkas, laporan: out.laporan, dihitung: out.dihitung };
+      renderStatusSite(); renderDb();
+    } catch (e) { if (no === ssJalan) $('bSsSub').textContent = 'Status site belum bisa dihitung: ' + e.message; }
+  }
+  function kodeSite(r) { if (!db.ss) return -1; var x = db.ss.map[kunciDobel(r)]; return x ? x.k : 0; }
+  function renderStatusSite() {
+    var s = db.ss; if (!s) return;
+    var g = s.g, belum = g.siap + g.belum + g.namaBeda;
+    $('bSsJudul').innerHTML = belum ? '<span class="sitestat__num">' + num(belum) + '</span> rekening belum diperbarui site penempatannya' : 'Semua site penempatan sudah sesuai MCM';
+    $('bSsSub').textContent = num(g.sudah) + ' dari ' + num(g.total) + ' rekening sudah sesuai MCM · dihitung dari ' + num(s.laporan) + ' laporan crosscheck';
+    var chip = function (v, n, lbl, cls) {
+      return '<button type="button" class="sschip ' + cls + (db.ssF === v ? ' is-on' : '') + '" data-ss="' + v + '" aria-pressed="' + (db.ssF === v) + '"><b>' + num(n) + '</b>' + lbl + '</button>';
+    };
+    $('bSsChips').innerHTML = chip('x', belum, 'Belum diperbarui', 'sschip--x') + chip('2', g.siap, 'Siap diperbarui dari MCM', 'sschip--siap') +
+      chip('0', g.belum, 'Belum ada di MCM', 'sschip--belum') + chip('4', g.namaBeda, 'Nama di MCM tidak cocok', 'sschip--beda') + chip('1', g.sudah, 'Sudah sesuai MCM', 'sschip--ok');
+    $('bSsBtn').disabled = !g.siap;
+    $('bSsBtn').textContent = g.siap ? 'Perbarui ' + num(g.siap) + ' site dari MCM' : 'Tidak ada yang siap diperbarui';
+  }
+  function setSsF(v) {
+    db.ssF = v; $('bSiteSt').value = v; db.page = 1;
+    renderStatusSite(); renderDb();
+  }
+  $('bSsChips').addEventListener('click', function (e) { var b = e.target.closest('[data-ss]'); if (b) setSsF(db.ssF === b.dataset.ss ? '' : b.dataset.ss); });
+  $('bSiteSt').addEventListener('change', function () { setSsF(this.value); });
+  $('bSsBtn').addEventListener('click', function () { if (A.bukaSite) A.bukaSite({}); });
+  function catatanSite(r) {
+    var k = kodeSite(r), x = db.ss && db.ss.map[kunciDobel(r)];
+    if (k === 2) return '<small class="ss ss--siap" title="Dari ' + esc(x.file) + ' (' + esc(x.waktu) + ')">MCM: ' + esc(x.site) + '</small>';
+    if (k === 4) return '<small class="ss ss--beda" title="Nama di MCM: ' + esc(x.nama) + '">nama di MCM beda</small>';
+    if (k === 0 && db.ssF) return '<small class="ss ss--belum">belum ada di MCM</small>';
+    if (k === 1 && db.ssF === '1') return '<small class="ss ss--ok">✓ sesuai MCM</small>';
+    return '';
+  }
   function dbList() {
     var q = db.q.trim().toLowerCase(), digit = q.replace(/\D/g, ''), angka = /^[\d\s.-]+$/.test(q);
     var list = db.rows.filter(function (r) {
       if (db.site && r[3] !== db.site) return false;
       if (db.bank && r[1] !== db.bank) return false;
+      if (db.ssF && db.ss) { var ks = kodeSite(r); if (db.ssF === 'x' ? ks === 1 : ks !== Number(db.ssF)) return false; }
       if (!q) return true;
       return angka && digit.length >= 3 ? String(r[2]).indexOf(digit) !== -1 : (r[0] + ' ' + r[4]).toLowerCase().indexOf(q) !== -1;
     });
@@ -6689,8 +6766,8 @@ function cekKaryawanMurni_(rows, db) {
       var k = kunci(r[2]), tanda = (db.ro[k] ? '<span class="tag tag--ro">RO</span>' : '') + (db.sk[k] ? '<span class="tag tag--sk">Surat kuasa</span>' : '');
       return '<tr><td class="r hide-m" data-label="No">' + (start + i + 1) + '</td><td class="lead" data-label="Nama">' + esc(r[0]) + '</td><td data-label="Bank">' + esc(r[1]) +
         '</td><td class="acct" data-label="No rekening">' + (db.reveal ? esc(r[2]) : '<button type="button" title="Klik untuk menampilkan" data-buka="' + esc(r[2]) + '">' + esc(samar(r[2])) + '</button>') +
-        '</td><td data-label="Site bisnis">' + esc(r[3]) + '</td><td data-label="Site penempatan">' + esc(r[4]) + '</td><td data-label="Tanda">' + (tanda || '<span class="muted">-</span>') + '</td></tr>';
-    }).join('') || '<tr><td class="empty" colspan="7">' + (db.q || db.site || db.bank ? 'Tidak ada rekening yang cocok dengan saringan.' : 'Database masih kosong.') + '</td></tr>';
+        '</td><td data-label="Site bisnis">' + esc(r[3]) + '</td><td data-label="Site penempatan">' + esc(r[4]) + catatanSite(r) + '</td><td data-label="Tanda">' + (tanda || '<span class="muted">-</span>') + '</td></tr>';
+    }).join('') || '<tr><td class="empty" colspan="7">' + (db.q || db.site || db.bank || db.ssF ? 'Tidak ada rekening yang cocok dengan saringan.' : 'Database masih kosong.') + '</td></tr>';
     $('bMeta').textContent = num(list.length) + (list.length !== db.rows.length ? ' dari ' + num(db.rows.length) : '') + ' rekening';
     $('bPageInfo').textContent = 'Halaman ' + db.page + ' dari ' + pages;
     $('bPrev').disabled = db.page <= 1; $('bNext').disabled = db.page >= pages;
@@ -6710,7 +6787,7 @@ function cekKaryawanMurni_(rows, db) {
     var list = dbList();
     return {
       judul: 'Database Rekening', namaFile: 'Database Rekening Moneywise',
-      sub: 'Isi sheet Data Upah' + (db.site ? ' · site bisnis ' + db.site : '') + (db.bank ? ' · ' + db.bank : '') + (db.q ? ' · pencarian "' + db.q + '"' : '') + (db.reveal ? '' : ' · nomor rekening disamarkan'),
+      sub: 'Isi sheet Data Upah' + (db.ssF ? ' · status site: ' + (db.ssF === 'x' ? 'belum diperbarui' : SS_LABEL[db.ssF].toLowerCase()) : '') + (db.site ? ' · site bisnis ' + db.site : '') + (db.bank ? ' · ' + db.bank : '') + (db.q ? ' · pencarian "' + db.q + '"' : '') + (db.reveal ? '' : ' · nomor rekening disamarkan'),
       meta: [['Jumlah rekening', num(list.length)], ['Total di database', num(db.rows.length)], ['Nomor rekening', db.reveal ? 'Lengkap' : 'Disamarkan (4 digit terakhir)']],
       tabel: [{ kolom: ['No', 'Nama', 'Bank', 'No rekening', 'Site bisnis', 'Site penempatan', 'Tanda'], kanan: [0],
         baris: list.map(function (r, i) { var k = kunci(r[2]); return [i + 1, r[0], r[1], db.reveal ? r[2] : samar(r[2]).replace(/•/g, '*'), r[3], r[4], [db.ro[k] ? 'RO' : '', db.sk[k] ? 'Surat kuasa' : ''].filter(Boolean).join(', ')]; }) }]
@@ -6722,8 +6799,11 @@ function cekKaryawanMurni_(rows, db) {
     if (!db.rows) return;
     if (typeof XLSX === 'undefined') { A.toast('Pembuat file Excel belum termuat.'); return; }
     var list = dbList(), wb = XLSX.utils.book_new();
-    var ws = XLSX.utils.aoa_to_sheet([['Nama', 'Bank', 'No Rekening', 'Site Bisnis', 'Site Penempatan']].concat(list.map(function (r) { return [r[0], r[1], db.reveal ? String(r[2]) : samar(r[2]), r[3], r[4]]; })));
-    ws['!cols'] = [{ wch: 32 }, { wch: 28 }, { wch: 20 }, { wch: 32 }, { wch: 32 }];
+    var ws = XLSX.utils.aoa_to_sheet([['Nama', 'Bank', 'No Rekening', 'Site Bisnis', 'Site Penempatan', 'Status Site', 'Site dari MCM', 'File MCM']].concat(list.map(function (r) {
+      var x = db.ss && db.ss.map[kunciDobel(r)], k = kodeSite(r);
+      return [r[0], r[1], db.reveal ? String(r[2]) : samar(r[2]), r[3], r[4], k < 0 ? '' : SS_LABEL[k], x ? x.site : '', x ? x.file : ''];
+    })));
+    ws['!cols'] = [{ wch: 32 }, { wch: 28 }, { wch: 20 }, { wch: 32 }, { wch: 32 }, { wch: 24 }, { wch: 28 }, { wch: 36 }];
     XLSX.utils.book_append_sheet(wb, ws, 'Data Upah');
     XLSX.writeFile(wb, 'Database Rekening Moneywise.xlsx');
   });
