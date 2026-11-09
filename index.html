@@ -1910,6 +1910,34 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
 .tools__dl #rDlKat { font-weight: 700; margin-left: 4px; }
 @media (max-width: 640px) { .tools__dl { margin-left: 0; width: 100%; } .tools__dl .btn { flex: 1; } }
 
+/* ---------- perbarui site penempatan dari MCM ---------- */
+.site-load { display: flex; align-items: center; gap: 12px; padding: 40px 26px; color: var(--ink-2); font-size: 14.5px; }
+.site-body { display: flex; flex-direction: column; min-height: 0; flex: 1; overflow: auto; }
+.site-body .fix__tbl { flex: none; max-height: none; min-height: 0; }
+@media (min-width: 641px) { .site-body .fix__tbl { max-height: 52vh; } }
+.site-body p.site-src { margin: 2px 26px 0; font-size: 13px; color: var(--ink-2); }
+.tbl--site td { vertical-align: middle; }
+.tbl--site td small { display: block; color: var(--ink-3, #7A8496); font-size: 12px; margin-top: 2px; }
+.tbl--site .mono { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.site-lama { color: #8A93A3; text-decoration: line-through; text-decoration-color: rgba(138, 147, 163, .6); }
+.site-lama i { text-decoration: none; font-style: italic; }
+.site-baru { display: inline-block; padding: 3px 9px; border-radius: 8px; background: #E3F8F0; color: #0B7A5E; font-weight: 600; }
+.site-file { word-break: break-word; }
+.site-page { display: flex; justify-content: flex-end; align-items: center; gap: 12px; padding: 10px 26px 0; font-size: 13px; color: var(--ink-2); }
+.site-hist { margin: 12px 26px 0; padding: 10px 14px; border-radius: 12px; background: #F6F8FC; font-size: 13px; }
+.site-hist p { margin: 0 0 6px; color: var(--ink-2); }
+.site-hist__row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 4px 0; }
+.site-done { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 34px 26px 10px; }
+.site-done svg { width: 54px; height: 54px; fill: #E3F8F0; stroke: #0B8A6A; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.site-done p { margin: 0; font-size: 15px; }
+.site-done__note { color: var(--ink-2); font-size: 13px !important; max-width: 460px; }
+#rSite svg, #bSiteFix svg { fill: none; stroke: currentColor; stroke-width: 1.8; }
+@media (max-width: 640px) {
+  .site-body p.site-src, .site-page, .site-hist { margin-left: 16px; margin-right: 16px; padding-left: 0; padding-right: 0; }
+  .site-hist { padding: 10px 12px; }
+  .dlg--site .fix__foot > p { display: none; }
+}
+
 </style>
 </head>
 <body class="is-auth">
@@ -2293,6 +2321,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
               <button class="btn btn--primary btn--sm" type="button" id="rFix">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>MCM benar
               </button>
+              <button class="btn btn--white btn--sm" type="button" id="rSite" title="Ganti site penempatan di Data Upah dengan site dari MCM ini (nama Cocok/Mirip)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Perbarui site</button>
               <div class="menu" id="rExportMenu">
                 <button class="btn btn--ghost btn--sm" type="button" data-menu>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></svg>Unduh / cetak
@@ -2605,6 +2634,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
               <div class="phead__actions"><button class="btn btn--primary" type="button" id="bRefresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 00-14.5-4.2M4 4v4h4M4 13a8 8 0 0014.5 4.2M20 20v-4h-4"/></svg>Muat ulang</button>
                 <button class="btn btn--white" type="button" id="bPdf"><span class="ico-pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5"/><path d="M8.5 13.5h7M8.5 17h5"/></svg></span>Unduh PDF</button>
                 <button class="btn btn--white" type="button" id="bXls"><span class="ico-xls" aria-hidden="true">X</span>Unduh Excel</button>
+                <button class="btn btn--white" type="button" id="bSiteFix" title="Ganti site penempatan di Data Upah dengan site dari file MCM (nama Cocok/Mirip)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Perbarui site dari MCM</button>
                 <button class="btn btn--white" type="button" id="bPrint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3.5h10V8"/><rect x="3.5" y="8" width="17" height="8.5" rx="2"/><path d="M7 14h10v6.5H7z"/></svg>Cetak</button></div>
             </div>
             <div class="phead__art" aria-hidden="true"></div>
@@ -3020,6 +3050,51 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
           <button class="btn btn--ghost" type="button" id="fixReset">Kembalikan saran awal</button>
           <button class="btn btn--ghost" type="button" id="fixCsv">Unduh CSV</button>
           <button class="btn btn--primary" type="button" id="fixXls">Unduh Excel</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Dialog perbarui site penempatan dari MCM -->
+  <dialog class="dlg dlg--fix dlg--site" id="dlgSite" aria-labelledby="dlgSiteTitle">
+    <div class="fix">
+      <div class="fix__head">
+        <div>
+          <h3 id="dlgSiteTitle">Perbarui site penempatan dari MCM</h3>
+          <p id="siteLead"></p>
+        </div>
+        <button class="dlg__x" type="button" id="siteClose" aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="site-load" id="siteLoad"><span class="spin" aria-hidden="true"></span><span id="siteLoadTxt">Membaca riwayat crosscheck…</span></div>
+      <div class="site-body" id="siteBody" hidden>
+        <div class="fix__legend" id="siteLegend"></div>
+        <p class="site-src" id="siteSrc"></p>
+        <div class="fix__tools">
+          <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input type="search" id="siteQ" placeholder="Cari nama, no rekening, atau site" autocomplete="off"></label>
+          <label class="toggle"><input type="checkbox" id="siteReveal"><span class="toggle__ui" aria-hidden="true"></span>Tampilkan nomor lengkap</label>
+          <span class="tools__meta" id="siteMeta"></span>
+        </div>
+        <div class="tbl-wrap fix__tbl" id="siteTbl">
+          <table class="tbl tbl--site">
+            <thead><tr><th scope="col" class="r">No</th><th scope="col">Nama</th><th scope="col">No rekening</th><th scope="col">Site lama</th><th scope="col">Site baru (MCM)</th><th scope="col">Dari MCM</th></tr></thead>
+            <tbody id="siteBodyRows"></tbody>
+          </table>
+        </div>
+        <div class="site-page" id="sitePage" hidden><button class="btn btn--ghost btn--sm" type="button" id="sitePrev">Sebelumnya</button><span id="sitePageTxt"></span><button class="btn btn--ghost btn--sm" type="button" id="siteNext">Berikutnya</button></div>
+        <div class="site-hist" id="siteHist" hidden></div>
+      </div>
+      <div class="site-done" id="siteDone" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M7.8 12.3l2.9 2.9 5.6-5.8"/></svg>
+        <p id="siteDoneTxt"></p>
+        <p class="site-done__note">Cadangan site lama disimpan otomatis. Kalau ada yang keliru, klik Batalkan untuk mengembalikan semuanya.</p>
+        <button class="btn btn--ghost btn--sm" type="button" id="siteUndo">Batalkan perubahan ini</button>
+      </div>
+      <div class="fix__foot">
+        <p>Site lama ditimpa. Nama yang <b>Beda</b>, rekening yang belum ada di Data Upah, dan baris MCM tanpa site tidak disentuh.</p>
+        <div class="fix__btns">
+          <button class="btn btn--ghost" type="button" id="siteCsv">Unduh daftar (CSV)</button>
+          <button class="btn btn--ghost" type="button" id="siteTutup">Tutup</button>
+          <button class="btn btn--primary" type="button" id="siteApply">Perbarui</button>
         </div>
       </div>
     </div>
@@ -3997,7 +4072,7 @@ function cekKaryawanMurni_(rows, db) {
     if (out && out.ok && (UBAH_DB[payload.action] || !payload.action || (payload.action === 'bersihkanDobel' && out.dihapus))) dataBasi();
     return out;
   }
-  var UBAH_DB = { tambahRO: 1, editRO: 1, hapusRO: 1, uploadSK: 1, cabutSK: 1, hapusSK: 1, tambahKaryawan: 1, hapusRiwayat: 1, hapusSemuaRiwayat: 1 };
+  var UBAH_DB = { tambahRO: 1, editRO: 1, hapusRO: 1, uploadSK: 1, cabutSK: 1, hapusSK: 1, tambahKaryawan: 1, hapusRiwayat: 1, hapusSemuaRiwayat: 1, terapkanSite: 1, batalSite: 1 };
 
   function showLogin(msg) {
     var e = $('loginErr');
@@ -5849,6 +5924,14 @@ function cekKaryawanMurni_(rows, db) {
   $('fixReset').addEventListener('click', function () { fix.forEach(function (x) { x.nama = x.saran.nama; x.manual = false; }); renderFix(); });
   $('fixClose').addEventListener('click', function () { dlgFix.close(); });
   $('rFix').addEventListener('click', bukaFix);
+  // perbarui site penempatan Data Upah dari MCM laporan ini (perlu ID laporan: tunggu tersimpan dulu)
+  $('rSite').addEventListener('click', async function () {
+    var rep = st.report;
+    if (!rep) return;
+    if (!(await pastikanTersimpan(rep))) return;
+    if (!rep.id) { A.toast('Laporan belum tersimpan ke riwayat.'); return; }
+    if (A.bukaSite) A.bukaSite({ id: rep.id, judul: rep.fileName });
+  });
 
   function namaUnduh(ext) { return String(st.file.name).replace(/\.[^.]+$/, '') + ' (BENAR).' + ext; }
   function unduhBlob(isi, nama, tipe) {
@@ -6936,6 +7019,168 @@ function cekKaryawanMurni_(rows, db) {
       setTimeout(function () { bersihkanDobel(true); }, 3500);
     }
   });
+})();
+
+</script>
+  <script>
+/* Moneywise — perbarui SITE PENEMPATAN di Data Upah dari file MCM (riwayat crosscheck)
+ * Hanya rekening yang namanya Cocok/Mirip; satu rekening memakai MCM terbaru. Pratinjau dulu, lalu terapkan; bisa dibatalkan. */
+(function () {
+  'use strict';
+  var A = window.APP, $ = function (id) { return document.getElementById(id); };
+  var esc = A.esc, num = A.num;
+  var dlg = $('dlgSite'), PER = 100;
+  var st = { id: '', judul: '', data: null, q: '', page: 1, reveal: false, busy: false };
+
+  function samar(a) { a = String(a); return st.reveal || a.length <= 4 ? a : '•'.repeat(Math.min(6, a.length - 4)) + a.slice(-4); }
+
+  A.bukaSite = function (o) {
+    o = o || {};
+    st.id = o.id || ''; st.judul = o.judul || ''; st.data = null; st.q = ''; st.page = 1;
+    $('siteQ').value = '';
+    $('siteLead').innerHTML = st.id
+      ? 'Site penempatan di <b>Data Upah</b> diganti dengan site dari MCM <b>' + esc(st.judul || st.id) + '</b>. Hanya rekening yang namanya <b>Cocok</b> atau <b>Mirip</b>.'
+      : 'Site penempatan di <b>Data Upah</b> diganti dengan site dari <b>semua MCM yang pernah dicrosscheck</b>. Hanya rekening yang namanya <b>Cocok</b> atau <b>Mirip</b>; bila satu rekening ada di beberapa MCM, dipakai MCM <b>terbaru</b>.';
+    tampil('muat');
+    if (!dlg.open) dlg.showModal();
+    muat();
+  };
+
+  function tampil(mode) {
+    $('siteLoad').hidden = mode !== 'muat';
+    $('siteBody').hidden = mode !== 'isi';
+    $('siteDone').hidden = mode !== 'selesai';
+    $('siteApply').hidden = mode !== 'isi';
+  }
+
+  async function muat() {
+    $('siteLoadTxt').textContent = st.id ? 'Membaca hasil crosscheck laporan ini…' : 'Membaca semua riwayat crosscheck dan Data Upah… (data besar butuh beberapa detik)';
+    try {
+      var out = await A.post({ action: 'pratinjauSite', id: st.id || undefined });
+      if (!out.ok) throw new Error(out.error || 'Gagal membaca data.');
+      st.data = out;
+      render();
+      tampil('isi');
+    } catch (e) {
+      $('siteLoadTxt').textContent = 'Gagal: ' + e.message;
+    }
+  }
+
+  function baris() {
+    var q = st.q.toLowerCase();
+    var L = st.data.ubah;
+    return !q ? L : L.filter(function (r) { return (r[0] + ' ' + r[2] + ' ' + r[3] + ' ' + r[4] + ' ' + r[5]).toLowerCase().indexOf(q) !== -1; });
+  }
+
+  function render() {
+    var d = st.data, g = d.ringkas;
+    $('siteLegend').innerHTML =
+      '<span class="chip chip--sk"><b>' + num(g.diubah) + '</b> akan diperbarui</span>' +
+      '<span class="chip"><b>' + num(g.sudahSama) + '</b> sudah sama</span>' +
+      '<span class="chip" style="background:#FFF4E5;color:#A15C07"><b>' + num(g.namaBeda) + '</b> nama tidak cocok, dilewati</span>' +
+      '<span class="chip" style="background:#F1F3F7;color:#505A6B"><b>' + num(g.tidakAda) + '</b> rekening belum ada di Data Upah</span>' +
+      (g.bentrok ? '<span class="chip chip--ro"><b>' + num(g.bentrok) + '</b> rekening punya site berbeda di beberapa MCM (dipakai terbaru)</span>' : '');
+    $('siteSrc').textContent = 'Sumber: ' + num(g.laporan) + ' laporan crosscheck, ' + num(g.baris) + ' baris Cocok/Mirip yang berisi site' +
+      (g.tanpaSite ? ' (' + num(g.tanpaSite) + ' baris tanpa site diabaikan)' : '') + '.';
+    var list = baris(), maxP = Math.max(1, Math.ceil(list.length / PER));
+    st.page = Math.min(st.page, maxP);
+    var awal = (st.page - 1) * PER, pot = list.slice(awal, awal + PER);
+    $('siteMeta').textContent = list.length === d.ubah.length ? num(list.length) + ' perubahan' : num(list.length) + ' dari ' + num(d.ubah.length) + ' perubahan';
+    $('siteBodyRows').innerHTML = pot.length ? pot.map(function (r, i) {
+      return '<tr><td class="r" data-label="No">' + (awal + i + 1) + '</td><td data-label="Nama"><b>' + esc(r[0]) + '</b><small>' + esc(r[1]) + '</small></td>' +
+        '<td class="mono" data-label="No rekening">' + esc(samar(r[2])) + '</td>' +
+        '<td data-label="Site lama"><span class="site-lama">' + (r[3] ? esc(r[3]) : '<i>kosong</i>') + '</span></td>' +
+        '<td data-label="Site baru"><span class="site-baru">' + esc(r[4]) + '</span>' + (r[7] > 1 ? '<small title="Rekening ini muncul dengan ' + r[7] + ' site berbeda; dipakai MCM terbaru">' + r[7] + ' site di riwayat, dipakai terbaru</small>' : '') + '</td>' +
+        '<td data-label="Dari MCM"><span class="site-file">' + esc(r[5]) + '</span><small>' + esc(r[6]) + '</small></td></tr>';
+    }).join('') : '<tr><td colspan="6" class="empty">' + (d.ubah.length ? 'Tidak ada yang cocok dengan pencarian.' : 'Semua site penempatan sudah sesuai dengan MCM. Tidak ada yang perlu diperbarui.') + '</td></tr>';
+    $('sitePage').hidden = maxP <= 1;
+    $('sitePageTxt').textContent = 'Halaman ' + st.page + ' dari ' + maxP;
+    $('sitePrev').disabled = st.page <= 1; $('siteNext').disabled = st.page >= maxP;
+    var b = $('siteApply');
+    b.disabled = !d.ubah.length;
+    b.textContent = d.ubah.length ? 'Perbarui ' + num(d.ubah.length) + ' site penempatan' : 'Tidak ada perubahan';
+    $('siteCsv').disabled = !d.ubah.length;
+    renderCadangan(d.cadangan || []);
+  }
+
+  function renderCadangan(list) {
+    var box = $('siteHist');
+    var aktif = list.filter(function (c) { return !c.batal; });
+    box.hidden = !aktif.length;
+    if (!aktif.length) return;
+    box.innerHTML = '<p>Perubahan sebelumnya (bisa dibatalkan):</p>' + aktif.slice(0, 3).map(function (c) {
+      return '<div class="site-hist__row"><span><b>' + num(c.jumlah) + ' site</b> · ' + esc(new Date(c.waktu).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })) + (c.oleh ? ' · ' + esc(c.oleh) : '') + '</span>' +
+        '<button class="btn btn--ghost btn--sm" type="button" data-batal="' + esc(c.id) + '">Batalkan</button></div>';
+    }).join('');
+  }
+
+  async function terapkan() {
+    if (st.busy || !st.data || !st.data.ubah.length) return;
+    st.busy = true;
+    var b = $('siteApply'), n = st.data.ubah.length;
+    b.disabled = true; b.textContent = 'Memperbarui ' + num(n) + ' site…';
+    try {
+      var out = await A.post({ action: 'terapkanSite', id: st.id || undefined, kunci: st.data.kunci });
+      if (!out.ok) {
+        if (out.berubah) { A.toast(out.error); tampil('muat'); await muat(); return; }
+        throw new Error(out.error || 'Gagal memperbarui.');
+      }
+      $('siteDoneTxt').innerHTML = '<b>' + num(out.diubah) + ' site penempatan</b> di Data Upah sudah diperbarui dari MCM.';
+      $('siteUndo').dataset.batal = out.cadangan || '';
+      $('siteUndo').hidden = !out.cadangan;
+      tampil('selesai');
+      if (A.dbBasi) A.dbBasi();
+      A.toast(num(out.diubah) + ' site penempatan diperbarui.', true);
+    } catch (e) {
+      A.toast('Site penempatan belum bisa diperbarui: ' + e.message);
+      b.disabled = false; b.textContent = 'Perbarui ' + num(n) + ' site penempatan';
+    } finally { st.busy = false; }
+  }
+
+  async function batalkan(id, tombol) {
+    if (!id || st.busy) return;
+    st.busy = true;
+    var lbl = tombol.textContent;
+    tombol.disabled = true; tombol.textContent = 'Membatalkan…';
+    try {
+      var out = await A.post({ action: 'batalSite', cadangan: id });
+      if (!out.ok) throw new Error(out.error || 'Gagal membatalkan.');
+      A.toast(num(out.dikembalikan) + ' site penempatan dikembalikan ke nilai lama' + (out.dilewati ? ' (' + num(out.dilewati) + ' dilewati karena sudah berubah lagi)' : '') + '.', true);
+      if (A.dbBasi) A.dbBasi();
+      st.busy = false;
+      tampil('muat'); await muat();
+    } catch (e) {
+      A.toast('Belum bisa dibatalkan: ' + e.message);
+      tombol.disabled = false; tombol.textContent = lbl;
+    } finally { st.busy = false; }
+  }
+
+  function unduhCsv() {
+    var L = baris(), q = function (v) { v = String(v == null ? '' : v); return /[";\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var isi = ['No;Nama;Bank;No rekening;Site lama;Site baru (MCM);Dari file MCM;Waktu crosscheck']
+      .concat(L.map(function (r, i) { return [i + 1, r[0], r[1], '="' + r[2] + '"', r[3], r[4], r[5], r[6]].map(q).join(';'); })).join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['﻿' + isi], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'Perubahan site penempatan ' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  var qt;
+  $('siteQ').addEventListener('input', function () { clearTimeout(qt); qt = setTimeout(function () { st.q = $('siteQ').value.trim(); st.page = 1; render(); }, 150); });
+  $('siteReveal').addEventListener('change', function () { st.reveal = this.checked; if (st.data) render(); });
+  $('sitePrev').addEventListener('click', function () { st.page--; render(); $('siteTbl').scrollTop = 0; });
+  $('siteNext').addEventListener('click', function () { st.page++; render(); $('siteTbl').scrollTop = 0; });
+  $('siteApply').addEventListener('click', terapkan);
+  $('siteCsv').addEventListener('click', unduhCsv);
+  $('siteClose').addEventListener('click', function () { if (!st.busy) dlg.close(); });
+  $('siteTutup').addEventListener('click', function () { if (!st.busy) dlg.close(); });
+  dlg.addEventListener('cancel', function (e) { if (st.busy) e.preventDefault(); });
+  $('siteUndo').addEventListener('click', function () { batalkan(this.dataset.batal, this); });
+  $('siteHist').addEventListener('click', function (e) { var b = e.target.closest('[data-batal]'); if (b) batalkan(b.dataset.batal, b); });
+
+  // tombol di halaman Database Bank
+  var bb = $('bSiteFix');
+  if (bb) bb.addEventListener('click', function () { A.bukaSite({}); });
 })();
 
 </script>
