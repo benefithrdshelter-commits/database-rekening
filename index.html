@@ -1941,7 +1941,7 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
 /* status site penempatan di Database Bank */
 .sitestat { margin: 0 0 14px; padding: 14px 16px; border-radius: 16px; background: linear-gradient(180deg, #F7FAFF, #F2F6FD); border: 1px solid #E3EAF6; }
 .sitestat__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-.sitestat__txt b { display: block; font-size: 15.5px; }
+.sitestat__txt > b { display: block; font-size: 15.5px; }
 .sitestat__txt small { display: block; color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
 .sitestat__num { color: #C2410C; }
 .sitestat__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
@@ -1960,6 +1960,201 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
 .ss--belum { color: #7A8496; }
 .ss--ok { color: #0B7A5E; }
 @media (max-width: 640px) { .sitestat { padding: 12px; } .sitestat__head .btn { width: 100%; } }
+
+/* ---------- v24: branch & site penempatan tujuan (crosscheck) ---------- */
+.tujuan { margin: 0 0 18px; padding: 18px 20px; border-radius: 18px; background: linear-gradient(135deg, #F5F9FF 0%, #F2FBF8 100%); border: 1px solid #DDE8F7; transition: border-color .2s, box-shadow .2s; }
+.tujuan.is-need { border-color: #F2C76B; box-shadow: 0 0 0 4px rgba(242, 179, 61, .14); }
+.tujuan.is-done { border-color: #BFE8D7; }
+.tujuan__head { display: flex; gap: 12px; align-items: flex-start; }
+.tujuan__head > div > b { display: block; font-size: 15.5px; color: var(--ink); }
+.tujuan__head > div > small { display: block; color: var(--ink-2); font-size: 13px; margin-top: 2px; line-height: 1.45; }
+.tujuan__ic { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: #fff; box-shadow: var(--shadow-sm); color: var(--blue); }
+.tujuan__ic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.tujuan__row { display: flex; gap: 14px; align-items: flex-end; margin-top: 14px; flex-wrap: wrap; }
+.tujuan__fld { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.tujuan__fld--grow { flex: 1 1 320px; }
+.tujuan__lbl { font-size: 12.5px; font-weight: 600; color: var(--ink-2); letter-spacing: .01em; }
+.tujuan__ingat { height: 48px; font-size: 14px; white-space: nowrap; }
+.tujuan__note { margin: 12px 0 0; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; }
+.tujuan__note > span { display: block; line-height: 1.5; }
+.tujuan__saran { display: flex !important; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tujuan__ok { color: #0B7A5E; }
+.tujuan__ok svg { display: inline-block; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; vertical-align: -3px; margin-right: 6px; }
+.tujuan__warn { color: #8A5A06; background: #FFF6E0; padding: 8px 12px; border-radius: 10px; }
+.tujuan__err { color: #B4232D; background: #FDECEE; padding: 8px 12px; border-radius: 10px; }
+.tujuan__saran { color: var(--ink-2); }
+.tujuan__saran button { font: inherit; font-size: 13px; padding: 5px 11px; border-radius: 99px; border: 1px dashed #8DB4F5; background: #fff; color: var(--blue-700); cursor: pointer; }
+.tujuan__saran button:hover { background: var(--blue-50); }
+.combo { position: relative; }
+.combo input { width: 100%; height: 48px; padding: 0 42px 0 42px; border-radius: 13px; border: 1px solid #E1E9F5; background: #fff; font: inherit; font-size: 14.5px; color: var(--ink); outline: 0; transition: border-color .15s, box-shadow .15s; }
+.combo input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21, 101, 245, .14); }
+.combo.is-filled input { font-weight: 600; border-color: #9ED9C2; background: #FBFFFD; }
+.combo__ic { position: absolute; left: 14px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); fill: none; stroke: #7A8AA6; stroke-width: 2; pointer-events: none; }
+.combo__x { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 9px; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; color: #7A8AA6; }
+.combo__x:hover { background: #F1F5FB; color: var(--ink); }
+.combo__x svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.combo__pop { position: absolute; z-index: 40; left: 0; right: 0; top: calc(100% + 8px); background: #fff; border: 1px solid #E1E9F5; border-radius: 16px; box-shadow: 0 28px 56px -22px rgba(16, 42, 92, .38), 0 4px 14px -6px rgba(16, 42, 92, .12); overflow: hidden; animation: comboIn .14s ease-out; }
+@keyframes comboIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.combo__top { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 11px 16px; font-size: 12.5px; color: var(--ink-2); background: linear-gradient(180deg, #F8FBFF, #fff); border-bottom: 1px solid #EEF2F8; }
+.combo__top b { color: var(--ink); }
+.combo__scope { font-size: 11.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+.combo__list { max-height: 320px; overflow: auto; margin: 0; padding: 6px; list-style: none; }
+.combo__opt { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 11px; cursor: pointer; font-size: 14px; color: var(--ink); transition: background .1s; }
+.combo__dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--bw, #8A97AE); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bw, #8A97AE) 18%, transparent); }
+.combo__nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.combo__opt mark { background: #FFE58A; color: inherit; border-radius: 3px; padding: 0 1px; font-weight: 700; }
+.combo__opt em { flex: none; font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .02em; color: var(--bw, #4B5567); background: color-mix(in srgb, var(--bw, #8A97AE) 11%, #fff); border: 1px solid color-mix(in srgb, var(--bw, #8A97AE) 26%, #fff); padding: 2px 9px; border-radius: 99px; }
+.combo__opt em.is-none { color: #8A97AE; background: #F3F5F9; border-color: #E6EAF1; font-weight: 600; }
+.combo__ck { flex: none; width: 18px; height: 18px; fill: none; stroke: #0B8A6A; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.combo__opt:hover, .combo__opt.is-act { background: #F1F6FF; }
+.combo__opt.is-act { box-shadow: inset 3px 0 0 var(--bw, var(--blue)); }
+.combo__opt.is-sel { background: #ECF9F3; font-weight: 600; }
+.combo__grp { padding: 10px 12px 5px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #8A97AE; }
+.combo__more { padding: 10px 12px 6px; font-size: 12.5px; color: var(--ink-3); text-align: center; }
+.combo__empty { display: flex; align-items: center; gap: 12px; padding: 18px 14px; font-size: 13.5px; color: var(--ink-2); }
+.combo__empty svg { flex: none; width: 34px; height: 34px; padding: 7px; border-radius: 12px; background: #F1F5FB; fill: none; stroke: #8A97AE; stroke-width: 2; stroke-linecap: round; }
+.combo__foot { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; padding: 9px 16px; border-top: 1px solid #EEF2F8; background: #FAFCFF; font-size: 11.5px; color: var(--ink-3); }
+.combo__foot kbd { display: inline-block; min-width: 20px; padding: 1px 5px; margin-right: 3px; border-radius: 6px; border: 1px solid #DCE4F0; border-bottom-width: 2px; background: #fff; font: inherit; font-size: 11px; color: var(--ink-2); text-align: center; }
+.combo__tip { margin-left: auto; color: #3B5B99; }
+.combo__badge { position: absolute; right: 46px; top: 50%; transform: translateY(-50%); font-size: 11px; font-weight: 700; color: var(--bw); background: color-mix(in srgb, var(--bw) 12%, #fff); border: 1px solid color-mix(in srgb, var(--bw) 28%, #fff); padding: 3px 10px; border-radius: 99px; pointer-events: none; }
+.combo.is-filled input { padding-right: 140px; }
+.tujuan__fld--branch { margin-top: 16px; }
+.bchips { display: flex; flex-wrap: wrap; gap: 8px; }
+.bchips__load { font-size: 13px; color: var(--ink-3); padding: 8px 0; }
+.bchip { --bw: #0F2348; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 12px; border-radius: 12px; border: 1px solid #E1E9F5; background: #fff; font: inherit; font-size: 13.5px; font-weight: 600; color: var(--ink); cursor: pointer; transition: transform .12s, box-shadow .15s, border-color .15s, background .15s; }
+.bchip i { width: 10px; height: 10px; border-radius: 50%; background: var(--bw); }
+.bchip b { font-size: 11.5px; font-weight: 700; color: var(--ink-3); background: #F2F5FA; padding: 1px 7px; border-radius: 99px; }
+.bchip:hover { border-color: color-mix(in srgb, var(--bw) 45%, #fff); transform: translateY(-1px); box-shadow: 0 8px 18px -12px color-mix(in srgb, var(--bw) 60%, transparent); }
+.bchip.is-on { background: var(--bw); border-color: var(--bw); color: #fff; box-shadow: 0 10px 22px -12px color-mix(in srgb, var(--bw) 80%, transparent); }
+.bchip.is-on i { background: #fff; box-shadow: 0 0 0 3px rgba(255, 255, 255, .3); }
+.bchip.is-on b { background: rgba(255, 255, 255, .22); color: #fff; }
+.bchip:focus-visible { outline: 3px solid rgba(21, 101, 245, .45); outline-offset: 2px; }
+@media (max-width: 640px) {
+  .bchips { flex-wrap: nowrap; overflow-x: auto; margin: 0 -14px; padding: 2px 14px 6px; scrollbar-width: none; }
+  .bchip { flex: none; }
+  .combo__tip { display: none; }
+  .combo__foot { display: none; }
+  .combo__list { max-height: 46vh; }
+}
+.rsite { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 4px 0 0 8px; padding: 3px 10px 3px 8px; border-radius: 99px; background: #E9F6F1; color: #0B6E55; font-size: 12.5px; vertical-align: middle; }
+.rsite svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+.rsite em { font-style: normal; color: #3F7F6C; }
+.rsite em::before { content: "·"; margin-right: 6px; }
+.rsite button { font: inherit; font-size: 12px; border: 0; background: transparent; color: #B4232D; cursor: pointer; text-decoration: underline; padding: 0 2px; }
+@media (max-width: 640px) {
+  .tujuan { padding: 14px; }
+  .tujuan__row { flex-direction: column; align-items: stretch; gap: 12px; }
+  .tujuan .select select { min-width: 0; width: 100%; }
+  .tujuan__fld--grow { flex: none; }
+  .tujuan__ingat { height: auto; }
+  .rsite { margin-left: 0; }
+}
+
+.sitestat__bar { height: 7px; border-radius: 99px; background: #E6ECF5; margin-top: 12px; overflow: hidden; }
+.sitestat__bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #22C9A0, #1565F5); transition: width .6s ease; }
+.sitestat__txt small b { color: var(--ink); }
+.btag { display: inline-block; font-size: 11.5px; font-weight: 700; white-space: nowrap; color: var(--bw); background: color-mix(in srgb, var(--bw) 11%, #fff); border: 1px solid color-mix(in srgb, var(--bw) 26%, #fff); padding: 2px 9px; border-radius: 99px; }
+
+/* ---------- v24: dashboard crosscheck per branch ---------- */
+.bx { margin-top: 22px; display: flex; flex-direction: column; gap: 18px; overflow: visible; }
+.bx__head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.bx__title { display: flex; align-items: center; gap: 12px; }
+.bx__title h2 { margin: 0; font-size: 19px; letter-spacing: -.01em; }
+.bx__title p { margin: 2px 0 0; color: var(--ink-2); font-size: 13.5px; }
+.bx__bulan select { height: 44px; min-width: 230px; font-size: 14px; font-weight: 600; }
+.bx__chips { margin-top: -4px; }
+.bxk-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.bxk { position: relative; padding: 14px 16px 13px; border-radius: 16px; background: #fff; border: 1px solid #E8EEF7; display: flex; flex-direction: column; gap: 2px; overflow: hidden; }
+.bxk::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--k, #1565F5); }
+.bxk--file { --k: #1565F5; } .bxk--aman { --k: #1FBF86; } .bxk--rev { --k: #F2B33D; } .bxk--merah { --k: #E5484D; } .bxk--rp { --k: #7C4DFF; }
+.bxk__l { font-size: 12px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: .04em; }
+.bxk__v { font-size: 26px; font-weight: 800; letter-spacing: -.02em; color: var(--ink); line-height: 1.2; }
+.bxk--merah .bxk__v { color: #C8303A; }
+.bxk__s { font-size: 12px; color: var(--ink-3); }
+.bxk__d { font-size: 11.5px; font-weight: 600; color: var(--ink-3); margin-top: 4px; }
+.bxk__d em { font-style: normal; font-weight: 500; color: var(--ink-3); }
+.bxk__d.is-up { color: #0B8A6A; } .bxk__d.is-down { color: #C8303A; }
+.bx__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.bx__panel { min-width: 0; padding: 16px 18px; border-radius: 18px; background: linear-gradient(180deg, #FBFDFF, #fff); border: 1px solid #E8EEF7; }
+.bx__panel > header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.bx__panel h3 { margin: 0; font-size: 15px; color: var(--ink); }
+.bx__hint { font-size: 11.5px; color: var(--ink-3); }
+.bx__lg { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); margin-bottom: 8px; }
+.bx__lg span { display: inline-flex; align-items: center; gap: 6px; }
+.bx__lg i { width: 10px; height: 10px; border-radius: 3px; }
+.bx__lg .is-dash i { width: 16px; height: 0; border-top: 2px dashed #0F2348; border-radius: 0; }
+.bx__lg--b { margin: 6px 0 0; }
+.bx__empty { display: flex; align-items: center; gap: 12px; padding: 28px 10px; color: var(--ink-3); font-size: 13.5px; }
+.bx__empty svg { flex: none; width: 38px; height: 38px; padding: 8px; border-radius: 12px; background: #F1F5FB; fill: none; stroke: #9AA6BB; stroke-width: 2; stroke-linecap: round; }
+.cmps { display: flex; flex-direction: column; gap: 4px; }
+.cmp { --bw: #1565F5; display: grid; grid-template-columns: 136px minmax(0, 1fr) 82px; align-items: center; gap: 12px; width: 100%; padding: 8px 10px; border-radius: 12px; border: 1px solid transparent; background: transparent; font: inherit; text-align: left; cursor: pointer; transition: background .15s, opacity .2s, border-color .15s; }
+.cmp:hover { background: #F4F8FE; }
+.cmp.is-on { background: color-mix(in srgb, var(--bw) 7%, #fff); border-color: color-mix(in srgb, var(--bw) 30%, #fff); }
+.cmp.is-dim { opacity: .45; }
+.cmp__n { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--ink); min-width: 0; flex-wrap: wrap; }
+.cmp__n > i { width: 10px; height: 10px; border-radius: 50%; background: var(--bw); flex: none; }
+.cmp__top { font-style: normal; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #C8303A; background: #FDECEE; padding: 1px 6px; border-radius: 99px; }
+.cmp__bar { height: 14px; border-radius: 99px; background: #EEF2F8; overflow: hidden; }
+.cmp__bar > span { display: flex; height: 100%; border-radius: 99px; overflow: hidden; transition: width .5s ease; }
+.cmp__bar i { display: block; height: 100%; }
+.cmp__v { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15; }
+.cmp__v b { font-size: 15px; }
+.cmp__v small { font-size: 11px; color: var(--ink-3); }
+.is-hi { color: #C8303A; } .is-mid { color: #B7791F; } .is-lo { color: #0B8A6A; }
+.bx__chart svg { width: 100%; height: auto; display: block; }
+.bxc__grid { stroke: #EEF2F8; stroke-width: 1; }
+.bxc__ax { font-size: 11px; fill: #8A97AE; font-family: var(--f); }
+.bxc__ax.is-cur { fill: var(--ink); font-weight: 700; }
+.bxc__hit { fill: transparent; cursor: pointer; }
+.bxc__hit:hover { fill: rgba(21, 101, 245, .06); }
+.bxc__today { stroke: #1565F5; stroke-width: 1.2; stroke-dasharray: 3 3; }
+.bxc__todayt { font-size: 9.5px; fill: #1565F5; font-weight: 700; font-family: var(--f); }
+.bxc__cur { fill: rgba(21, 101, 245, .06); }
+.bxc circle { cursor: pointer; transition: r .15s; }
+.sites { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.site { display: grid; grid-template-columns: 26px minmax(0, 1fr) minmax(70px, 120px) 64px; align-items: center; gap: 10px; padding: 8px 6px; border-radius: 12px; cursor: default; }
+.site:hover { background: #F7F9FD; }
+.site__i { width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; font-size: 12px; font-weight: 800; color: #C8303A; background: #FDECEE; }
+.site:nth-child(n+4) .site__i { color: var(--ink-2); background: #F1F5FB; }
+.site__n { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.site__n b { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.site__n .btag { align-self: flex-start; font-size: 10.5px; padding: 1px 7px; }
+.site__bar { height: 8px; border-radius: 99px; background: #F3E3E5; overflow: hidden; }
+.site__bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #F0767C, #E5484D); }
+.site__v { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15; }
+.site__v b { font-size: 15px; color: #C8303A; }
+.site__v small { font-size: 11px; color: var(--ink-3); }
+.bx__panel--tbl { padding-bottom: 6px; }
+.bx__tbl tbody tr[data-bx] { cursor: pointer; }
+.bx__tbl tbody tr[data-bx]:hover td { background: #F7F9FD; }
+.bx__tbl tr.is-on td { background: #F1F6FF; }
+.bx__tbl tr.is-total td { font-weight: 800; border-top: 2px solid #E1E9F5; background: #FAFCFF; }
+.bx__tbl td small { color: var(--ink-3); font-size: 11px; font-weight: 500; }
+.bx__tbl .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+.pct { display: inline-block; min-width: 54px; text-align: center; font-weight: 800; font-size: 12.5px; padding: 3px 8px; border-radius: 99px; }
+.pct.is-hi { background: #FDECEE; } .pct.is-mid { background: #FFF4DC; } .pct.is-lo { background: #E3F8F0; }
+.bx-tip { position: fixed; z-index: 120; pointer-events: none; min-width: 190px; max-width: 280px; padding: 11px 13px; border-radius: 13px; background: rgba(15, 35, 72, .96); color: #fff; font-size: 12.5px; box-shadow: 0 18px 40px -16px rgba(0, 0, 0, .45); display: flex; flex-direction: column; gap: 4px; }
+.bx-tip b { font-size: 13px; }
+.bx-tip .tip__s { color: #B9C6DE; font-size: 11.5px; margin-bottom: 3px; }
+.bx-tip .tip__r { display: flex; align-items: center; gap: 7px; }
+.bx-tip .tip__r i { width: 9px; height: 9px; border-radius: 3px; }
+.bx-tip .tip__r b { margin-left: auto; font-size: 12.5px; }
+@media (max-width: 1180px) { .bxk-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .bx__grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) {
+  .bx { gap: 14px; }
+  .bx__bulan, .bx__bulan select { width: 100%; min-width: 0; }
+  .bxk-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .bxk { padding: 12px; } .bxk__v { font-size: 21px; } .bxk--rp { grid-column: span 2; }
+  .bx__panel { padding: 13px; }
+  .cmp { grid-template-columns: 96px minmax(0, 1fr) 62px; gap: 8px; padding: 7px 4px; }
+  .site { grid-template-columns: 24px minmax(0, 1fr) 54px; }
+  .site__bar { display: none; }
+  .bx__chips { margin: -4px -14px 0; padding: 2px 14px 6px; }
+}
+
+.dsite { display: block; margin-top: 3px; font-size: 12px; color: var(--ink-3); font-weight: 500; }
+.dsite .btag { font-size: 10.5px; padding: 1px 7px; margin-left: 4px; }
 
 </style>
 </head>
@@ -2203,6 +2398,52 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
             </article>
           </div>
 
+
+          <article class="card bx" id="bx" aria-labelledby="bxTitle">
+            <div class="bx__head">
+              <div class="bx__title">
+                <span class="card__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M9.3 20V6M14.7 20v-6M20 20V9M2.5 20h19"/></svg></span>
+                <div><h2 id="bxTitle">Crosscheck per Branch</h2><p id="bxSub">Memuat…</p></div>
+              </div>
+              <label class="select bx__bulan"><span class="sr-only">Bulan</span><select id="bxBulan"></select></label>
+            </div>
+            <div class="bchips bx__chips" id="bxChips" role="radiogroup" aria-label="Pilih branch"></div>
+            <div class="bxk-row" id="bxKpi"></div>
+            <div class="bx__grid">
+              <section class="bx__panel">
+                <header><h3>Perbandingan branch</h3><span class="bx__hint">urut dari % tidak cocok tertinggi · klik untuk memilih</span></header>
+                <div class="bx__lg"><span><i style="background:#1FBF86"></i>Aman</span><span><i style="background:#F2B33D"></i>Perlu review</span><span><i style="background:#E5484D"></i>Tidak cocok</span></div>
+                <div class="cmps" id="bxCmp"></div>
+              </section>
+              <section class="bx__panel">
+                <header><h3>Tren harian</h3><span class="bx__hint">baris dicek per hari</span></header>
+                <div class="bx__lg"><span><i style="background:#1FBF86"></i>Aman</span><span><i style="background:#F2B33D"></i>Perlu review</span><span><i style="background:#E5484D"></i>Tidak cocok</span></div>
+                <div class="bx__chart" id="bxDay"></div>
+              </section>
+            </div>
+            <div class="bx__grid">
+              <section class="bx__panel">
+                <header><h3>Site paling banyak tidak cocok</h3><span class="bx__hint">beda nama + tidak ada di database</span></header>
+                <ol class="sites" id="bxSites"></ol>
+              </section>
+              <section class="bx__panel">
+                <header><h3>% tidak cocok · 6 bulan</h3><span class="bx__hint">semakin rendah semakin baik</span></header>
+                <div class="bx__chart" id="bxLine"></div>
+                <div class="bx__lg bx__lg--b" id="bxLineLg"></div>
+              </section>
+            </div>
+            <section class="bx__panel bx__panel--tbl">
+              <header><h3>Ranking branch</h3><span class="bx__hint">klik baris untuk memilih branch</span></header>
+              <div class="tbl-wrap tbl-wrap--flat">
+                <table class="tbl bx__tbl">
+                  <thead><tr><th scope="col">Branch</th><th scope="col" class="r">File</th><th scope="col" class="r">Baris</th><th scope="col" class="r">Aman</th><th scope="col" class="r">Perlu review</th><th scope="col" class="r">Tidak cocok</th><th scope="col" class="r">% tidak cocok</th><th scope="col" class="r">Nominal</th></tr></thead>
+                  <tbody id="bxTbl"></tbody>
+                </table>
+              </div>
+            </section>
+          </article>
+          <div class="bx-tip" id="bxTip" role="tooltip" hidden></div>
+
           <div class="dgrid">
             <article class="card card--quick">
               <div class="card__head">
@@ -2293,6 +2534,34 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
           <div><b>Belum terhubung ke spreadsheet.</b> File tetap bisa diperiksa. Untuk mencocokkan dengan database, masukkan kode akses di <button type="button" class="link" data-open-settings>Pengaturan</button>.</div>
         </div>
 
+        <div class="tujuan" id="xTujuan">
+          <div class="tujuan__head">
+            <span class="tujuan__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span>
+            <div><b>Branch &amp; site penempatan</b><small>Wajib dipilih. Rekening <b>Cocok</b>, <b>Mirip</b>, dan <b>Via RO</b> di file MCM akan diisi site penempatan &amp; branch ini di Data Upah.</small></div>
+          </div>
+          <div class="tujuan__fld tujuan__fld--branch">
+            <span class="tujuan__lbl" id="xBranchLbl">Branch</span>
+            <div class="bchips" id="xBranch" role="radiogroup" aria-labelledby="xBranchLbl"><span class="bchips__load">Memuat branch dari sheet SITE…</span></div>
+          </div>
+          <div class="tujuan__row">
+            <div class="tujuan__fld tujuan__fld--grow">
+              <span class="tujuan__lbl" id="xSiteLbl">Site penempatan</span>
+              <div class="combo" id="xCombo">
+                <svg class="combo__ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+                <input id="xSiteQ" type="text" placeholder="Ketik 2–3 huruf nama site, mis. &quot;mat&quot;" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="xSiteList" aria-autocomplete="list" aria-labelledby="xSiteLbl">
+                <button type="button" class="combo__x" id="xSiteX" aria-label="Kosongkan site" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg></button>
+                <span class="combo__badge" id="xSiteBadge" hidden></span>
+                <div class="combo__pop" id="xSitePop" hidden>
+                  <div class="combo__top" id="xSiteTop"></div>
+                  <ul class="combo__list" id="xSiteList" role="listbox"></ul>
+                  <div class="combo__foot"><span><kbd>↑</kbd><kbd>↓</kbd> pilih</span><span><kbd>Enter</kbd> gunakan</span><span><kbd>Esc</kbd> tutup</span><span class="combo__tip">Tip: ketik 2–3 huruf atau singkatan, mis. "msg"</span></div>
+                </div>
+              </div>
+            </div>
+            <label class="toggle tujuan__ingat"><input type="checkbox" id="xIngat"><span class="toggle__ui" aria-hidden="true"></span>Ingat branch</label>
+          </div>
+          <p class="tujuan__note" id="xTujuanNote" hidden></p>
+        </div>
         <div class="state" id="xPick">
           <label class="drop" id="xDrop" for="xFile">
             <input type="file" id="xFile" accept=".xls,.xlsx,.csv,.txt,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" class="sr-only">
@@ -2338,13 +2607,13 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
           <div class="file-bar">
             <div class="file-bar__name">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
-              <div><b id="rName"></b><small id="rMeta"></small><span class="rsave" id="rSave" role="status" aria-live="polite" hidden></span></div>
+              <div><b id="rName"></b><small id="rMeta"></small><span class="rsave" id="rSave" role="status" aria-live="polite" hidden></span><span class="rsite" id="rSiteInfo" hidden></span></div>
             </div>
             <div class="file-bar__actions">
               <button class="btn btn--primary btn--sm" type="button" id="rFix">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>MCM benar
               </button>
-              <button class="btn btn--white btn--sm" type="button" id="rSite" title="Ganti site penempatan di Data Upah dengan site dari MCM ini (nama Cocok/Mirip)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Perbarui site</button>
+              
               <div class="menu" id="rExportMenu">
                 <button class="btn btn--ghost btn--sm" type="button" data-menu>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></svg>Unduh / cetak
@@ -2692,9 +2961,10 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
             <div class="notice notice--warn dobelbar" id="bDobel" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.3v.2"/></svg><div><b id="bDobelTxt"></b><span>Nama dan no rekening sama. Akan disisakan 1 baris per rekening; nama sama dengan no rekening beda tidak disentuh.</span></div><button class="btn btn--primary btn--sm" type="button" id="bDobelBtn">Bersihkan sekarang</button></div>
             <div class="sitestat" id="bSiteStat">
               <div class="sitestat__head">
-                <div class="sitestat__txt"><b id="bSsJudul">Status site penempatan</b><small id="bSsSub">Menghitung dari riwayat MCM…</small></div>
-                <button class="btn btn--primary btn--sm" type="button" id="bSsBtn">Perbarui site dari MCM</button>
+                <div class="sitestat__txt"><b id="bSsJudul">Status site penempatan</b><small id="bSsSub">Membandingkan dengan sheet SITE…</small></div>
+                <a class="btn btn--primary btn--sm" href="#/crosscheck">Crosscheck MCM</a>
               </div>
+              <div class="sitestat__bar" aria-hidden="true"><i id="bSsBar"></i></div>
               <div class="sitestat__chips" id="bSsChips"></div>
             </div>
             <div class="filters">
@@ -2705,13 +2975,14 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
               </label>
               <label class="select"><span class="sr-only">Site bisnis</span><select id="bSite"><option value="">Semua site bisnis</option></select></label>
               <label class="select"><span class="sr-only">Bank</span><select id="bBank"><option value="">Semua bank</option></select></label>
-              <label class="select"><span class="sr-only">Status site penempatan</span><select id="bSiteSt"><option value="">Semua status site</option><option value="x">Belum diperbarui (semua)</option><option value="2">Siap diperbarui dari MCM</option><option value="0">Belum ada di MCM</option><option value="4">Nama di MCM tidak cocok</option><option value="1">Sudah sesuai MCM</option></select></label>
+              <label class="select"><span class="sr-only">Branch</span><select id="bBr"><option value="">Semua branch</option></select></label>
+              <label class="select"><span class="sr-only">Status site penempatan</span><select id="bSiteSt"><option value="">Semua status site</option><option value="x">Belum diperbarui (semua)</option><option value="2">Site belum sesuai daftar SITE</option><option value="3">Branch kosong / beda</option><option value="1">Sudah sesuai</option></select></label>
               <label class="toggle"><input type="checkbox" id="bReveal"><span class="toggle__ui" aria-hidden="true"></span>Tampilkan nomor lengkap</label>
             </div>
             <p class="tools__meta" id="bMeta">Memuat database…</p>
             <div class="tbl-wrap">
               <table class="tbl tbl--db">
-                <thead><tr><th scope="col" class="r">No</th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="0">Nama<i aria-hidden="true"></i></button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="1">Bank<i aria-hidden="true"></i></button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="2">No rekening<i aria-hidden="true"></i></button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="3">Site bisnis<i aria-hidden="true"></i></button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="4">Site penempatan<i aria-hidden="true"></i></button></th><th scope="col">Tanda</th></tr></thead>
+                <thead><tr><th scope="col" class="r">No</th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="0">Nama<i aria-hidden="true"></i></button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="1">Bank<i aria-hidden="true"></i></button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="2">No rekening<i aria-hidden="true"></i></button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="3">Site bisnis<i aria-hidden="true"></i></button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="4">Site penempatan<i aria-hidden="true"></i></button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-sort="5">Branch<i aria-hidden="true"></i></button></th><th scope="col">Tanda</th></tr></thead>
                 <tbody id="bBody"></tbody>
               </table>
             </div>
@@ -3085,50 +3356,6 @@ body:not(.is-auth) .shell main { padding-bottom: 84px; }
     </div>
   </dialog>
 
-  <!-- Dialog perbarui site penempatan dari MCM -->
-  <dialog class="dlg dlg--fix dlg--site" id="dlgSite" aria-labelledby="dlgSiteTitle">
-    <div class="fix">
-      <div class="fix__head">
-        <div>
-          <h3 id="dlgSiteTitle">Perbarui site penempatan dari MCM</h3>
-          <p id="siteLead"></p>
-        </div>
-        <button class="dlg__x" type="button" id="siteClose" aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      </div>
-      <div class="site-load" id="siteLoad"><span class="spin" aria-hidden="true"></span><span id="siteLoadTxt">Membaca riwayat crosscheck…</span></div>
-      <div class="site-body" id="siteBody" hidden>
-        <div class="fix__legend" id="siteLegend"></div>
-        <p class="site-src" id="siteSrc"></p>
-        <div class="fix__tools">
-          <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input type="search" id="siteQ" placeholder="Cari nama, no rekening, atau site" autocomplete="off"></label>
-          <label class="toggle"><input type="checkbox" id="siteReveal"><span class="toggle__ui" aria-hidden="true"></span>Tampilkan nomor lengkap</label>
-          <span class="tools__meta" id="siteMeta"></span>
-        </div>
-        <div class="tbl-wrap fix__tbl" id="siteTbl">
-          <table class="tbl tbl--site">
-            <thead><tr><th scope="col" class="r">No</th><th scope="col">Nama</th><th scope="col">No rekening</th><th scope="col">Site lama</th><th scope="col">Site baru (MCM)</th><th scope="col">Dari MCM</th></tr></thead>
-            <tbody id="siteBodyRows"></tbody>
-          </table>
-        </div>
-        <div class="site-page" id="sitePage" hidden><button class="btn btn--ghost btn--sm" type="button" id="sitePrev">Sebelumnya</button><span id="sitePageTxt"></span><button class="btn btn--ghost btn--sm" type="button" id="siteNext">Berikutnya</button></div>
-        <div class="site-hist" id="siteHist" hidden></div>
-      </div>
-      <div class="site-done" id="siteDone" hidden>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M7.8 12.3l2.9 2.9 5.6-5.8"/></svg>
-        <p id="siteDoneTxt"></p>
-        <p class="site-done__note">Cadangan site lama disimpan otomatis. Kalau ada yang keliru, klik Batalkan untuk mengembalikan semuanya.</p>
-        <button class="btn btn--ghost btn--sm" type="button" id="siteUndo">Batalkan perubahan ini</button>
-      </div>
-      <div class="fix__foot">
-        <p>Site lama ditimpa. Nama yang <b>Beda</b>, rekening yang belum ada di Data Upah, dan baris MCM tanpa site tidak disentuh.</p>
-        <div class="fix__btns">
-          <button class="btn btn--ghost" type="button" id="siteCsv">Unduh daftar (CSV)</button>
-          <button class="btn btn--ghost" type="button" id="siteTutup">Tutup</button>
-          <button class="btn btn--primary" type="button" id="siteApply">Perbarui</button>
-        </div>
-      </div>
-    </div>
-  </dialog>
 
   <div class="print-area" id="printArea" aria-hidden="true"></div>
 
@@ -4934,12 +5161,22 @@ function cekKaryawanMurni_(rows, db) {
   }
 
   // fungsi bersama untuk crosscheck.js
+  // warna tetap per branch (dipakai crosscheck, Database Bank, dashboard)
+  var WARNA_BRANCH = { 'EAST 1': '#1565F5', 'EAST 2': '#0EA5C6', 'CENTRAL 1': '#7C4DFF', 'CENTRAL 2': '#D63AA6', 'WEST 1': '#F07A1A', 'WEST 2': '#C99A06', 'MAKASSAR': '#0E9F6E' };
+  var CADANGAN_WARNA = ['#2563EB', '#DB2777', '#059669', '#9333EA', '#EA580C', '#0891B2', '#65A30D', '#B91C1C'];
+  function warnaBranch(b) {
+    b = String(b || '').toUpperCase();
+    if (!b) return '#8A97AE';
+    if (WARNA_BRANCH[b]) return WARNA_BRANCH[b];
+    var h = 0; for (var i = 0; i < b.length; i++) h = (h * 31 + b.charCodeAt(i)) >>> 0;
+    return CADANGAN_WARNA[h % CADANGAN_WARNA.length];
+  }
   window.APP = {
     spark: spark, seriHarian: seriHarian, seriKumulatif: seriKumulatif,
     bukaVideo: function (v) { if (A_bukaVideo) A_bukaVideo(v); }, setVideo: function (v) { VIDEO = v || null; },
     post: post, getToken: getToken, connected: connected, openSettings: openSettings, logout: logout, konfirmasi: konfirmasi,
     progres: progres, jeda: jeda, ambilDatabase: ambilDatabase, dbJanji: dbJanji, databaseSegar: databaseSegar, dataBasi: dataBasi, petaDari: petaDari,
-    esc: esc, num: num, rp: rp, toast: toast, cfg: CFG, sesi: getSesi, gas: !!GAS,
+    esc: esc, num: num, rp: rp, toast: toast, warnaBranch: warnaBranch, cfg: CFG, sesi: getSesi, gas: !!GAS,
     onConn: function (f) { connListeners.push(f); f(connected()); }
   };
 
@@ -4982,7 +5219,7 @@ function cekKaryawanMurni_(rows, db) {
 
   var st = { file: null, parsed: null, report: null, filter: 'CEK', q: '', page: 1 };
 
-  function show(id) { ['xPick', 'xCheck', 'xReport'].forEach(function (s) { $(s).hidden = s !== id; }); }
+  function show(id) { ['xPick', 'xCheck', 'xReport'].forEach(function (s) { $(s).hidden = s !== id; }); $('xTujuan').hidden = id === 'xReport'; }
   function setStep(n) {
     document.querySelectorAll('#xSteps .step').forEach(function (el) {
       var s = +el.dataset.step;
@@ -5028,6 +5265,198 @@ function cekKaryawanMurni_(rows, db) {
   }
   A.crosscheckFile = function (file) { A.go('crosscheck'); handle(file); };
 
+  /* ---------- branch & site penempatan tujuan (wajib dipilih sebelum crosscheck) ----------
+   * Daftar dari sheet SITE (NAMA SITE + BRANCH). Branch bisa diingat per pengguna. */
+  var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
+  var tj = { list: [], siap: false, branch: 'ALL', site: null, tampil: [], aktif: -1, error: '' };
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* abaikan */ } }
+  function emailKu() { var s = (A.sesi && A.sesi()) || {}; return s.email || ''; }
+  function normQ(x) { return String(x || '').toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim(); }
+  function urutAlami(a, b) { return String(a).localeCompare(String(b), 'id', { numeric: true }); }
+  function isiTujuan(sites, error) {
+    tj.error = error || '';
+    tj.list = (sites || []).map(function (x) {
+      var k = normQ(x[0]), kata = k.split(' ').filter(Boolean);
+      return { nama: x[0], branch: x[1] || '', k: k, kata: kata, sing: kata.map(function (w) { return w.charAt(0); }).join('') };
+    });
+    var br = {};
+    tj.list.forEach(function (x) { if (x.branch) br[x.branch] = (br[x.branch] || 0) + 1; });
+    tj.opsiBranch = Object.keys(br).sort(urutAlami);
+    if (!tj.siap && tj.list.length) {
+      tj.siap = true;
+      var ingat = lsGet('mw_branch_' + emailKu());
+      if (ingat && (ingat === 'ALL' || br[ingat])) { tj.branch = ingat; $('xIngat').checked = true; }
+    }
+    if (tj.branch !== 'ALL' && !br[tj.branch]) tj.branch = 'ALL';
+    tj.jmlBranch = br;
+    renderBranch();
+    if (tj.site) { var ada = cariSite(tj.site.nama); pilihSite(ada, true); }
+    renderNote(); updateRun();
+  }
+  function renderBranch() {
+    var el = $('xBranch');
+    if (!tj.list.length) { el.innerHTML = '<span class="bchips__load">' + esc(tj.error || 'Memuat branch dari sheet SITE…') + '</span>'; return; }
+    var chip = function (v, label, n, warna) {
+      var on = tj.branch === v;
+      return '<button type="button" role="radio" aria-checked="' + on + '" class="bchip' + (on ? ' is-on' : '') + '" data-branch="' + esc(v) + '" style="--bw:' + warna + '">' +
+        '<i aria-hidden="true"></i><span>' + esc(label) + '</span><b>' + num(n) + '</b></button>';
+    };
+    el.innerHTML = chip('ALL', 'Semua branch', tj.list.length, '#0F2348') + tj.opsiBranch.map(function (b) { return chip(b, b, tj.jmlBranch[b], A.warnaBranch(b)); }).join('');
+    var on = el.querySelector('.is-on'); if (on && el.scrollWidth > el.clientWidth + 4) el.scrollLeft = Math.max(0, on.offsetLeft - 14);
+  }
+  function cariSite(nama) { var k = normQ(nama); for (var i = 0; i < tj.list.length; i++) if (tj.list[i].k === k) return tj.list[i]; return null; }
+  A.siapTujuan = function () {
+    if (!A.connected()) return;
+    var isi = A.databaseSegar && A.databaseSegar();
+    if (isi && isi.sites) isiTujuan(isi.sites, isi.sitesError);
+    A.ambilDatabase().then(function (o) { if (o) isiTujuan(o.sites || [], o.sitesError || (o.sites ? '' : 'Daftar site belum tersedia. Pastikan Apps Script sudah versi terbaru.')); }).catch(function () { });
+  };
+  function terakhir() { try { return JSON.parse(lsGet('mw_site_baru_' + emailKu()) || '[]'); } catch (e) { return []; } }
+  function sorot(nama, q, x) {
+    if (!q) return esc(nama);
+    var t = String(nama), kata = q.split(' ').filter(Boolean), tanda = new Array(t.length).fill(false), ada = false;
+    kata.forEach(function (w) {
+      var up = t.toUpperCase(), p = up.indexOf(w);
+      while (p !== -1) { for (var k = p; k < p + w.length; k++) tanda[k] = true; ada = true; p = up.indexOf(w, p + w.length); }
+    });
+    if (!ada && x && kata.length === 1 && x.sing.indexOf(q) !== -1) {
+      // cocok sebagai singkatan: tandai huruf depan kata yang dipakai
+      var awal = [];
+      for (var c = 0; c < t.length; c++) if (/[A-Za-z0-9]/.test(t[c]) && (c === 0 || !/[A-Za-z0-9]/.test(t[c - 1]))) awal.push(c);
+      var mulai = x.sing.indexOf(q);
+      for (var a = mulai; a < mulai + q.length && a < awal.length; a++) tanda[awal[a]] = true;
+    }
+    var out = '', buka = false;
+    for (var i = 0; i < t.length; i++) {
+      if (tanda[i] && !buka) { out += '<mark>'; buka = true; }
+      if (!tanda[i] && buka) { out += '</mark>'; buka = false; }
+      out += esc(t[i]);
+    }
+    return out + (buka ? '</mark>' : '');
+  }
+  // skor kecocokan kata kunci: awal nama > awal kata > bagian nama > singkatan (huruf depan tiap kata)
+  function skor(x, q) {
+    if (!q) return 1;
+    if (x.k === q) return 100;
+    if (x.k.indexOf(q) === 0) return 90;
+    var t = q.split(' ');
+    if (t.length === 1) {
+      for (var i = 0; i < x.kata.length; i++) if (x.kata[i].indexOf(q) === 0) return 80 - i;
+      if (x.k.indexOf(q) !== -1) return 60;
+      if (q.length >= 2 && x.sing.indexOf(q) !== -1) return 50 - x.sing.indexOf(q);
+      return 0;
+    }
+    return t.every(function (w) { return x.kata.some(function (k) { return k.indexOf(w) === 0; }) || x.k.indexOf(w) !== -1; }) ? 40 : 0;
+  }
+  function renderList() {
+    var input = $('xSiteQ'), ul = $('xSiteList');
+    var q = tj.site && input.value === tj.site.nama ? '' : normQ(input.value);
+    var L = tj.list.filter(function (x) { return tj.branch === 'ALL' || x.branch === tj.branch; })
+      .map(function (x) { return { x: x, s: skor(x, q) }; }).filter(function (o) { return o.s > 0; })
+      .sort(function (a, b) { return b.s - a.s || urutAlami(a.x.nama, b.x.nama); }).map(function (o) { return o.x; });
+    var baru = q ? [] : terakhir().map(cariSite).filter(function (x) { return x && (tj.branch === 'ALL' || x.branch === tj.branch); });
+    var MAKS = 60, html = '';
+    tj.tampil = [];
+    var opsi = function (x) {
+      var i = tj.tampil.length, w = A.warnaBranch(x.branch); tj.tampil.push(x);
+      return '<li role="option" id="xso' + i + '" data-i="' + i + '" class="combo__opt' + (tj.site === x ? ' is-sel' : '') + '" aria-selected="' + (tj.site === x) + '" style="--bw:' + w + '">' +
+        '<i class="combo__dot" aria-hidden="true"></i><span class="combo__nm">' + sorot(x.nama, q, x) + '</span>' +
+        (x.branch ? '<em>' + esc(x.branch) + '</em>' : '<em class="is-none">tanpa branch</em>') +
+        (tj.site === x ? '<svg class="combo__ck" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : '') + '</li>';
+    };
+    var lingkup = tj.branch === 'ALL' ? 'semua branch' : 'branch ' + tj.branch;
+    if (!tj.list.length) { $('xSiteTop').innerHTML = ''; html = '<li class="combo__empty">' + esc(tj.error || 'Memuat daftar site dari sheet SITE…') + '</li>'; }
+    else if (!L.length) {
+      $('xSiteTop').innerHTML = '<span>Tidak ada hasil untuk <b>"' + esc(input.value) + '"</b> di ' + esc(lingkup) + '</span>';
+      html = '<li class="combo__empty"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4M8.5 11h5"/></svg><span>Coba kata kunci lain' + (tj.branch !== 'ALL' ? ', atau pilih <b>Semua branch</b>' : '') + '.</span></li>';
+    } else {
+      $('xSiteTop').innerHTML = q ? '<span><b>' + num(L.length) + '</b> site cocok dengan <b>"' + esc(input.value.trim()) + '"</b></span><span class="combo__scope">' + esc(lingkup) + '</span>'
+        : '<span><b>' + num(L.length) + '</b> site di ' + esc(lingkup) + '</span><span class="combo__scope">ketik untuk menyaring</span>';
+      if (baru.length) html += '<li class="combo__grp">Terakhir dipakai</li>' + baru.map(opsi).join('') + '<li class="combo__grp">' + (q ? 'Hasil' : 'Semua site') + '</li>';
+      html += L.slice(0, MAKS).map(opsi).join('');
+      if (L.length > MAKS) html += '<li class="combo__more">+' + num(L.length - MAKS) + ' site lainnya · ketik huruf lagi untuk mempersempit</li>';
+    }
+    ul.innerHTML = html;
+    tj.aktif = -1;
+  }
+  function bukaList() { renderList(); $('xSitePop').hidden = false; $('xSiteQ').setAttribute('aria-expanded', 'true'); $('xCombo').classList.add('is-open'); }
+  function tutupList() { $('xSitePop').hidden = true; $('xSiteQ').setAttribute('aria-expanded', 'false'); $('xCombo').classList.remove('is-open'); $('xSiteQ').removeAttribute('aria-activedescendant'); }
+  function sorotAktif(i) {
+    var opts = $('xSiteList').querySelectorAll('.combo__opt');
+    if (!opts.length) return;
+    tj.aktif = (i + opts.length) % opts.length;
+    opts.forEach(function (o, k) { o.classList.toggle('is-act', k === tj.aktif); });
+    var el = opts[tj.aktif]; el.scrollIntoView({ block: 'nearest' });
+    $('xSiteQ').setAttribute('aria-activedescendant', el.id);
+  }
+  function pilihSite(x, diam) {
+    tj.site = x || null;
+    $('xSiteQ').value = x ? x.nama : '';
+    $('xSiteX').hidden = !x;
+    var bd = $('xSiteBadge'); bd.hidden = !(x && x.branch); if (x && x.branch) { bd.textContent = x.branch; bd.style.setProperty('--bw', A.warnaBranch(x.branch)); }
+    $('xCombo').classList.toggle('is-filled', !!x);
+    if (x && !diam) {
+      var L = terakhir().filter(function (n) { return normQ(n) !== x.k; }); L.unshift(x.nama);
+      lsSet('mw_site_baru_' + emailKu(), JSON.stringify(L.slice(0, 6)));
+    }
+    renderNote(); updateRun();
+  }
+  function renderNote() {
+    var el = $('xTujuanNote'), bagian = [];
+    if (tj.error && !tj.list.length) bagian.push('<span class="tujuan__err">' + esc(tj.error) + '</span>');
+    if (tj.site) bagian.push('<span class="tujuan__ok">' + PIN + 'Data Upah akan diisi <b>' + esc(tj.site.nama) + '</b>' + (tj.site.branch ? ' · branch <b>' + esc(tj.site.branch) + '</b>' : '') + '</span>');
+    var r = st.parsed;
+    if (r && r.rows && r.rows.length) {
+      var ket = {};
+      r.rows.forEach(function (x) { var k = String(x.remark || '').trim(); if (k) ket[k.toUpperCase()] = k; });
+      var daftar = Object.keys(ket).map(function (k) { return ket[k]; });
+      if (daftar.length > 1) bagian.push('<span class="tujuan__warn">File ini berisi ' + daftar.length + ' keterangan site berbeda (' + esc(daftar.slice(0, 4).join(', ')) + (daftar.length > 4 ? ', …' : '') + '). Semua baris Cocok, Mirip, dan Via RO tetap diisi site yang dipilih.</span>');
+      if (!tj.site && daftar.length && tj.list.length) {
+        var saran = [];
+        daftar.forEach(function (d) {
+          var q = normQ(d); if (q.length < 3) return;
+          tj.list.forEach(function (x) { if ((x.k === q || (q.length >= 5 && (x.k.indexOf(q) !== -1 || q.indexOf(x.k) !== -1))) && saran.indexOf(x) === -1) saran.push(x); });
+        });
+        saran = saran.filter(function (x) { return tj.branch === 'ALL' || x.branch === tj.branch; }).slice(0, 3);
+        if (saran.length) bagian.push('<span class="tujuan__saran">Saran dari keterangan MCM: ' + saran.map(function (x) { return '<button type="button" data-saran="' + esc(x.nama) + '">' + esc(x.nama) + (x.branch ? ' · ' + esc(x.branch) : '') + '</button>'; }).join('') + '</span>');
+      }
+    }
+    el.innerHTML = bagian.join('');
+    el.hidden = !bagian.length;
+    $('xTujuan').classList.toggle('is-done', !!tj.site);
+    $('xTujuan').classList.toggle('is-need', !tj.site && !!(st.parsed && st.parsed.rows));
+  }
+  (function () {
+    var input = $('xSiteQ'), ul = $('xSiteList');
+    input.addEventListener('focus', function () { if (!tj.list.length) A.siapTujuan(); bukaList(); try { input.select(); } catch (e) { /* abaikan */ } });
+    input.addEventListener('click', function () { if ($('xSitePop').hidden) bukaList(); });
+    input.addEventListener('input', function () { if (tj.site && input.value !== tj.site.nama) { tj.site = null; $('xSiteX').hidden = true; $('xSiteBadge').hidden = true; $('xCombo').classList.remove('is-filled'); renderNote(); updateRun(); } bukaList(); if (normQ(input.value)) sorotAktif(0); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); if ($('xSitePop').hidden) bukaList(); sorotAktif(tj.aktif + 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); sorotAktif(tj.aktif - 1); }
+      else if (e.key === 'Enter') { e.preventDefault(); var o = ul.querySelectorAll('.combo__opt')[tj.aktif < 0 ? 0 : tj.aktif]; if (o && !$('xSitePop').hidden) { pilihSite(tj.tampil[+o.dataset.i]); tutupList(); input.blur(); } }
+      else if (e.key === 'Escape') { tutupList(); if (tj.site) input.value = tj.site.nama; }
+    });
+    input.addEventListener('blur', function () { setTimeout(function () { tutupList(); if (tj.site) input.value = tj.site.nama; else if (!cariSite(input.value)) input.value = ''; else pilihSite(cariSite(input.value)); }, 160); });
+    $('xSitePop').addEventListener('mousedown', function (e) { e.preventDefault(); });
+    ul.addEventListener('click', function (e) { var o = e.target.closest('.combo__opt'); if (!o) return; pilihSite(tj.tampil[+o.dataset.i]); tutupList(); input.blur(); });
+    $('xSiteX').addEventListener('click', function () { pilihSite(null); input.focus(); });
+    $('xBranch').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-branch]'); if (!b) return;
+      tj.branch = b.dataset.branch; renderBranch();
+      if ($('xIngat').checked) lsSet('mw_branch_' + emailKu(), tj.branch);
+      if (tj.site && tj.branch !== 'ALL' && tj.site.branch !== tj.branch) pilihSite(null);
+      renderNote();
+      if (!tj.site) setTimeout(function () { input.focus(); }, 0); else if (!$('xSitePop').hidden) renderList();
+    });
+    $('xIngat').addEventListener('change', function () {
+      lsSet('mw_branch_' + emailKu(), this.checked ? tj.branch : null);
+      A.toast(this.checked ? 'Branch ' + (tj.branch === 'ALL' ? '"Semua branch"' : tj.branch) + ' diingat untuk crosscheck berikutnya.' : 'Branch tidak diingat lagi.', true);
+    });
+    $('xTujuanNote').addEventListener('click', function (e) { var b = e.target.closest('[data-saran]'); if (b) pilihSite(cariSite(b.dataset.saran)); });
+  })();
+
   function renderCheck() {
     var r = st.parsed, m = r.meta;
     show('xCheck'); setStep(2);
@@ -5055,7 +5484,8 @@ function cekKaryawanMurni_(rows, db) {
     updateRun();
     // siapkan database di belakang selagi pratinjau dilihat, supaya klik "Cocokkan" langsung jalan
     // selalu dicek ke server saat file dipilih: kalau database/personalia berubah sedetik lalu pun, ikut terbaru
-    if (!r.errors.length && A.connected()) A.ambilDatabase(true).catch(function () { });
+    renderNote();
+    if (!r.errors.length && A.connected()) A.ambilDatabase(true).then(function (o) { if (o && o.sites) isiTujuan(o.sites, o.sitesError); }).catch(function () { });
   }
 
   function updateRun() {
@@ -5063,9 +5493,10 @@ function cekKaryawanMurni_(rows, db) {
     if (!r) return;
     if (r.errors.length) { btn.disabled = true; txt.textContent = 'Periksa kembali file MCM-nya. Tombol terkunci karena isi file tidak sesuai ringkasannya.'; return; }
     if (!A.connected()) { btn.disabled = true; txt.textContent = 'Silakan masuk dulu untuk mencocokkan.'; return; }
+    if (!tj.site) { btn.disabled = true; btn.textContent = 'Pilih site penempatan dulu'; txt.textContent = 'Pilih branch dan site penempatan di bagian atas sebelum mencocokkan.'; return; }
     btn.disabled = false;
     btn.textContent = 'Cocokkan ' + num(r.rows.length) + ' baris dengan database';
-    txt.textContent = 'Hasilnya langsung tersimpan di riwayat dan di sheet Hasil Crosscheck.';
+    txt.textContent = 'Hasil tersimpan di riwayat, dan site penempatan rekening Cocok/Mirip/Via RO di Data Upah diisi ' + tj.site.nama + (tj.site.branch ? ' (' + tj.site.branch + ')' : '') + '.';
   }
 
   /* ---------- jalankan crosscheck ----------
@@ -5078,6 +5509,8 @@ function cekKaryawanMurni_(rows, db) {
   window.addEventListener('beforeunload', cegahTutup);
   $('xRunBtn').addEventListener('click', async function () {
     var btn = this, r = st.parsed, file = st.file, me = run = { batal: false };
+    if (!tj.site) { updateRun(); return; }
+    var tujuan = { site: tj.site.nama, branch: tj.site.branch || tj.branch };
     btn.disabled = true; btn.textContent = 'Mencocokkan…';
     $('xCancelRun').hidden = false; $('xCancelRun').disabled = false; $('xCancelRun').textContent = 'Batalkan';
     var pg = A.progres($('xProg'), { satuan: 'baris' }), n = r.rows.length;
@@ -5106,17 +5539,18 @@ function cekKaryawanMurni_(rows, db) {
         var total = 0; hasil.forEach(function (h) { total += h.amountCents; });
         var sesi = A.sesi() || {};
         var lap = { id: '', waktu: new Date().toISOString(), oleh: sesi.email || '', fileName: file.name, remark: r.remark, adaFile: false,
-          totalCents: total, hasil: hasil, jumlahDatabase: peta.db.jumlah, _r: r, _file: file, _urut: hasil.slice() };
+          totalCents: total, hasil: hasil, jumlahDatabase: peta.db.jumlah, _r: r, _file: file, _urut: hasil.slice(), _tujuan: tujuan };
         openReport(lap);
         simpanLaporan(lap);
       } else {
         if (isi && !peta.db.jumlah) throw new Error('Database rekening masih kosong.');
         pg.tahap('Mencocokkan ' + num(n) + ' baris di server…', 96, 3500 + n * 2);
-        var out = await A.post({ action: 'crosscheck', fileName: file.name, remark: r.remark, rows: r.rows });
+        var out = await A.post({ action: 'crosscheck', fileName: file.name, remark: r.remark, rows: r.rows, site: tujuan.site, branch: tujuan.branch });
         if (!out.ok) throw new Error(out.error || 'Server menolak data.');
+        if (out.siteDiperbarui) A.dataBasi();
         if (me.batal) {
           // hasil sudah tersimpan di server: hapus lagi supaya benar-benar batal
-          await A.post({ action: 'hapusRiwayat', jenis: 'cc', id: out.id, alasan: 'Dibatalkan saat proses' }).catch(function () { });
+          await A.post({ action: 'hapusRiwayat', jenis: 'cc', id: out.id, alasan: 'Dibatalkan saat proses', kembalikanSite: true }).catch(function () { });
           A.toast('Crosscheck dibatalkan. Tidak ada hasil yang disimpan.', true);
           updateRun();
           return;
@@ -5149,8 +5583,11 @@ function cekKaryawanMurni_(rows, db) {
     menyimpan++;
     // hasil browser ikut dikirim (urutan asli baris file) supaya server tidak perlu mencocokkan ulang
     var kirimHasil = (rep._urut || []).map(function (h) { return { line: h.line, acct: h.acct, namaMcm: h.namaMcm, namaDb: h.namaDb, status: h.status, ket: h.ket, sk: h.sk || undefined, sumber: h.sumber || undefined }; });
-    rep.simpan = A.post({ action: 'crosscheck', fileName: file.name, remark: r.remark, rows: r.rows, hasil: kirimHasil.length ? kirimHasil : undefined, jumlahDb: rep.jumlahDatabase }).then(function (out) {
+    var tj0 = rep._tujuan || {};
+    rep.simpan = A.post({ action: 'crosscheck', fileName: file.name, remark: r.remark, rows: r.rows, hasil: kirimHasil.length ? kirimHasil : undefined, jumlahDb: rep.jumlahDatabase, site: tj0.site, branch: tj0.branch }).then(function (out) {
       if (!out.ok) throw new Error(out.error || 'Server menolak data.');
+      rep.site = out.site; rep.branch = out.branch; rep.siteDiperbarui = out.siteDiperbarui || 0; rep.adaCadangan = !!out.adaCadangan;
+      if (out.siteDiperbarui) A.dataBasi();
       rep.id = out.id; rep.waktu = out.waktu; rep.waktuTeks = out.waktuTeks; rep.oleh = out.oleh || rep.oleh;
       var beda = out.hasil ? bedaHasil(rep.hasil, out.hasil) : 0;
       if (beda) {
@@ -5199,7 +5636,28 @@ function cekKaryawanMurni_(rows, db) {
     A.toast('Sebentar, hasil crosscheck sedang disimpan ke riwayat…', true);
     try { await rep.simpan; return !!rep.id; } catch (e) { return false; }
   }
+  function tulisSite(rep) {
+    var el = $('rSiteInfo'), t = rep._tujuan || {}, site = rep.site || t.site, br = rep.branch || t.branch;
+    if (!site) { el.hidden = true; return; }
+    var html = PIN + '<span><b>' + esc(site) + '</b>' + (br && br !== 'ALL' ? ' · ' + esc(br) : '') + '</span>';
+    if (rep.siteBatal) html += '<em>perubahan site dibatalkan</em>';
+    else if (!rep.id && rep.simpanStatus !== 'gagal') html += '<em>mengisi Data Upah…</em>';
+    else if (rep.id) html += '<em>' + (rep.siteDiperbarui ? num(rep.siteDiperbarui) + ' rekening diperbarui di Data Upah' : 'Data Upah sudah sesuai') + '</em>' + (rep.adaCadangan ? '<button type="button" data-batal-site>Batalkan</button>' : '');
+    el.innerHTML = html; el.hidden = false;
+  }
+  $('rSiteInfo').addEventListener('click', async function (e) {
+    var b = e.target.closest('[data-batal-site]'), rep = st.report;
+    if (!b || !rep || !rep.id) return;
+    var ok = await A.konfirmasi({ judul: 'Batalkan perubahan site penempatan?',
+      isi: '<p>Site penempatan & branch <b>' + num(rep.siteDiperbarui) + ' rekening</b> di Data Upah dikembalikan seperti sebelum crosscheck ini. Hasil crosscheck tetap tersimpan.</p>',
+      ok: 'Ya, kembalikan',
+      jalankan: async function () { var out = await A.post({ action: 'batalSiteCC', id: rep.id }); if (!out.ok) throw new Error(out.error || 'Server menolak.'); rep.siteDiperbaruiLama = out.dikembalikan; } });
+    if (!ok) return;
+    rep.siteBatal = true; rep.adaCadangan = false; rep.siteDiperbarui = 0; A.dataBasi(); tulisSite(rep);
+    A.toast(num(rep.siteDiperbaruiLama || 0) + ' rekening dikembalikan ke site & branch lama.', true);
+  });
   function tulisMeta(rep) {
+    tulisSite(rep);
     $('rMeta').textContent = waktuRep(rep) + (rep.oleh ? ', oleh ' + rep.oleh : '') + ', ' + num(rep.hasil.length) + ' baris' + (rep.id ? ', ID ' + rep.id : '');
     var c = $('rSave'), s = rep.simpanStatus;
     if (!s || (s === 'ok' && rep.simpanLama)) { c.hidden = true; return; }
@@ -5354,7 +5812,7 @@ function cekKaryawanMurni_(rows, db) {
 
   function resetX() {
     st = { file: null, parsed: null, report: null, filter: 'CEK', q: '', page: 1 };
-    show('xPick'); setStep(1); pickErr('');
+    show('xPick'); setStep(1); pickErr(''); renderNote(); updateRun();
   }
   document.querySelectorAll('[data-xreset]').forEach(function (b) { b.addEventListener('click', resetX); });
 
@@ -5364,10 +5822,11 @@ function cekKaryawanMurni_(rows, db) {
     if (!rep || !(await pastikanTersimpan(rep))) return;
     var ok = await A.konfirmasi({
       judul: 'Batalkan crosscheck ini?',
-      isi: '<p>Hasil crosscheck <b>' + esc(rep.fileName || '-') + '</b> (' + esc(waktuRep(rep)) + ') akan dihapus dari riwayat dan sheet Hasil Crosscheck.</p><p class="confirm__note">Surat kuasa yang sudah diupload tetap tersimpan dan tetap berlaku.</p>',
+      isi: '<p>Hasil crosscheck <b>' + esc(rep.fileName || '-') + '</b> (' + esc(waktuRep(rep)) + ') akan dihapus dari riwayat dan sheet Hasil Crosscheck.</p>' + (rep.adaCadangan && rep.siteDiperbarui ? '<p>Site penempatan & branch <b>' + num(rep.siteDiperbarui) + ' rekening</b> di Data Upah juga dikembalikan seperti semula.</p>' : '') + '<p class="confirm__note">Surat kuasa yang sudah diupload tetap tersimpan dan tetap berlaku.</p>',
       ok: 'Ya, batalkan',
       jalankan: async function () {
-        var out = await A.post({ action: 'hapusRiwayat', jenis: 'cc', id: rep.id, alasan: 'Dibatalkan dari laporan' });
+        var out = await A.post({ action: 'hapusRiwayat', jenis: 'cc', id: rep.id, alasan: 'Dibatalkan dari laporan', kembalikanSite: true });
+        if (out.ok && out.siteDikembalikan) A.dataBasi();
         if (!out.ok) throw new Error(out.error || 'Server menolak.');
       }
     });
@@ -5954,14 +6413,6 @@ function cekKaryawanMurni_(rows, db) {
   $('fixReset').addEventListener('click', function () { fix.forEach(function (x) { x.nama = x.saran.nama; x.manual = false; }); renderFix(); });
   $('fixClose').addEventListener('click', function () { dlgFix.close(); });
   $('rFix').addEventListener('click', bukaFix);
-  // perbarui site penempatan Data Upah dari MCM laporan ini (perlu ID laporan: tunggu tersimpan dulu)
-  $('rSite').addEventListener('click', async function () {
-    var rep = st.report;
-    if (!rep) return;
-    if (!(await pastikanTersimpan(rep))) return;
-    if (!rep.id) { A.toast('Laporan belum tersimpan ke riwayat.'); return; }
-    if (A.bukaSite) A.bukaSite({ id: rep.id, judul: rep.fileName });
-  });
 
   function namaUnduh(ext) { return String(st.file.name).replace(/\.[^.]+$/, '') + ' (BENAR).' + ext; }
   function unduhBlob(isi, nama, tipe) {
@@ -6403,7 +6854,8 @@ function cekKaryawanMurni_(rows, db) {
     if (ganti && !(opts && opts.noScroll)) window.scrollTo(0, 0);
     if (!A.connected()) return;
     if (v === 'dashboard') muatDashboard();
-    if (v === 'database') { if (db.rows && !db.basi && !db.busy) muatStatusSite(); muatDatabase(); }
+    if (v === 'database') muatDatabase();
+    if (v === 'crosscheck' && A.siapTujuan) A.siapTujuan();
     if (v === 'pengaturan') muatPengaturan();
     if (v === 'karyawan' && A.karyawanTampil) A.karyawanTampil();
     if (v === 'riwayat' && ganti && A.refreshHistory) A.refreshHistory();
@@ -6526,7 +6978,7 @@ function cekKaryawanMurni_(rows, db) {
   }
 
   /* ---------- dashboard ---------- */
-  var dashBusy = false, dashTampil = false, KUNCI_DASH = 'mw_dash_v8';
+  var dashBusy = false, dashTampil = false, KUNCI_DASH = 'mw_dash_v9';
   function dashLokal() {
     if (dashTampil) return;
     try { var c = JSON.parse(lsGet(KUNCI_DASH) || 'null'); if (c && c.ok && c.hariIni) { renderDashboard(c, true); dashTampil = true; } } catch (e) { /* abaikan */ }
@@ -6577,6 +7029,7 @@ function cekKaryawanMurni_(rows, db) {
     requestAnimationFrame(function () {
       $('sOkBar').style.width = pct(h.cocok, tot) + '%'; $('sRevBar').style.width = pct(h.perluReview, tot) + '%'; $('sBadBar').style.width = pct(h.tidakCocok, tot) + '%';
     });
+    if (A.renderBx && d.branch) { try { A.renderBx(d.branch); } catch (e) { console.warn(e); } }
     // aktivitas
     $('dAct').innerHTML = d.aktivitas.slice(0, 5).map(liAkt).join('') || '<li class="act__empty">Belum ada aktivitas. Upload PDF atau crosscheck pertama akan muncul di sini.</li>';
     $('bellList').innerHTML = d.aktivitas.map(liAkt).join('') || '<li class="act__empty">Belum ada aktivitas.</li>';
@@ -6602,7 +7055,7 @@ function cekKaryawanMurni_(rows, db) {
     // hasil terbaru
     $('dRecent').innerHTML = d.terbaru.map(function (r) {
       var g = r.ringkas || {}, ok = (g.COCOK || 0) + (g.RO || 0) + (g.SK || 0), rev = g.MIRIP || 0, bad = Math.max(0, (g.BEDA || 0) - (g.SK || 0)) + (g.TIDAK_ADA || 0);
-      return '<tr><td data-label="Tanggal">' + esc(tglPendek(r.waktu, r.waktuTeks)) + '</td><td class="lead" data-label="Nama file">' + esc(r.fileName) + '</td>' +
+      return '<tr><td data-label="Tanggal">' + esc(tglPendek(r.waktu, r.waktuTeks)) + '</td><td class="lead" data-label="Nama file">' + esc(r.fileName) + (r.site ? '<small class="dsite">' + esc(r.site) + (r.branch ? ' <span class="btag" style="--bw:' + A.warnaBranch(r.branch) + '">' + esc(r.branch) + '</span>' : '') + '</small>' : '') + '</td>' +
         '<td class="r" data-label="Total data">' + num(r.jumlah) + '</td><td class="r n-ok" data-label="Cocok">' + num(ok) + '</td><td class="r n-warn" data-label="Perlu review">' + num(rev) + '</td><td class="r n-bad" data-label="Tidak cocok">' + num(bad) + '</td>' +
         '<td data-label="Status"><span class="pill pill--done">Selesai</span></td><td class="c" data-label="Aksi"><button class="btn btn--ghost btn--xs" type="button" data-lihat="' + esc(r.id) + '">Lihat</button></td></tr>';
     }).join('') || '<tr><td class="empty" colspan="8">Belum ada crosscheck. Upload file MCM di kartu di atas untuk memulai.</td></tr>';
@@ -6628,7 +7081,7 @@ function cekKaryawanMurni_(rows, db) {
   qd.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (f) A.crosscheckFile(f); });
 
   /* ---------- database bank ---------- */
-  var db = { rows: null, ro: {}, sk: {}, q: '', site: '', bank: '', page: 1, reveal: false, busy: false, basi: true, sortCol: -1, sortDir: 1, ss: null, ssF: '' };
+  var db = { rows: null, ro: {}, sk: {}, q: '', site: '', bank: '', page: 1, reveal: false, busy: false, basi: true, sortCol: -1, sortDir: 1, ss: null, ssF: '', br: '' };
   var PER = 50;
   function kunci(a) { return String(a).replace(/\D/g, '').replace(/^0+/, ''); }
   A.dbBasi = function () { db.basi = true; if (A.dataBasi) A.dataBasi(); if (current === 'database') muatDatabase(); };
@@ -6655,7 +7108,7 @@ function cekKaryawanMurni_(rows, db) {
       A.spark('bRo', A.seriKumulatif(db.rows.map(function (r) { return !!db.ro[kunci(r[2])]; })));
       A.spark('bSk', A.seriKumulatif(db.rows.map(function (r) { return !!db.sk[kunci(r[2])]; })));
       renderDb();
-      muatStatusSite();
+      siapkanStatusSite(out.sites || [], out.sitesError);
     } catch (e) { $('bMeta').textContent = e.message; }
     finally { db.busy = false; }
   }
@@ -6686,49 +7139,59 @@ function cekKaryawanMurni_(rows, db) {
     sel.innerHTML = '<option value="">' + semua + '</option>' + list.map(function (x) { return '<option' + (x === pilih ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('');
   }
   function samar(a) { a = String(a); return a.length <= 4 ? a : '•'.repeat(Math.min(6, a.length - 4)) + a.slice(-4); }
-  /* ---------- status site penempatan (dari riwayat MCM) ---------- */
-  var SS_LABEL = { 0: 'Belum ada di MCM', 1: 'Sudah sesuai MCM', 2: 'Siap diperbarui', 4: 'Nama di MCM tidak cocok' };
-  var ssJalan = 0;
-  async function muatStatusSite() {
-    var no = ++ssJalan;
-    $('bSsSub').textContent = 'Menghitung dari riwayat MCM…';
-    try {
-      var out = await A.post({ action: 'statusSite' });
-      if (no !== ssJalan) return;
-      if (!out.ok) throw new Error(out.error || 'Gagal menghitung.');
-      var map = {};
-      out.peta.forEach(function (x) { map[x[0]] = { k: x[1], site: x[2], file: x[3], waktu: x[4], nama: x[5] || '' }; });
-      db.ss = { map: map, g: out.ringkas, laporan: out.laporan, dihitung: out.dihitung };
-      renderStatusSite(); renderDb();
-    } catch (e) { if (no === ssJalan) $('bSsSub').textContent = 'Status site belum bisa dihitung: ' + e.message; }
+  /* ---------- status site penempatan: dibandingkan dengan daftar resmi di sheet SITE ----------
+   * 1 = site ada di daftar SITE & branch sesuai, 2 = site belum sesuai daftar SITE, 3 = site benar tapi branch kosong/beda */
+  var SS_LABEL = { 1: 'Sudah sesuai daftar SITE', 2: 'Site belum sesuai daftar SITE', 3: 'Branch kosong / beda' };
+  function nq(x) { return String(x || '').toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim(); }
+  function siapkanStatusSite(sites, err) {
+    var peta = {};
+    sites.forEach(function (x) { peta[nq(x[0])] = x; });
+    db.ss = { peta: peta, ada: sites.length > 0, err: err || '' };
+    var br = {};
+    db.rows.forEach(function (r) { if (r[5]) br[r[5]] = 1; });
+    sites.forEach(function (x) { if (x[1]) br[x[1]] = 1; });
+    isiSelect($('bBr'), Object.keys(br).sort(function (a, b) { return a.localeCompare(b, 'id', { numeric: true }); }), 'Semua branch', db.br);
+    $('bBr').insertAdjacentHTML('beforeend', '<option value="-">Belum ada branch</option>');
+    if (db.br === '-') $('bBr').value = '-';
+    renderStatusSite();
   }
-  function kodeSite(r) { if (!db.ss) return -1; var x = db.ss.map[kunciDobel(r)]; return x ? x.k : 0; }
+  function kodeSite(r) {
+    if (!db.ss || !db.ss.ada) return -1;
+    var x = db.ss.peta[nq(r[4])];
+    if (!x) return 2;
+    return r[5] && (!x[1] || nq(r[5]) === nq(x[1])) ? 1 : 3;
+  }
   function renderStatusSite() {
-    var s = db.ss; if (!s) return;
-    var g = s.g, belum = g.siap + g.belum + g.namaBeda;
-    $('bSsJudul').innerHTML = belum ? '<span class="sitestat__num">' + num(belum) + '</span> rekening belum diperbarui site penempatannya' : 'Semua site penempatan sudah sesuai MCM';
-    $('bSsSub').textContent = num(g.sudah) + ' dari ' + num(g.total) + ' rekening sudah sesuai MCM · dihitung dari ' + num(s.laporan) + ' laporan crosscheck';
+    var s = db.ss; if (!s || !db.rows) return;
+    if (!s.ada) {
+      $('bSsJudul').textContent = 'Status site penempatan';
+      $('bSsSub').textContent = s.err || 'Daftar site resmi (sheet SITE) belum terbaca.';
+      $('bSsChips').innerHTML = ''; return;
+    }
+    var g = { 1: 0, 2: 0, 3: 0 };
+    db.rows.forEach(function (r) { g[kodeSite(r)]++; });
+    var belum = g[2] + g[3], tot = db.rows.length, p = tot ? Math.round(g[1] / tot * 1000) / 10 : 0;
+    $('bSsJudul').innerHTML = belum ? '<span class="sitestat__num">' + num(belum) + '</span> rekening belum diperbarui site penempatannya' : 'Semua site penempatan sudah sesuai daftar SITE';
+    $('bSsSub').innerHTML = '<b>' + num(g[1]) + '</b> dari ' + num(tot) + ' rekening sudah sesuai (' + String(p).replace('.', ',') + '%). Diperbarui otomatis setiap crosscheck MCM dengan branch & site yang dipilih.';
+    $('bSsBar').style.width = p + '%';
     var chip = function (v, n, lbl, cls) {
       return '<button type="button" class="sschip ' + cls + (db.ssF === v ? ' is-on' : '') + '" data-ss="' + v + '" aria-pressed="' + (db.ssF === v) + '"><b>' + num(n) + '</b>' + lbl + '</button>';
     };
-    $('bSsChips').innerHTML = chip('x', belum, 'Belum diperbarui', 'sschip--x') + chip('2', g.siap, 'Siap diperbarui dari MCM', 'sschip--siap') +
-      chip('0', g.belum, 'Belum ada di MCM', 'sschip--belum') + chip('4', g.namaBeda, 'Nama di MCM tidak cocok', 'sschip--beda') + chip('1', g.sudah, 'Sudah sesuai MCM', 'sschip--ok');
-    $('bSsBtn').disabled = !g.siap;
-    $('bSsBtn').textContent = g.siap ? 'Perbarui ' + num(g.siap) + ' site dari MCM' : 'Tidak ada yang siap diperbarui';
+    $('bSsChips').innerHTML = chip('x', belum, 'Belum diperbarui', 'sschip--x') + chip('2', g[2], 'Site belum sesuai daftar SITE', 'sschip--belum') +
+      chip('3', g[3], 'Branch kosong / beda', 'sschip--siap') + chip('1', g[1], 'Sudah sesuai', 'sschip--ok');
   }
-  function setSsF(v) {
-    db.ssF = v; $('bSiteSt').value = v; db.page = 1;
-    renderStatusSite(); renderDb();
-  }
+  function setSsF(v) { db.ssF = v; $('bSiteSt').value = v; db.page = 1; renderStatusSite(); renderDb(); }
   $('bSsChips').addEventListener('click', function (e) { var b = e.target.closest('[data-ss]'); if (b) setSsF(db.ssF === b.dataset.ss ? '' : b.dataset.ss); });
   $('bSiteSt').addEventListener('change', function () { setSsF(this.value); });
-  $('bSsBtn').addEventListener('click', function () { if (A.bukaSite) A.bukaSite({}); });
+  $('bBr').addEventListener('change', function () { db.br = this.value; db.page = 1; renderDb(); });
+  function selBranch(r) {
+    if (!r[5]) return '<span class="muted">-</span>';
+    return '<span class="btag" style="--bw:' + A.warnaBranch(r[5]) + '">' + esc(r[5]) + '</span>';
+  }
   function catatanSite(r) {
-    var k = kodeSite(r), x = db.ss && db.ss.map[kunciDobel(r)];
-    if (k === 2) return '<small class="ss ss--siap" title="Dari ' + esc(x.file) + ' (' + esc(x.waktu) + ')">MCM: ' + esc(x.site) + '</small>';
-    if (k === 4) return '<small class="ss ss--beda" title="Nama di MCM: ' + esc(x.nama) + '">nama di MCM beda</small>';
-    if (k === 0 && db.ssF) return '<small class="ss ss--belum">belum ada di MCM</small>';
-    if (k === 1 && db.ssF === '1') return '<small class="ss ss--ok">✓ sesuai MCM</small>';
+    var k = kodeSite(r);
+    if (k === 2 && r[4]) return '<small class="ss ss--belum">belum sesuai daftar SITE</small>';
+    if (k === 3) { var x = db.ss.peta[nq(r[4])]; return '<small class="ss ss--siap">branch seharusnya ' + esc(x[1]) + '</small>'; }
     return '';
   }
   function dbList() {
@@ -6736,7 +7199,8 @@ function cekKaryawanMurni_(rows, db) {
     var list = db.rows.filter(function (r) {
       if (db.site && r[3] !== db.site) return false;
       if (db.bank && r[1] !== db.bank) return false;
-      if (db.ssF && db.ss) { var ks = kodeSite(r); if (db.ssF === 'x' ? ks === 1 : ks !== Number(db.ssF)) return false; }
+      if (db.br && (db.br === '-' ? r[5] : r[5] !== db.br)) return false;
+      if (db.ssF && db.ss && db.ss.ada) { var ks = kodeSite(r); if (db.ssF === 'x' ? ks === 1 : ks !== Number(db.ssF)) return false; }
       if (!q) return true;
       return angka && digit.length >= 3 ? String(r[2]).indexOf(digit) !== -1 : (r[0] + ' ' + r[4]).toLowerCase().indexOf(q) !== -1;
     });
@@ -6766,8 +7230,8 @@ function cekKaryawanMurni_(rows, db) {
       var k = kunci(r[2]), tanda = (db.ro[k] ? '<span class="tag tag--ro">RO</span>' : '') + (db.sk[k] ? '<span class="tag tag--sk">Surat kuasa</span>' : '');
       return '<tr><td class="r hide-m" data-label="No">' + (start + i + 1) + '</td><td class="lead" data-label="Nama">' + esc(r[0]) + '</td><td data-label="Bank">' + esc(r[1]) +
         '</td><td class="acct" data-label="No rekening">' + (db.reveal ? esc(r[2]) : '<button type="button" title="Klik untuk menampilkan" data-buka="' + esc(r[2]) + '">' + esc(samar(r[2])) + '</button>') +
-        '</td><td data-label="Site bisnis">' + esc(r[3]) + '</td><td data-label="Site penempatan">' + esc(r[4]) + catatanSite(r) + '</td><td data-label="Tanda">' + (tanda || '<span class="muted">-</span>') + '</td></tr>';
-    }).join('') || '<tr><td class="empty" colspan="7">' + (db.q || db.site || db.bank || db.ssF ? 'Tidak ada rekening yang cocok dengan saringan.' : 'Database masih kosong.') + '</td></tr>';
+        '</td><td data-label="Site bisnis">' + esc(r[3]) + '</td><td data-label="Site penempatan">' + esc(r[4] || '-') + catatanSite(r) + '</td><td data-label="Branch">' + selBranch(r) + '</td><td data-label="Tanda">' + (tanda || '<span class="muted">-</span>') + '</td></tr>';
+    }).join('') || '<tr><td class="empty" colspan="8">' + (db.q || db.site || db.bank || db.ssF || db.br ? 'Tidak ada rekening yang cocok dengan saringan.' : 'Database masih kosong.') + '</td></tr>';
     $('bMeta').textContent = num(list.length) + (list.length !== db.rows.length ? ' dari ' + num(db.rows.length) : '') + ' rekening';
     $('bPageInfo').textContent = 'Halaman ' + db.page + ' dari ' + pages;
     $('bPrev').disabled = db.page <= 1; $('bNext').disabled = db.page >= pages;
@@ -6787,10 +7251,10 @@ function cekKaryawanMurni_(rows, db) {
     var list = dbList();
     return {
       judul: 'Database Rekening', namaFile: 'Database Rekening Moneywise',
-      sub: 'Isi sheet Data Upah' + (db.ssF ? ' · status site: ' + (db.ssF === 'x' ? 'belum diperbarui' : SS_LABEL[db.ssF].toLowerCase()) : '') + (db.site ? ' · site bisnis ' + db.site : '') + (db.bank ? ' · ' + db.bank : '') + (db.q ? ' · pencarian "' + db.q + '"' : '') + (db.reveal ? '' : ' · nomor rekening disamarkan'),
+      sub: 'Isi sheet Data Upah' + (db.br ? ' · branch ' + (db.br === '-' ? 'kosong' : db.br) : '') + (db.ssF ? ' · status site: ' + (db.ssF === 'x' ? 'belum diperbarui' : SS_LABEL[db.ssF].toLowerCase()) : '') + (db.site ? ' · site bisnis ' + db.site : '') + (db.bank ? ' · ' + db.bank : '') + (db.q ? ' · pencarian "' + db.q + '"' : '') + (db.reveal ? '' : ' · nomor rekening disamarkan'),
       meta: [['Jumlah rekening', num(list.length)], ['Total di database', num(db.rows.length)], ['Nomor rekening', db.reveal ? 'Lengkap' : 'Disamarkan (4 digit terakhir)']],
-      tabel: [{ kolom: ['No', 'Nama', 'Bank', 'No rekening', 'Site bisnis', 'Site penempatan', 'Tanda'], kanan: [0],
-        baris: list.map(function (r, i) { var k = kunci(r[2]); return [i + 1, r[0], r[1], db.reveal ? r[2] : samar(r[2]).replace(/•/g, '*'), r[3], r[4], [db.ro[k] ? 'RO' : '', db.sk[k] ? 'Surat kuasa' : ''].filter(Boolean).join(', ')]; }) }]
+      tabel: [{ kolom: ['No', 'Nama', 'Bank', 'No rekening', 'Site bisnis', 'Site penempatan', 'Branch', 'Tanda'], kanan: [0],
+        baris: list.map(function (r, i) { var k = kunci(r[2]); return [i + 1, r[0], r[1], db.reveal ? r[2] : samar(r[2]).replace(/•/g, '*'), r[3], r[4], r[5] || '', [db.ro[k] ? 'RO' : '', db.sk[k] ? 'Surat kuasa' : ''].filter(Boolean).join(', ')]; }) }]
     };
   }
   $('bPdf').addEventListener('click', function () { if (db.rows) A.laporan.pdf(specDb(), this); });
@@ -6799,11 +7263,11 @@ function cekKaryawanMurni_(rows, db) {
     if (!db.rows) return;
     if (typeof XLSX === 'undefined') { A.toast('Pembuat file Excel belum termuat.'); return; }
     var list = dbList(), wb = XLSX.utils.book_new();
-    var ws = XLSX.utils.aoa_to_sheet([['Nama', 'Bank', 'No Rekening', 'Site Bisnis', 'Site Penempatan', 'Status Site', 'Site dari MCM', 'File MCM']].concat(list.map(function (r) {
-      var x = db.ss && db.ss.map[kunciDobel(r)], k = kodeSite(r);
-      return [r[0], r[1], db.reveal ? String(r[2]) : samar(r[2]), r[3], r[4], k < 0 ? '' : SS_LABEL[k], x ? x.site : '', x ? x.file : ''];
+    var ws = XLSX.utils.aoa_to_sheet([['Nama', 'Bank', 'No Rekening', 'Site Bisnis', 'Site Penempatan', 'Branch', 'Status Site']].concat(list.map(function (r) {
+      var k = kodeSite(r);
+      return [r[0], r[1], db.reveal ? String(r[2]) : samar(r[2]), r[3], r[4], r[5] || '', k < 0 ? '' : SS_LABEL[k]];
     })));
-    ws['!cols'] = [{ wch: 32 }, { wch: 28 }, { wch: 20 }, { wch: 32 }, { wch: 32 }, { wch: 24 }, { wch: 28 }, { wch: 36 }];
+    ws['!cols'] = [{ wch: 32 }, { wch: 28 }, { wch: 20 }, { wch: 32 }, { wch: 36 }, { wch: 14 }, { wch: 28 }];
     XLSX.utils.book_append_sheet(wb, ws, 'Data Upah');
     XLSX.writeFile(wb, 'Database Rekening Moneywise.xlsx');
   });
@@ -7103,164 +7567,263 @@ function cekKaryawanMurni_(rows, db) {
 
 </script>
   <script>
-/* Moneywise — perbarui SITE PENEMPATAN di Data Upah dari file MCM (riwayat crosscheck)
- * Hanya rekening yang namanya Cocok/Mirip; satu rekening memakai MCM terbaru. Pratinjau dulu, lalu terapkan; bisa dibatalkan. */
+/* Moneywise — Dashboard "Crosscheck per Branch": ringkasan bulanan, perbandingan branch, tren harian,
+ * site paling bermasalah, tren % tidak cocok, dan ranking. Data dari aksi dashboard (d.branch). */
 (function () {
   'use strict';
   var A = window.APP, $ = function (id) { return document.getElementById(id); };
   var esc = A.esc, num = A.num;
-  var dlg = $('dlgSite'), PER = 100;
-  var st = { id: '', judul: '', data: null, q: '', page: 1, reveal: false, busy: false };
+  var C = { aman: '#1FBF86', review: '#F2B33D', merah: '#E5484D' };
+  var TANPA = '';   // crosscheck lama (sebelum ada pilihan branch)
+  var bx = { data: null, bulan: '', branch: 'ALL' };
 
-  function samar(a) { a = String(a); return st.reveal || a.length <= 4 ? a : '•'.repeat(Math.min(6, a.length - 4)) + a.slice(-4); }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* abaikan */ } }
+  function namaB(b) { return b === TANPA ? 'Belum ada branch' : b; }
+  function warna(b) { return b === TANPA ? '#9AA6BB' : A.warnaBranch(b); }
+  function labelBulan(k, pendek) {
+    var p = String(k).split('-'), d = new Date(Number(p[0]), Number(p[1]) - 1, 1);
+    return d.toLocaleDateString('id-ID', pendek ? { month: 'short' } : { month: 'long', year: 'numeric' });
+  }
+  function persen(a, b) { return b ? a / b * 100 : 0; }
+  function fp(x, d) { return (Math.round(x * Math.pow(10, d || 1)) / Math.pow(10, d || 1)).toLocaleString('id-ID'); }
+  function nol() { return [0, 0, 0, 0, 0, 0, 0, 0]; }
+  function tambah(a, b) { for (var i = 0; i < 8; i++) a[i] += b[i] || 0; return a; }
+  // [file, baris, aman, mirip, ro, beda, tidakAda, nominal] -> ringkas
+  function rk(a) { return { file: a[0], baris: a[1], aman: a[2], review: a[3] + a[4], merah: a[5] + a[6], mirip: a[3], ro: a[4], beda: a[5], tidak: a[6], nominal: a[7] }; }
+  function agg(bulan, branch) {
+    var m = (bx.data.bulanan || {})[bulan] || {}, out = nol();
+    Object.keys(m).forEach(function (b) { if (branch === 'ALL' || b === branch) tambah(out, m[b]); });
+    return rk(out);
+  }
+  function semuaBranch() {
+    var ada = {};
+    (bx.data.daftar || []).forEach(function (b) { ada[b] = 1; });
+    Object.keys(bx.data.bulanan || {}).forEach(function (k) { Object.keys(bx.data.bulanan[k]).forEach(function (b) { ada[b] = 1; }); });
+    var L = Object.keys(ada).filter(function (b) { return b !== TANPA; }).sort(function (a, b) { return a.localeCompare(b, 'id', { numeric: true }); });
+    if (ada[TANPA] !== undefined) L.push(TANPA);
+    return L;
+  }
 
-  A.bukaSite = function (o) {
-    o = o || {};
-    st.id = o.id || ''; st.judul = o.judul || ''; st.data = null; st.q = ''; st.page = 1;
-    $('siteQ').value = '';
-    $('siteLead').innerHTML = st.id
-      ? 'Site penempatan di <b>Data Upah</b> diganti dengan site dari MCM <b>' + esc(st.judul || st.id) + '</b>. Hanya rekening yang namanya <b>Cocok</b> atau <b>Mirip</b>.'
-      : 'Site penempatan di <b>Data Upah</b> diganti dengan site dari <b>semua MCM yang pernah dicrosscheck</b>. Hanya rekening yang namanya <b>Cocok</b> atau <b>Mirip</b>; bila satu rekening ada di beberapa MCM, dipakai MCM <b>terbaru</b>.';
-    tampil('muat');
-    if (!dlg.open) dlg.showModal();
-    muat();
+  /* ---------- tooltip ---------- */
+  var tip = $('bxTip');
+  function tampilTip(e, html) {
+    tip.innerHTML = html; tip.hidden = false;
+    var w = tip.offsetWidth, h = tip.offsetHeight, x = e.clientX + 14, y = e.clientY - h - 12;
+    if (x + w > window.innerWidth - 8) x = e.clientX - w - 14;
+    if (y < 8) y = e.clientY + 16;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  document.addEventListener('mousemove', function (e) {
+    var t = e.target.closest && e.target.closest('[data-tip]');
+    if (t && $('bx').contains(t)) tampilTip(e, t.getAttribute('data-tip')); else tip.hidden = true;
+  });
+  function baris3(r) {
+    return '<span class="tip__r"><i style="background:' + C.aman + '"></i>Aman<b>' + num(r.aman) + '</b></span>' +
+      '<span class="tip__r"><i style="background:' + C.review + '"></i>Perlu review<b>' + num(r.review) + '</b></span>' +
+      '<span class="tip__r"><i style="background:' + C.merah + '"></i>Tidak cocok<b>' + num(r.merah) + '</b></span>';
+  }
+
+  /* ---------- render ---------- */
+  A.renderBx = function (data) {
+    if (!data || !$('bx')) return;
+    bx.data = data;
+    var bl = data.bulan || [];
+    if (!bx.bulan || bl.indexOf(bx.bulan) === -1) bx.bulan = data.kini && bl.indexOf(data.kini) !== -1 ? data.kini : bl[bl.length - 1];
+    var simpan = lsGet('mw_bx_branch');
+    if (simpan && !bx.dipilih) { bx.branch = simpan; bx.dipilih = true; }
+    if (bx.branch !== 'ALL' && semuaBranch().indexOf(bx.branch) === -1) bx.branch = 'ALL';
+    $('bxBulan').innerHTML = bl.slice().reverse().map(function (k) { return '<option value="' + k + '"' + (k === bx.bulan ? ' selected' : '') + '>' + esc(labelBulan(k)) + (k === data.kini ? ' (bulan ini)' : '') + '</option>'; }).join('');
+    render();
   };
-
-  function tampil(mode) {
-    $('siteLoad').hidden = mode !== 'muat';
-    $('siteBody').hidden = mode !== 'isi';
-    $('siteDone').hidden = mode !== 'selesai';
-    $('siteApply').hidden = mode !== 'isi';
-  }
-
-  async function muat() {
-    $('siteLoadTxt').textContent = st.id ? 'Membaca hasil crosscheck laporan ini…' : 'Membaca semua riwayat crosscheck dan Data Upah… (data besar butuh beberapa detik)';
-    try {
-      var out = await A.post({ action: 'pratinjauSite', id: st.id || undefined });
-      if (!out.ok) throw new Error(out.error || 'Gagal membaca data.');
-      st.data = out;
-      render();
-      tampil('isi');
-    } catch (e) {
-      $('siteLoadTxt').textContent = 'Gagal: ' + e.message;
-    }
-  }
-
-  function baris() {
-    var q = st.q.toLowerCase();
-    var L = st.data.ubah;
-    return !q ? L : L.filter(function (r) { return (r[0] + ' ' + r[2] + ' ' + r[3] + ' ' + r[4] + ' ' + r[5]).toLowerCase().indexOf(q) !== -1; });
-  }
-
   function render() {
-    var d = st.data, g = d.ringkas;
-    $('siteLegend').innerHTML =
-      '<span class="chip chip--sk"><b>' + num(g.diubah) + '</b> akan diperbarui</span>' +
-      '<span class="chip"><b>' + num(g.sudahSama) + '</b> sudah sama</span>' +
-      '<span class="chip" style="background:#FFF4E5;color:#A15C07"><b>' + num(g.namaBeda) + '</b> nama tidak cocok, dilewati</span>' +
-      '<span class="chip" style="background:#F1F3F7;color:#505A6B"><b>' + num(g.tidakAda) + '</b> rekening belum ada di Data Upah</span>' +
-      (g.bentrok ? '<span class="chip chip--ro"><b>' + num(g.bentrok) + '</b> rekening punya site berbeda di beberapa MCM (dipakai terbaru)</span>' : '');
-    $('siteSrc').textContent = 'Sumber: ' + num(g.laporan) + ' laporan crosscheck, ' + num(g.baris) + ' baris Cocok/Mirip yang berisi site' +
-      (g.tanpaSite ? ' (' + num(g.tanpaSite) + ' baris tanpa site diabaikan)' : '') + '.';
-    var list = baris(), maxP = Math.max(1, Math.ceil(list.length / PER));
-    st.page = Math.min(st.page, maxP);
-    var awal = (st.page - 1) * PER, pot = list.slice(awal, awal + PER);
-    $('siteMeta').textContent = list.length === d.ubah.length ? num(list.length) + ' perubahan' : num(list.length) + ' dari ' + num(d.ubah.length) + ' perubahan';
-    $('siteBodyRows').innerHTML = pot.length ? pot.map(function (r, i) {
-      return '<tr><td class="r" data-label="No">' + (awal + i + 1) + '</td><td data-label="Nama"><b>' + esc(r[0]) + '</b><small>' + esc(r[1]) + '</small></td>' +
-        '<td class="mono" data-label="No rekening">' + esc(samar(r[2])) + '</td>' +
-        '<td data-label="Site lama"><span class="site-lama">' + (r[3] ? esc(r[3]) : '<i>kosong</i>') + '</span></td>' +
-        '<td data-label="Site baru"><span class="site-baru">' + esc(r[4]) + '</span>' + (r[7] > 1 ? '<small title="Rekening ini muncul dengan ' + r[7] + ' site berbeda; dipakai MCM terbaru">' + r[7] + ' site di riwayat, dipakai terbaru</small>' : '') + '</td>' +
-        '<td data-label="Dari MCM"><span class="site-file">' + esc(r[5]) + '</span><small>' + esc(r[6]) + '</small></td></tr>';
-    }).join('') : '<tr><td colspan="6" class="empty">' + (d.ubah.length ? 'Tidak ada yang cocok dengan pencarian.' : 'Semua site penempatan sudah sesuai dengan MCM. Tidak ada yang perlu diperbarui.') + '</td></tr>';
-    $('sitePage').hidden = maxP <= 1;
-    $('sitePageTxt').textContent = 'Halaman ' + st.page + ' dari ' + maxP;
-    $('sitePrev').disabled = st.page <= 1; $('siteNext').disabled = st.page >= maxP;
-    var b = $('siteApply');
-    b.disabled = !d.ubah.length;
-    b.textContent = d.ubah.length ? 'Perbarui ' + num(d.ubah.length) + ' site penempatan' : 'Tidak ada perubahan';
-    $('siteCsv').disabled = !d.ubah.length;
-    renderCadangan(d.cadangan || []);
+    var L = semuaBranch(), cur = agg(bx.bulan, bx.branch);
+    var bl = bx.data.bulan, iPrev = bl.indexOf(bx.bulan) - 1, prev = iPrev >= 0 ? agg(bl[iPrev], bx.branch) : null;
+    $('bxSub').textContent = labelBulan(bx.bulan) + ' · ' + (bx.branch === 'ALL' ? 'semua branch' : namaB(bx.branch)) + (cur.file ? ' · ' + num(cur.file) + ' file MCM' : '');
+    // chip branch
+    var mB = (bx.data.bulanan || {})[bx.bulan] || {};
+    var chip = function (v, label, w, n) {
+      var on = bx.branch === v;
+      return '<button type="button" role="radio" aria-checked="' + on + '" class="bchip' + (on ? ' is-on' : '') + '" data-bx="' + esc(v) + '" style="--bw:' + w + '"><i aria-hidden="true"></i><span>' + esc(label) + '</span><b>' + num(n) + '</b></button>';
+    };
+    $('bxChips').innerHTML = chip('ALL', 'Semua branch', '#0F2348', agg(bx.bulan, 'ALL').file) + L.filter(function (b) { return b !== TANPA || (mB[b] || nol())[0] || bx.branch === TANPA; }).map(function (b) { return chip(b, namaB(b), warna(b), (mB[b] || nol())[0]); }).join('');
+    var ch = $('bxChips'), on = ch.querySelector('.is-on');
+    if (on && ch.scrollWidth > ch.clientWidth + 4) ch.scrollLeft = Math.max(0, on.offsetLeft - 14);
+    renderKpi(cur, prev);
+    renderCmp(L);
+    renderHarian();
+    renderSites();
+    renderGaris(L);
+    renderTabel(L);
   }
-
-  function renderCadangan(list) {
-    var box = $('siteHist');
-    var aktif = list.filter(function (c) { return !c.batal; });
-    box.hidden = !aktif.length;
-    if (!aktif.length) return;
-    box.innerHTML = '<p>Perubahan sebelumnya (bisa dibatalkan):</p>' + aktif.slice(0, 3).map(function (c) {
-      return '<div class="site-hist__row"><span><b>' + num(c.jumlah) + ' site</b> · ' + esc(new Date(c.waktu).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })) + (c.oleh ? ' · ' + esc(c.oleh) : '') + '</span>' +
-        '<button class="btn btn--ghost btn--sm" type="button" data-batal="' + esc(c.id) + '">Batalkan</button></div>';
+  function delta(a, b, kebalik, satuan) {
+    if (b === null || b === undefined) return '<span class="bxk__d">–</span>';
+    var d = a - b;
+    if (!b && !a) return '<span class="bxk__d">sama</span>';
+    var naik = d > 0, baik = kebalik ? !naik : naik;
+    if (Math.abs(d) < 0.05) return '<span class="bxk__d">sama dengan bulan lalu</span>';
+    var txt = satuan === '%' ? fp(Math.abs(d)) + ' poin' : num(Math.abs(Math.round(d)));
+    return '<span class="bxk__d ' + (baik ? 'is-up' : 'is-down') + '">' + (naik ? '▲ ' : '▼ ') + txt + ' <em>vs bulan lalu</em></span>';
+  }
+  function renderKpi(c, p) {
+    var pa = persen(c.aman, c.baris), pm = persen(c.merah, c.baris), pr = persen(c.review, c.baris);
+    var k = function (cls, label, val, sub, d) { return '<div class="bxk ' + cls + '"><span class="bxk__l">' + label + '</span><b class="bxk__v">' + val + '</b><span class="bxk__s">' + sub + '</span>' + d + '</div>'; };
+    $('bxKpi').innerHTML =
+      k('bxk--file', 'File MCM dicek', num(c.file), num(c.baris) + ' baris', delta(c.file, p && p.file)) +
+      k('bxk--aman', 'Aman', fp(pa) + '%', num(c.aman) + ' baris cocok / sah', delta(pa, p && persen(p.aman, p.baris), false, '%')) +
+      k('bxk--rev', 'Perlu review', num(c.review), num(c.mirip) + ' mirip · ' + num(c.ro) + ' via RO tanpa SK', delta(pr, p && persen(p.review, p.baris), true, '%')) +
+      k('bxk--merah', 'Tidak cocok', num(c.merah), fp(pm) + '% · ' + num(c.beda) + ' beda nama · ' + num(c.tidak) + ' tidak ada', delta(pm, p && persen(p.merah, p.baris), true, '%')) +
+      k('bxk--rp', 'Total nominal', 'Rp' + singkatRp(c.nominal), 'yang dicek bulan ini', '');
+  }
+  function singkatRp(n) {
+    if (n >= 1e12) return fp(n / 1e12, 2) + ' T';
+    if (n >= 1e9) return fp(n / 1e9, 2) + ' M';
+    if (n >= 1e6) return fp(n / 1e6, 1) + ' jt';
+    return num(Math.round(n));
+  }
+  function renderCmp(L) {
+    var rows = L.map(function (b) { return { b: b, r: agg(bx.bulan, b) }; }).filter(function (o) { return o.r.baris; });
+    if (!rows.length) { $('bxCmp').innerHTML = kosong('Belum ada crosscheck di ' + labelBulan(bx.bulan) + '.'); return; }
+    rows.sort(function (a, b) { return persen(b.r.merah, b.r.baris) - persen(a.r.merah, a.r.baris) || b.r.baris - a.r.baris; });
+    var maks = Math.max.apply(null, rows.map(function (o) { return o.r.baris; }));
+    $('bxCmp').innerHTML = rows.map(function (o, i) {
+      var r = o.r, w = r.baris / maks * 100, pm = persen(r.merah, r.baris), on = bx.branch === o.b, redup = bx.branch !== 'ALL' && !on;
+      var seg = function (v, c) { return v ? '<i style="width:' + (v / r.baris * 100) + '%;background:' + c + '"></i>' : ''; };
+      var t = '<b>' + esc(namaB(o.b)) + '</b><span class="tip__s">' + num(r.file) + ' file · ' + num(r.baris) + ' baris</span>' + baris3(r);
+      return '<button type="button" class="cmp' + (on ? ' is-on' : '') + (redup ? ' is-dim' : '') + '" data-bx="' + esc(o.b) + '" data-tip="' + esc(t) + '" style="--bw:' + warna(o.b) + '">' +
+        '<span class="cmp__n"><i></i>' + esc(namaB(o.b)) + (i === 0 && pm > 0 ? '<em class="cmp__top">tertinggi</em>' : '') + '</span>' +
+        '<span class="cmp__bar"><span style="width:' + w + '%">' + seg(r.aman, C.aman) + seg(r.review, C.review) + seg(r.merah, C.merah) + '</span></span>' +
+        '<span class="cmp__v"><b class="' + (pm >= 10 ? 'is-hi' : pm >= 5 ? 'is-mid' : 'is-lo') + '">' + fp(pm) + '%</b><small>' + num(r.merah) + ' / ' + num(r.baris) + '</small></span></button>';
     }).join('');
   }
-
-  async function terapkan() {
-    if (st.busy || !st.data || !st.data.ubah.length) return;
-    st.busy = true;
-    var b = $('siteApply'), n = st.data.ubah.length;
-    b.disabled = true; b.textContent = 'Memperbarui ' + num(n) + ' site…';
-    try {
-      var out = await A.post({ action: 'terapkanSite', id: st.id || undefined, kunci: st.data.kunci });
-      if (!out.ok) {
-        if (out.berubah) { A.toast(out.error); tampil('muat'); await muat(); return; }
-        throw new Error(out.error || 'Gagal memperbarui.');
+  function kosong(t) { return '<div class="bx__empty"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>' + esc(t) + '</span></div>'; }
+  function harianBulan() {
+    var pre = bx.bulan + '-', per = {};
+    (bx.data.harian || []).forEach(function (h) {
+      if (String(h[0]).indexOf(pre) !== 0) return;
+      var b = bx.data.tabB[h[1]];
+      if (bx.branch !== 'ALL' && b !== bx.branch) return;
+      var hari = Number(String(h[0]).slice(8, 10));
+      tambah(per[hari] || (per[hari] = nol()), h.slice(3));
+    });
+    return per;
+  }
+  function renderHarian() {
+    var bl = bx.data.bulan, tiga = bl.slice(-3);
+    if (tiga.indexOf(bx.bulan) === -1) { $('bxDay').innerHTML = kosong('Rincian harian tersedia untuk 3 bulan terakhir.'); return; }
+    var per = harianBulan(), p = bx.bulan.split('-'), nHari = new Date(Number(p[0]), Number(p[1]), 0).getDate();
+    var adaData = Object.keys(per).length;
+    if (!adaData) { $('bxDay').innerHTML = kosong('Belum ada crosscheck' + (bx.branch !== 'ALL' ? ' untuk ' + namaB(bx.branch) : '') + ' di ' + labelBulan(bx.bulan) + '.'); return; }
+    var maks = 1; Object.keys(per).forEach(function (h) { maks = Math.max(maks, per[h][1]); });
+    var langkah = Math.pow(10, Math.floor(Math.log10(maks))), atas = Math.ceil(maks / langkah) * langkah; if (atas / langkah <= 2) atas = Math.ceil(maks / (langkah / 2)) * (langkah / 2);
+    var W = Math.max(300, Math.round($('bxDay').clientWidth || 660)), H = W < 520 ? 200 : 230, kiri = 44, bawah = 26, atasPad = 14, lebar = W - kiri - 8, tinggi = H - bawah - atasPad, bw = lebar / nHari;
+    var y = function (v) { return atasPad + tinggi - v / atas * tinggi; };
+    var hariIni = new Date(), kiniKey = bx.data.kini, hIni = kiniKey === bx.bulan ? hariIni.getDate() : 0;
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="bxc" role="img" aria-label="Tren harian baris dicek">';
+    for (var g = 0; g <= 4; g++) {
+      var v = atas / 4 * g, yy = y(v);
+      svg += '<line x1="' + kiri + '" x2="' + (W - 8) + '" y1="' + yy + '" y2="' + yy + '" class="bxc__grid"/><text x="' + (kiri - 8) + '" y="' + (yy + 4) + '" class="bxc__ax" text-anchor="end">' + singkat(v) + '</text>';
+    }
+    for (var h = 1; h <= nHari; h++) {
+      var x = kiri + (h - 1) * bw, a = per[h], lw = Math.max(2, bw * 0.62), lx = x + (bw - lw) / 2;
+      if (a) {
+        var r = rk(a), y0 = y(0), hA = r.aman / atas * tinggi, hR = r.review / atas * tinggi, hM = r.merah / atas * tinggi;
+        svg += '<g class="bxc__col"><rect x="' + lx + '" y="' + (y0 - hA) + '" width="' + lw + '" height="' + hA + '" fill="' + C.aman + '" rx="1.5"/>' +
+          '<rect x="' + lx + '" y="' + (y0 - hA - hR) + '" width="' + lw + '" height="' + hR + '" fill="' + C.review + '"/>' +
+          '<rect x="' + lx + '" y="' + (y0 - hA - hR - hM) + '" width="' + lw + '" height="' + hM + '" fill="' + C.merah + '" rx="1.5"/></g>';
+        var t = '<b>' + h + ' ' + esc(labelBulan(bx.bulan)) + '</b><span class="tip__s">' + num(r.file) + ' file · ' + num(r.baris) + ' baris</span>' + baris3(r);
+        svg += '<rect x="' + x + '" y="' + atasPad + '" width="' + bw + '" height="' + tinggi + '" class="bxc__hit" data-tip="' + esc(t) + '"/>';
       }
-      $('siteDoneTxt').innerHTML = '<b>' + num(out.diubah) + ' site penempatan</b> di Data Upah sudah diperbarui dari MCM.';
-      $('siteUndo').dataset.batal = out.cadangan || '';
-      $('siteUndo').hidden = !out.cadangan;
-      tampil('selesai');
-      if (A.dbBasi) A.dbBasi();
-      A.toast(num(out.diubah) + ' site penempatan diperbarui.', true);
-    } catch (e) {
-      A.toast('Site penempatan belum bisa diperbarui: ' + e.message);
-      b.disabled = false; b.textContent = 'Perbarui ' + num(n) + ' site penempatan';
-    } finally { st.busy = false; }
+      if (h === 1 || h % (W < 520 ? 10 : 5) === 0) svg += '<text x="' + (x + bw / 2) + '" y="' + (H - 8) + '" class="bxc__ax" text-anchor="middle">' + h + '</text>';
+      if (h === hIni) svg += '<line x1="' + (x + bw / 2) + '" x2="' + (x + bw / 2) + '" y1="' + atasPad + '" y2="' + (atasPad + tinggi) + '" class="bxc__today"/><text x="' + (x + bw / 2) + '" y="' + (atasPad + 9) + '" class="bxc__todayt" text-anchor="middle">hari ini</text>';
+    }
+    svg += '</svg>';
+    $('bxDay').innerHTML = svg;
+  }
+  function singkat(v) { return v >= 1000 ? fp(v / 1000, 1) + 'rb' : num(Math.round(v)); }
+  function renderSites() {
+    var bl = bx.data.bulan;
+    if (bl.slice(-3).indexOf(bx.bulan) === -1) { $('bxSites').innerHTML = '<li>' + kosong('Rincian site tersedia untuk 3 bulan terakhir.') + '</li>'; return; }
+    var pre = bx.bulan + '-', per = {};
+    (bx.data.harian || []).forEach(function (h) {
+      if (String(h[0]).indexOf(pre) !== 0) return;
+      var b = bx.data.tabB[h[1]];
+      if (bx.branch !== 'ALL' && b !== bx.branch) return;
+      var k = h[2] + '|' + h[1], o = per[k] || (per[k] = { s: bx.data.tabS[h[2]], b: b, a: nol() });
+      tambah(o.a, h.slice(3));
+    });
+    var L = Object.keys(per).map(function (k) { var o = per[k]; o.r = rk(o.a); return o; }).filter(function (o) { return o.r.merah > 0; })
+      .sort(function (a, b) { return b.r.merah - a.r.merah || b.r.baris - a.r.baris; }).slice(0, 7);
+    if (!L.length) { $('bxSites').innerHTML = '<li>' + kosong(Object.keys(per).length ? 'Tidak ada baris tidak cocok bulan ini. Mantap!' : 'Belum ada crosscheck dengan site penempatan di bulan ini.') + '</li>'; return; }
+    var maks = L[0].r.merah;
+    $('bxSites').innerHTML = L.map(function (o, i) {
+      var t = '<b>' + esc(o.s || '(tanpa site)') + '</b><span class="tip__s">' + esc(namaB(o.b)) + ' · ' + num(o.r.file) + ' file · ' + num(o.r.baris) + ' baris</span>' + baris3(o.r);
+      return '<li class="site" data-tip="' + esc(t) + '"><span class="site__i">' + (i + 1) + '</span><span class="site__n"><b>' + esc(o.s || '(crosscheck tanpa site)') + '</b>' +
+        '<span class="btag" style="--bw:' + warna(o.b) + '">' + esc(namaB(o.b)) + '</span></span>' +
+        '<span class="site__bar"><i style="width:' + (o.r.merah / maks * 100) + '%"></i></span><span class="site__v"><b>' + num(o.r.merah) + '</b><small>' + fp(persen(o.r.merah, o.r.baris)) + '%</small></span></li>';
+    }).join('');
+  }
+  function renderGaris(L) {
+    var bl = bx.data.bulan.slice(-6), W = Math.max(300, Math.round($('bxLine').clientWidth || 660)), H = W < 520 ? 200 : 230, kiri = 44, kanan = 14, bawah = 26, atasPad = 14;
+    var seri = [], tampilB = bx.branch === 'ALL' ? L.filter(function (b) { return b !== TANPA; }) : [bx.branch];
+    tampilB.forEach(function (b) { seri.push({ b: b, v: bl.map(function (k) { var r = agg(k, b); return r.baris ? persen(r.merah, r.baris) : null; }) }); });
+    var semua = { b: 'ALL', v: bl.map(function (k) { var r = agg(k, 'ALL'); return r.baris ? persen(r.merah, r.baris) : null; }) };
+    var semuaNilai = [].concat.apply([], seri.map(function (s) { return s.v; })).concat(semua.v).filter(function (v) { return v !== null; });
+    if (!semuaNilai.length) { $('bxLine').innerHTML = kosong('Belum ada data 6 bulan terakhir.'); $('bxLineLg').innerHTML = ''; return; }
+    var maks = Math.max(5, Math.ceil(Math.max.apply(null, semuaNilai) / 5) * 5), lebar = W - kiri - kanan, tinggi = H - bawah - atasPad;
+    var x = function (i) { return kiri + (bl.length === 1 ? lebar / 2 : i / (bl.length - 1) * lebar); }, y = function (v) { return atasPad + tinggi - v / maks * tinggi; };
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="bxc" role="img" aria-label="Persentase tidak cocok 6 bulan">';
+    for (var g = 0; g <= 4; g++) { var vv = maks / 4 * g; svg += '<line x1="' + kiri + '" x2="' + (W - kanan) + '" y1="' + y(vv) + '" y2="' + y(vv) + '" class="bxc__grid"/><text x="' + (kiri - 8) + '" y="' + (y(vv) + 4) + '" class="bxc__ax" text-anchor="end">' + fp(vv, 0) + '%</text>'; }
+    bl.forEach(function (k, i) { svg += '<text x="' + x(i) + '" y="' + (H - 8) + '" class="bxc__ax' + (k === bx.bulan ? ' is-cur' : '') + '" text-anchor="middle">' + esc(labelBulan(k, true)) + '</text>'; });
+    var iCur = bl.indexOf(bx.bulan);
+    if (iCur >= 0) svg += '<rect x="' + (x(iCur) - 22) + '" y="' + atasPad + '" width="44" height="' + tinggi + '" class="bxc__cur" rx="8"/>';
+    var jalur = function (s, kelas, w, dash) {
+      var d = '', titik = '';
+      s.v.forEach(function (v, i) { if (v === null) return; d += (d ? 'L' : 'M') + x(i) + ' ' + y(v); });
+      if (!d) return '';
+      s.v.forEach(function (v, i) {
+        if (v === null) return;
+        var r = agg(bl[i], s.b), t = '<b>' + esc(s.b === 'ALL' ? 'Semua branch' : namaB(s.b)) + ' · ' + esc(labelBulan(bl[i])) + '</b><span class="tip__s">' + fp(v) + '% tidak cocok · ' + num(r.baris) + ' baris</span>' + baris3(r);
+        titik += '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="' + (s.b === bx.branch || tampilB.length === 1 ? 4.5 : 3.2) + '" fill="#fff" stroke="' + w + '" stroke-width="2.2" data-tip="' + esc(t) + '"/>';
+      });
+      return '<path d="' + d + '" fill="none" stroke="' + w + '" stroke-width="' + (kelas === 'tebal' ? 3 : 2) + '" stroke-linejoin="round" stroke-linecap="round"' + (dash ? ' stroke-dasharray="5 5"' : '') + ' opacity="' + (kelas === 'tipis' ? .55 : 1) + '"/>' + titik;
+    };
+    if (tampilB.length === 1 && bx.branch !== 'ALL') {
+      var s0 = seri[0], ar = '', awal = -1, akhir = -1;
+      s0.v.forEach(function (v, i) { if (v === null) return; if (awal < 0) awal = i; akhir = i; ar += (ar ? 'L' : 'M') + x(i) + ' ' + y(v); });
+      if (ar && awal !== akhir) svg += '<path d="' + ar + 'L' + x(akhir) + ' ' + y(0) + 'L' + x(awal) + ' ' + y(0) + 'Z" fill="' + warna(bx.branch) + '" opacity=".1"/>';
+      svg += jalur(semua, 'tipis', '#8A97AE', true) + jalur(s0, 'tebal', warna(bx.branch));
+    } else {
+      seri.forEach(function (s) { svg += jalur(s, 'biasa', warna(s.b)); });
+      svg += jalur(semua, 'tebal', '#0F2348', true);
+    }
+    svg += '</svg>';
+    $('bxLine').innerHTML = svg;
+    var lg = (tampilB.length === 1 && bx.branch !== 'ALL' ? [{ b: bx.branch }] : seri).map(function (s) { return '<span><i style="background:' + warna(s.b) + '"></i>' + esc(namaB(s.b)) + '</span>'; }).join('');
+    $('bxLineLg').innerHTML = lg + '<span class="is-dash"><i></i>Semua branch</span>';
+  }
+  function renderTabel(L) {
+    var rows = L.map(function (b) { return { b: b, r: agg(bx.bulan, b) }; }).filter(function (o) { return o.r.file; });
+    var tot = agg(bx.bulan, 'ALL');
+    if (!rows.length) { $('bxTbl').innerHTML = '<tr><td class="empty" colspan="8">Belum ada crosscheck di ' + esc(labelBulan(bx.bulan)) + '.</td></tr>'; return; }
+    rows.sort(function (a, b) { return b.r.baris - a.r.baris; });
+    var tr = function (nama, r, cls, w, b) {
+      var pm = persen(r.merah, r.baris), pa = persen(r.aman, r.baris);
+      return '<tr class="' + cls + '"' + (b !== undefined ? ' data-bx="' + esc(b) + '"' : '') + '><td class="lead" data-label="Branch">' + (w ? '<span class="dot" style="background:' + w + '"></span>' : '') + esc(nama) + '</td>' +
+        '<td class="r" data-label="File">' + num(r.file) + '</td><td class="r" data-label="Baris">' + num(r.baris) + '</td>' +
+        '<td class="r n-ok" data-label="Aman">' + num(r.aman) + ' <small>' + fp(pa) + '%</small></td><td class="r n-warn" data-label="Perlu review">' + num(r.review) + '</td>' +
+        '<td class="r n-bad" data-label="Tidak cocok">' + num(r.merah) + '</td><td class="r" data-label="% tidak cocok"><span class="pct ' + (pm >= 10 ? 'is-hi' : pm >= 5 ? 'is-mid' : 'is-lo') + '">' + fp(pm) + '%</span></td>' +
+        '<td class="r" data-label="Nominal">Rp' + singkatRp(r.nominal) + '</td></tr>';
+    };
+    $('bxTbl').innerHTML = rows.map(function (o) { return tr(namaB(o.b), o.r, bx.branch === o.b ? 'is-on' : '', warna(o.b), o.b); }).join('') + tr('Total', tot, 'is-total', '');
   }
 
-  async function batalkan(id, tombol) {
-    if (!id || st.busy) return;
-    st.busy = true;
-    var lbl = tombol.textContent;
-    tombol.disabled = true; tombol.textContent = 'Membatalkan…';
-    try {
-      var out = await A.post({ action: 'batalSite', cadangan: id });
-      if (!out.ok) throw new Error(out.error || 'Gagal membatalkan.');
-      A.toast(num(out.dikembalikan) + ' site penempatan dikembalikan ke nilai lama' + (out.dilewati ? ' (' + num(out.dilewati) + ' dilewati karena sudah berubah lagi)' : '') + '.', true);
-      if (A.dbBasi) A.dbBasi();
-      st.busy = false;
-      tampil('muat'); await muat();
-    } catch (e) {
-      A.toast('Belum bisa dibatalkan: ' + e.message);
-      tombol.disabled = false; tombol.textContent = lbl;
-    } finally { st.busy = false; }
-  }
-
-  function unduhCsv() {
-    var L = baris(), q = function (v) { v = String(v == null ? '' : v); return /[";\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
-    var isi = ['No;Nama;Bank;No rekening;Site lama;Site baru (MCM);Dari file MCM;Waktu crosscheck']
-      .concat(L.map(function (r, i) { return [i + 1, r[0], r[1], '="' + r[2] + '"', r[3], r[4], r[5], r[6]].map(q).join(';'); })).join('\r\n');
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob(['﻿' + isi], { type: 'text/csv;charset=utf-8' }));
-    a.download = 'Perubahan site penempatan ' + new Date().toISOString().slice(0, 10) + '.csv';
-    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-  }
-
-  var qt;
-  $('siteQ').addEventListener('input', function () { clearTimeout(qt); qt = setTimeout(function () { st.q = $('siteQ').value.trim(); st.page = 1; render(); }, 150); });
-  $('siteReveal').addEventListener('change', function () { st.reveal = this.checked; if (st.data) render(); });
-  $('sitePrev').addEventListener('click', function () { st.page--; render(); $('siteTbl').scrollTop = 0; });
-  $('siteNext').addEventListener('click', function () { st.page++; render(); $('siteTbl').scrollTop = 0; });
-  $('siteApply').addEventListener('click', terapkan);
-  $('siteCsv').addEventListener('click', unduhCsv);
-  $('siteClose').addEventListener('click', function () { if (!st.busy) dlg.close(); });
-  $('siteTutup').addEventListener('click', function () { if (!st.busy) dlg.close(); });
-  dlg.addEventListener('cancel', function (e) { if (st.busy) e.preventDefault(); });
-  $('siteUndo').addEventListener('click', function () { batalkan(this.dataset.batal, this); });
-  $('siteHist').addEventListener('click', function (e) { var b = e.target.closest('[data-batal]'); if (b) batalkan(b.dataset.batal, b); });
-
-  // tombol di halaman Database Bank
-  var bb = $('bSiteFix');
-  if (bb) bb.addEventListener('click', function () { A.bukaSite({}); });
+  /* ---------- interaksi ---------- */
+  function pilihBranch(b) { bx.branch = bx.branch === b && b !== 'ALL' ? 'ALL' : b; lsSet('mw_bx_branch', bx.branch); bx.dipilih = true; render(); }
+  $('bx').addEventListener('click', function (e) { var t = e.target.closest('[data-bx]'); if (t) pilihBranch(t.dataset.bx); });
+  $('bxBulan').addEventListener('change', function () { bx.bulan = this.value; render(); });
+  var rt, lebarAkhir = 0;
+  window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { var w = $('bxDay').clientWidth; if (bx.data && Math.abs(w - lebarAkhir) > 30) { lebarAkhir = w; renderHarian(); renderGaris(semuaBranch()); } }, 200); });
 })();
 
 </script>
