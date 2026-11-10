@@ -5054,6 +5054,13 @@ function cekKaryawanMurni_(rows, db) {
     j.then(function () { if (dbs.janji === j) dbs.janji = null; }, function () { if (dbs.janji === j) dbs.janji = null; });
     return j;
   }
+  // salinan database terakhir di perangkat ini (IndexedDB), untuk langsung ditampilkan tanpa menunggu server
+  function databaseLokal() {
+    if (dbs.isi) return Promise.resolve(dbs.isi);
+    return (idbMuat || (idbMuat = idbAmbil(kunciIdb()))).then(function (x) { return x && x.versi ? x : null; });
+  }
+  function simpanLokal(k, v) { var s = getSesi(); return idbSimpan(k + ':' + ((s && s.email) || ''), v); }
+  function ambilLokal(k) { var s = getSesi(); return idbAmbil(k + ':' + ((s && s.email) || '')); }
   function dataBasi() { dbs.gen++; }
   function dbJanji() { return dbs.janji || null; }
   // data personalia di cache server sudah > 15 menit: server membaca ulang di belakang (pengguna tidak menunggu)
@@ -5817,7 +5824,7 @@ function cekKaryawanMurni_(rows, db) {
     spark: spark, seriHarian: seriHarian, seriKumulatif: seriKumulatif,
     bukaVideo: function (v) { if (A_bukaVideo) A_bukaVideo(v); }, setVideo: function (v) { VIDEO = v || null; },
     post: post, getToken: getToken, connected: connected, openSettings: openSettings, logout: logout, konfirmasi: konfirmasi,
-    progres: progres, jeda: jeda, ambilDatabase: ambilDatabase, dbJanji: dbJanji, databaseSegar: databaseSegar, dataBasi: dataBasi, petaDari: petaDari,
+    progres: progres, jeda: jeda, ambilDatabase: ambilDatabase, databaseLokal: databaseLokal, simpanLokal: simpanLokal, ambilLokal: ambilLokal, dbJanji: dbJanji, databaseSegar: databaseSegar, dataBasi: dataBasi, petaDari: petaDari,
     esc: esc, num: num, rp: rp, toast: toast, warnaBranch: warnaBranch, cfg: CFG, sesi: getSesi, gas: !!GAS,
     onConn: function (f) { connListeners.push(f); f(connected()); }
   };
@@ -6788,23 +6795,26 @@ function cekKaryawanMurni_(rows, db) {
   });
   $('rDlCsv').addEventListener('click', async function () { if (st.report && await pastikanTersimpan(st.report)) unduhCsv(st.filter); });
   /* ---------- unduh custom: beberapa keterangan sekaligus dalam satu CSV ---------- */
-  var CU_URUT = ['COCOK', 'MIRIP', 'RO', 'BEDA', 'TIDAK_ADA'];
-  var CU_WARNA = { COCOK: '#1FBF86', MIRIP: '#F2B33D', RO: '#7C4DFF', BEDA: '#E5484D', TIDAK_ADA: '#8A97AE' };
+  // kategori sama seperti tab laporan: Beda nama / Via RO yang sudah punya surat kuasa masuk "Surat kuasa"
+  var CU_URUT = ['COCOK', 'SK', 'MIRIP', 'RO', 'BEDA', 'TIDAK_ADA'];
+  var CU_WARNA = { COCOK: '#1FBF86', SK: '#0EA5C6', MIRIP: '#F2B33D', RO: '#7C4DFF', BEDA: '#E5484D', TIDAK_ADA: '#8A97AE' };
+  var CU_LABEL = { COCOK: 'Cocok', SK: 'Surat kuasa', MIRIP: 'Mirip', RO: 'Via RO', BEDA: 'Beda nama', TIDAK_ADA: 'Tidak ada di database' };
+  function katCu(h) { return h.sk && (h.status === 'BEDA' || h.status === 'RO') ? 'SK' : h.status; }
   function cuPilihan() { try { var v = JSON.parse(localStorage.getItem('mw_cu_pilih') || 'null'); return Array.isArray(v) ? v : ['COCOK']; } catch (e) { return ['COCOK']; } }
   function cuRender() {
     var rep = st.report, pilih = cuPilihan(), hit = {};
-    rep.hasil.forEach(function (h) { hit[h.status] = (hit[h.status] || 0) + 1; });
+    rep.hasil.forEach(function (h) { var k = katCu(h); hit[k] = (hit[k] || 0) + 1; });
     $('cuList').innerHTML = CU_URUT.map(function (k) {
       var n = hit[k] || 0;
       return '<label class="cu__opt' + (n ? '' : ' is-nol') + '" style="--cw:' + CU_WARNA[k] + '"><input type="checkbox" value="' + k + '"' + (pilih.indexOf(k) !== -1 && n ? ' checked' : '') + (n ? '' : ' disabled') + '>' +
-        '<i aria-hidden="true"></i><span>' + LABEL[k] + '</span><b>' + num(n) + '</b></label>';
+        '<i aria-hidden="true"></i><span>' + CU_LABEL[k] + '</span><b>' + num(n) + '</b></label>';
     }).join('');
     cuHitung();
   }
   function cuDipilih() { return Array.prototype.slice.call(document.querySelectorAll('#cuList input:checked')).map(function (c) { return c.value; }); }
   function cuHitung() {
-    var p = cuDipilih(), n = st.report.hasil.filter(function (h) { return p.indexOf(h.status) !== -1; }).length;
-    $('cuSum').innerHTML = p.length ? '<b>' + num(n) + ' baris</b> dari ' + p.length + ' keterangan: ' + CU_URUT.filter(function (k) { return p.indexOf(k) !== -1; }).map(function (k) { return LABEL[k]; }).join(' → ') : 'Belum ada keterangan yang dicentang.';
+    var p = cuDipilih(), n = st.report.hasil.filter(function (h) { return p.indexOf(katCu(h)) !== -1; }).length;
+    $('cuSum').innerHTML = p.length ? '<b>' + num(n) + ' baris</b> dari ' + p.length + ' keterangan: ' + CU_URUT.filter(function (k) { return p.indexOf(k) !== -1; }).map(function (k) { return CU_LABEL[k]; }).join(' → ') : 'Belum ada keterangan yang dicentang.';
     $('cuGo').disabled = !n;
   }
   $('cuList').addEventListener('change', cuHitung);
@@ -6832,8 +6842,8 @@ function cekKaryawanMurni_(rows, db) {
   function unduhMcmCustom(rep, p) {
     var P = st.parsed, aoa = P.aoa, byLine = {};
     rep.hasil.forEach(function (h) { byLine[h.line] = h; });
-    var pilih = P.rows.filter(function (r) { var h = byLine[r.line]; return h && p.indexOf(h.status) !== -1; })
-      .sort(function (a, b) { return CU_URUT.indexOf(byLine[a.line].status) - CU_URUT.indexOf(byLine[b.line].status) || a.line - b.line; });
+    var pilih = P.rows.filter(function (r) { var h = byLine[r.line]; return h && p.indexOf(katCu(h)) !== -1; })
+      .sort(function (a, b) { return CU_URUT.indexOf(katCu(byLine[a.line])) - CU_URUT.indexOf(katCu(byLine[b.line])) || a.line - b.line; });
     var out = [], total = 0;
     pilih.forEach(function (r) { total += r.amountCents || 0; });
     if (P.meta && aoa[P.meta.line - 1]) {
@@ -6849,7 +6859,7 @@ function cekKaryawanMurni_(rows, db) {
     });
     var csv = MCMParser.toCSV(out, P.kind === 'csv' ? P.delim : ',');
     if (P.eol === '\n') csv = csv.replace(/\r\n/g, '\n');
-    var label = CU_URUT.filter(function (k) { return p.indexOf(k) !== -1; }).map(function (k) { return LABEL[k]; }).join(' + ');
+    var label = CU_URUT.filter(function (k) { return p.indexOf(k) !== -1; }).map(function (k) { return CU_LABEL[k]; }).join(' + ');
     unduhBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), String(rep.fileName || 'MCM').replace(/\.[^.]+$/, '') + ' (' + label + ').csv', 'text/csv;charset=utf-8');
     A.toast(num(pilih.length) + ' baris diunduh dalam format MCM (' + label + ').', true);
   }
@@ -7829,12 +7839,16 @@ function cekKaryawanMurni_(rows, db) {
 
   /* ---------- dashboard ---------- */
   var dashBusy = false, dashTampil = false, KUNCI_DASH = 'mw_dash_v10';
-  function dashLokal() {
+  // angka terakhir disimpan di perangkat (IndexedDB: muat data besar), jadi dashboard langsung tampil tanpa menunggu server
+  async function dashLokal() {
     if (dashTampil) return;
-    try { var c = JSON.parse(lsGet(KUNCI_DASH) || 'null'); if (c && c.ok && c.hariIni) { renderDashboard(c, true); dashTampil = true; } } catch (e) { /* abaikan */ }
+    var c = null;
+    try { c = A.ambilLokal ? await A.ambilLokal('dash') : null; } catch (e) { c = null; }
+    if (!c) { try { c = JSON.parse(lsGet(KUNCI_DASH) || 'null'); } catch (e2) { c = null; } }
+    if (!dashTampil && c && c.ok && c.hariIni) { renderDashboard(c, true); dashTampil = true; }
   }
   async function muatDashboard(segar) {
-    dashLokal();   // angka terakhir langsung tampil, lalu diperbarui diam-diam
+    await dashLokal();   // angka terakhir langsung tampil, lalu diperbarui diam-diam
     if (dashBusy) return;
     dashBusy = true;
     try {
@@ -7842,7 +7856,7 @@ function cekKaryawanMurni_(rows, db) {
       if (!d.ok) throw new Error(d.error || 'Gagal memuat dashboard.');
       renderDashboard(d);
       dashTampil = true;
-      lsSet(KUNCI_DASH, JSON.stringify(d));
+      if (A.simpanLokal) A.simpanLokal('dash', d); else lsSet(KUNCI_DASH, JSON.stringify(d));
     } catch (e) {
       if (dashTampil) return;
       $('dAct').innerHTML = '<li class="act__empty">' + esc(e.message) + '</li>';
@@ -7902,11 +7916,21 @@ function cekKaryawanMurni_(rows, db) {
   async function muatDatabase(paksa) {
     if (db.busy || (!db.basi && !paksa && db.rows)) return;
     db.busy = true;
-    $('bMeta').textContent = 'Memuat database…';
+    if (!db.rows && A.databaseLokal) {   // salinan terakhir di perangkat langsung tampil, server dicek di belakang
+      try { var lok = await A.databaseLokal(); if (lok && lok.rows) { tampilDb(lok); db.basi = true; } } catch (e0) { /* abaikan */ }
+    }
+    $('bMeta').textContent = db.rows ? 'Memeriksa pembaruan…' : 'Memuat database…';
     try {
       var out = await A.ambilDatabase(!!paksa);   // database yang sama dipakai crosscheck & Tambah Karyawan
       if (!out.ok) throw new Error(out.error || 'Gagal memuat database.');
-      db.rows = out.rows; db.ro = {}; db.sk = {}; db.basi = false;
+      if (db.rows === out.rows && !paksa) { db.basi = false; renderDb(); return; }
+      tampilDb(out); db.basi = false;
+    } catch (e) { $('bMeta').textContent = db.rows ? 'Menampilkan data tersimpan · ' + e.message : e.message; }
+    finally { db.busy = false; }
+  }
+  function tampilDb(out) {
+    {
+      db.rows = out.rows; db.ro = {}; db.sk = {};
       out.ro.forEach(function (k) { db.ro[k] = 1; }); out.sk.forEach(function (k) { db.sk[k] = 1; });
       var sites = {}, banks = {};
       db.rows.forEach(function (r) { sites[r[3]] = 1; banks[r[1]] = 1; });
@@ -7923,8 +7947,7 @@ function cekKaryawanMurni_(rows, db) {
       A.spark('bSk', A.seriKumulatif(db.rows.map(function (r) { return !!db.sk[kunci(r[2])]; })));
       renderDb();
       siapkanStatusSite(out.sites || [], out.sitesError);
-    } catch (e) { $('bMeta').textContent = e.message; }
-    finally { db.busy = false; }
+    }
   }
   // baris dobel = nama & no rekening sama (aturan yang sama dengan server)
   function kunciDobel(r) { var n = String(r[0] || '').toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim(), k = kunci(r[2]); return n && k ? n + '|' + k : ''; }
@@ -8369,6 +8392,8 @@ function cekKaryawanMurni_(rows, db) {
     try { history.replaceState({ mw: 0 }, '', '#/' + dariHash()); } catch (e) { /* abaikan */ }
     tampil(dariHash(), { noScroll: true });
     muatBell();
+    // daftar branch/site untuk Crosscheck MCM disiapkan di belakang (ringan), supaya chip branch langsung ada
+    setTimeout(function () { if (A.connected() && A.siapTujuan) A.siapTujuan(); }, 900);
     // siapkan database untuk crosscheck & Tambah Karyawan di belakang, supaya klik pertama langsung jalan
     setTimeout(function () { if (A.connected() && A.ambilDatabase) A.ambilDatabase().catch(function () { }); }, 2500);
     // bersihkan baris dobel lama (nama & no rekening sama) sekali per sesi, diam-diam di belakang
