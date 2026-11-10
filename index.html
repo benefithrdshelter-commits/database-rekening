@@ -2560,6 +2560,21 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
 }
 .drop__banks i.is-xls { background: #E6F5EC; color: #1D7A46; }
 
+/* v30 — isi branch Data Upah dari riwayat crosscheck */
+.smk-sin { padding: 6px 26px 0; display: flex; flex-direction: column; gap: 8px; overflow: auto; }
+.smk-sin__lead { margin: 4px 0 6px; font-size: 13.5px; color: var(--ink-2); }
+.smk-sin__row { --bw: #1565F5; display: grid; grid-template-columns: auto 44px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1.5px solid #E1E9F5; background: #fff; cursor: pointer; }
+.smk-sin__row:has(input:checked) { border-color: var(--bw); background: color-mix(in srgb, var(--bw) 6%, #fff); }
+.smk-sin__row.is-off { opacity: .55; }
+.smk-sin__row input { width: 18px; height: 18px; accent-color: var(--bw); }
+.smk-sin__ic .bic--img { width: 42px; height: 34px; }
+.smk-sin__n { display: flex; flex-direction: column; min-width: 0; }
+.smk-sin__n b { font-size: 15px; } .smk-sin__n small { font-size: 12px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.smk-sin__v { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1; }
+.smk-sin__v b { font-size: 20px; font-weight: 800; color: var(--bw); } .smk-sin__v small { font-size: 11px; color: var(--ink-3); }
+.smk-sin__kosong, .smk-sin__err { margin: 10px 0; font-size: 14px; color: var(--ink-2); }
+@media (max-width: 760px) { .smk-sin { padding: 6px 16px 0; } }
+
 </style>
 </head>
 <body class="is-auth">
@@ -3747,6 +3762,7 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
         <div class="smk-tabs seg" role="tablist">
           <button type="button" role="tab" aria-selected="true" data-tab="upah">Data Upah <b id="smkTabU">0</b></button>
           <button type="button" role="tab" aria-selected="false" data-tab="riw">Riwayat crosscheck lama <b id="smkTabR">0</b></button>
+          <button type="button" role="tab" aria-selected="false" data-tab="sinkron">Isi branch dari crosscheck <b id="smkTabS">…</b></button>
         </div>
         <div class="smk-sum" id="smkSum"></div>
         <div class="fix__tools">
@@ -3760,6 +3776,7 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
             <tbody id="smkRows"></tbody>
           </table>
         </div>
+        <div class="smk-sin" id="smkSin" hidden></div>
         <div class="site-hist" id="smkHist" hidden></div>
       </div>
       <div class="site-done" id="smkDone" hidden>
@@ -4299,7 +4316,7 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
       format = 'MCM';
       b.sourceAcct = rek(aoa[iP][2]);
       for (var r = iP + 1; r < aoa.length; r++) {
-        var x = aoa[r], a = rek(x[0]), n = str(x[1]);
+        var x = root.MCMParser && root.MCMParser.rapikanBarisMcm ? root.MCMParser.rapikanBarisMcm(aoa[r]).row : aoa[r], a = rek(x[0]), n = str(x[1]);
         if (!/^\d{5,20}$/.test(a) || !n) continue;
         data.push({ line: r + 1, rek: a, nama: n, bank: str(x[11]) || str(x[10]), sitePen: str(x[7]), siteBis: '', status: '', sen: sen(x[6]) });
       }
@@ -4432,6 +4449,20 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
     return rows;   // semua sel berupa teks: nol di depan rekening aman
   }
 
+  // Baris MCM yang namanya mengandung koma tanpa tanda kutip (mis. "La Ode Ali Baba, Sh") terpecah jadi beberapa
+  // kolom, sehingga nominal & keterangan bergeser. Kolom mata uang "IDR" seharusnya di kolom ke-6 (indeks 5):
+  // kalau ditemukan lebih ke kanan, potongan nama digabung kembali.
+  function rapikanBarisMcm(row) {
+    if (!row || str(row[5]).toUpperCase() === 'IDR') return { row: row, geser: 0 };
+    for (var k = 6; k < Math.min(row.length, 12); k++) {
+      if (str(row[k]).toUpperCase() === 'IDR') {
+        var g = k - 5, nama = row.slice(1, 2 + g).map(function (v) { return v === null || v === undefined ? '' : String(v); }).join(',').replace(/\s+/g, ' ').trim();
+        return { row: [row[0], nama].concat(row.slice(2 + g)), geser: g };
+      }
+    }
+    return { row: row, geser: 0 };
+  }
+
   // ---------- ambil baris data dari tabel (array of arrays) ----------
   function parseTable(aoa) {
     var out = { meta: null, rows: [], errors: [], warnings: [], format: '' };
@@ -4457,12 +4488,13 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
           continue;
         }
       }
-      var ci = header ? header : { acct: 0, name: 1, amount: 6, remark: 7 };
+      var ci = header ? header : { acct: 0, name: 1, amount: 6, remark: 7 }, geser = 0;
+      if (!header && out.meta) { var rp = rapikanBarisMcm(row); row = rp.row; geser = rp.geser; }
       var a = toAcct(row[ci.acct]);
       var name = str(row[ci.name]);
       if (!a || !name || a.acct.length < 5 || a.acct.length > 20) continue;
       if (/^\d+$/.test(name)) continue;
-      out.rows.push({ line: r + 1, nameCol: ci.name, acctCol: ci.acct, acct: a.acct, acctFromNumber: a.fromNumber, name: name,
+      out.rows.push({ line: r + 1, nameCol: ci.name, acctCol: ci.acct, acct: a.acct, acctFromNumber: a.fromNumber, name: name, geser: geser,
         amountCents: ci.amount > -1 ? (toCents(row[ci.amount]) || 0) : 0,
         remark: ci.remark > -1 ? str(row[ci.remark]) : '' });
     }
@@ -4477,6 +4509,8 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
       out.totalCents = out.rows.reduce(function (s, x) { return s + x.amountCents; }, 0);
       if (out.rows.length) out.warnings.push('Baris ringkasan MCM ("P") tidak ditemukan, jadi jumlah dan total tidak bisa dicocokkan.');
     }
+    var gs = out.rows.filter(function (x) { return x.geser; });
+    if (gs.length) out.warnings.push(gs.length + ' nama berisi koma tanpa tanda kutip (baris ' + gs.slice(0, 5).map(function (x) { return x.line; }).join(', ') + (gs.length > 5 ? ', …' : '') + ', mis. "' + gs[0].name + '"), sehingga kolomnya bergeser. Sudah dibaca dengan benar, tetapi sebaiknya koma di nama dihapus sebelum file dikirim ke bank.');
     var nf = out.rows.filter(function (x) { return x.acctFromNumber; }).length;
     if (nf) out.warnings.push(nf + ' no rekening tersimpan sebagai angka di file. Kalau ada angka 0 di depan yang hilang, aplikasi akan mencoba mencocokkannya.');
     var seen = {}, dup = 0;
@@ -4530,7 +4564,7 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
     }).join('\r\n') + '\r\n';
   }
 
-  var api = { toCSV: toCSV, parseCSV: parseCSV, parseTable: parseTable, readFile: readFile, pickBest: pickBest, toCents: toCents, toAcct: toAcct };
+  var api = { rapikanBarisMcm: rapikanBarisMcm, toCSV: toCSV, parseCSV: parseCSV, parseTable: parseTable, readFile: readFile, pickBest: pickBest, toCents: toCents, toAcct: toAcct };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.MCMParser = api;
 })(typeof window !== 'undefined' ? window : this);
@@ -7234,7 +7268,11 @@ function cekKaryawanMurni_(rows, db) {
   }
   function aoaBenar() {
     var p = st.parsed, aoa = p.aoa.map(function (r) { return (r || []).slice(); });
-    fix.forEach(function (x) { if (aoa[x.r.line - 1]) aoa[x.r.line - 1][x.r.nameCol] = x.nama.trim(); });
+    fix.forEach(function (x) {
+      var row = aoa[x.r.line - 1]; if (!row) return;
+      if (x.r.geser) row.splice(1, 1 + x.r.geser, x.nama.trim());   // nama yang tadinya terpecah koma disatukan lagi
+      else row[x.r.nameCol] = x.nama.trim();
+    });
     return aoa;
   }
   function kosongNama() { return fix.filter(function (x) { return !x.nama.trim(); }).length; }
@@ -9055,7 +9093,7 @@ function cekKaryawanMurni_(rows, db) {
   var A = window.APP, $ = function (id) { return document.getElementById(id); };
   var esc = A.esc, num = A.num, dlg = $('dlgSmk');
   if (!dlg) return;
-  var st = { data: null, tab: 'upah', fil: 'siap', q: '', lewati: {}, lewatiR: {}, busy: false };
+  var st = { data: null, tab: 'upah', fil: 'siap', q: '', lewati: {}, lewatiR: {}, busy: false, sin: null, sinMuat: false, lewatiB: {} };
   var MAKS = 400;
 
   function tampil(mode) {
@@ -9067,7 +9105,7 @@ function cekKaryawanMurni_(rows, db) {
     $('smkFootTxt').hidden = mode !== 'isi';
   }
   A.bukaSamakan = function () {
-    st.data = null; st.q = ''; st.lewati = {}; st.lewatiR = {}; st.fil = 'siap';
+    st.data = null; st.q = ''; st.lewati = {}; st.lewatiR = {}; st.fil = 'siap'; st.sin = null; st.lewatiB = {};
     $('smkQ').value = '';
     tampil('muat');
     if (!dlg.open) dlg.showModal();
@@ -9120,8 +9158,48 @@ function cekKaryawanMurni_(rows, db) {
     }
     return L;
   }
+  /* ---------- tab "Isi branch dari crosscheck" ---------- */
+  async function muatSinkron() {
+    if (st.sinMuat) return;
+    st.sinMuat = true;
+    $('smkSin').innerHTML = '<div class="site-load"><span class="spin" aria-hidden="true"></span><span>Membaca riwayat & hasil crosscheck… (data besar butuh beberapa detik)</span></div>';
+    try {
+      var out = await A.post({ action: 'pratinjauSinkron' });
+      if (!out.ok) throw new Error(out.error || 'Gagal membaca data.');
+      st.sin = out;
+    } catch (e) { st.sin = { gagal: e.message }; }
+    finally { st.sinMuat = false; if (st.tab === 'sinkron') render(); }
+  }
+  function renderSinkron() {
+    var box = $('smkSin'), s = st.sin;
+    $('smkSum').innerHTML = ''; $('smkSum').hidden = true;
+    if (!s) { muatSinkron(); return; }
+    if (s.gagal) { box.innerHTML = '<p class="smk-sin__err">Gagal: ' + esc(s.gagal) + '</p>'; return; }
+    $('smkTabS').textContent = num(s.rekening);
+    var kartu = function (cls, n, l, x) { return '<div class="smk-k ' + cls + '"><b>' + num(n) + '</b><span>' + l + '</span>' + (x ? '<small>' + x + '</small>' : '') + '</div>'; };
+    $('smkSum').hidden = false;
+    $('smkSum').innerHTML = kartu('is-siap', s.rekening, 'rekening Data Upah siap diisi branch', 'Cocok / Mirip / Via RO di crosscheck yang sudah ber-branch') +
+      kartu('is-manual', s.kosongBranch, 'rekening Data Upah masih tanpa branch', 'sisanya belum pernah cocok di crosscheck ber-branch') +
+      kartu('is-ok', s.riwayat, 'riwayat crosscheck ber-branch', 'sumber pengisian');
+    if (!s.branch.length) { box.innerHTML = '<p class="smk-sin__kosong">Tidak ada rekening yang perlu diisi. Kalau riwayat lama masih "Tanpa branch", isi dulu lewat tab <b>Riwayat crosscheck lama</b>, lalu buka tab ini lagi.</p>'; return; }
+    box.innerHTML = '<p class="smk-sin__lead">Rekening Data Upah yang <b>BRANCH-nya masih kosong</b> diisi branch dari crosscheck terakhirnya (dan site penempatan bila site crosscheck jelas). Baris yang sudah ber-branch tidak disentuh. Nama dicek ulang supaya rekening milik orang lain tidak ikut berubah.</p>' +
+      s.branch.map(function (b) {
+        var cek = !st.lewatiB[b[0]], i = A.infoBranch ? A.infoBranch(b[0]) : { label: b[0], warna: '#1565F5' };
+        return '<label class="smk-sin__row' + (cek ? '' : ' is-off') + '" style="--bw:' + i.warna + '"><input type="checkbox" data-b="' + esc(b[0]) + '"' + (cek ? ' checked' : '') + '>' +
+          '<span class="smk-sin__ic">' + (A.ikonBranch ? A.ikonBranch(b[0]) : '') + '</span><span class="smk-sin__n"><b>' + esc(i.label) + '</b><small>' + num(b[2]) + ' site: ' + b[3].map(function (x) { return esc(x[0]) + ' (' + num(x[1]) + ')'; }).join(', ') + (b[2] > b[3].length ? ', …' : '') + '</small></span>' +
+          '<span class="smk-sin__v"><b>' + num(b[1]) + '</b><small>rekening</small></span></label>';
+      }).join('');
+  }
   function render() {
     var d = st.data, g = d.ringkas, gr = d.ringkasR;
+    var sinkron = st.tab === 'sinkron';
+    document.querySelector('#dlgSmk .fix__tools').hidden = sinkron; $('smkTbl').hidden = sinkron; $('smkSin').hidden = !sinkron;
+    $('smkCsv').hidden = sinkron;
+    if (sinkron) {
+      document.querySelectorAll('#dlgSmk [data-tab]').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === st.tab)); });
+      renderSinkron(); tombol(); renderHist(d.cadangan || []); return;
+    }
+    $('smkSum').hidden = false;
     var nSiapU = d.upah.filter(siapU).length, nSiapR = d.riwayat.filter(siapR).length;
     $('smkTabU').textContent = num(nSiapU); $('smkTabR').textContent = num(nSiapR);
     document.querySelectorAll('#dlgSmk [data-tab]').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === st.tab)); });
@@ -9174,6 +9252,11 @@ function cekKaryawanMurni_(rows, db) {
     return { u: u, gU: gU, r: r };
   }
   function tombol() {
+    if (st.tab === 'sinkron') {
+      var n = st.sin && st.sin.branch ? st.sin.branch.filter(function (x) { return !st.lewatiB[x[0]]; }).reduce(function (a, x) { return a + x[1]; }, 0) : 0, bt = $('smkApply');
+      bt.disabled = st.busy || !n; bt.textContent = n ? 'Isi branch ' + num(n) + ' rekening' : 'Tidak ada yang dipilih';
+      return;
+    }
     var p = hitungPilih(), b = $('smkApply');
     b.disabled = st.busy || (!p.u && !p.r);
     b.textContent = p.u || p.r ? 'Terapkan ' + [p.u ? num(p.u) + ' rekening' : '', p.r ? num(p.r) + ' riwayat' : ''].filter(Boolean).join(' + ') : 'Tidak ada yang dipilih';
@@ -9190,8 +9273,23 @@ function cekKaryawanMurni_(rows, db) {
     }).join('');
   }
 
+  async function terapkanSinkron() {
+    st.busy = true; tombol();
+    $('smkApply').textContent = 'Menyimpan…';
+    try {
+      var out = await A.post({ action: 'sinkronBranch', lewati: Object.keys(st.lewatiB) });
+      if (!out.ok) throw new Error(out.error || 'Gagal menyimpan.');
+      $('smkDoneTxt').innerHTML = '<b>' + num(out.upah || 0) + ' rekening</b> di Data Upah sudah diisi branch dari riwayat crosscheck.';
+      $('smkUndo').dataset.batal = out.cadangan || ''; $('smkUndo').hidden = !out.cadangan;
+      tampil('selesai');
+      if (A.dbBasi) A.dbBasi();
+      A.toast('Branch Data Upah diisi dari crosscheck.', true);
+    } catch (e) { A.toast('Belum bisa disimpan: ' + e.message); }
+    finally { st.busy = false; st.sin = null; if (st.data) tombol(); }
+  }
   async function terapkan() {
     if (st.busy || !st.data) return;
+    if (st.tab === 'sinkron') return terapkanSinkron();
     var p = hitungPilih();
     if (!p.u && !p.r) return;
     st.busy = true; tombol();
@@ -9219,7 +9317,7 @@ function cekKaryawanMurni_(rows, db) {
       A.toast(num(out.dikembalikan) + ' rekening dan ' + num(out.riwayat) + ' riwayat dikembalikan' + (out.dilewati ? ' (' + num(out.dilewati) + ' dilewati karena sudah berubah lagi)' : '') + '.', true);
       if (A.dbBasi) A.dbBasi();
       if (A.refreshDashboard) A.refreshDashboard();
-      st.busy = false; st.lewati = {}; st.lewatiR = {};
+      st.busy = false; st.lewati = {}; st.lewatiR = {}; st.sin = null; st.lewatiB = {};
       tampil('muat'); await muat();
     } catch (e) {
       A.toast('Belum bisa dibatalkan: ' + e.message);
@@ -9244,6 +9342,11 @@ function cekKaryawanMurni_(rows, db) {
     var t = e.target.closest('[data-tab]'); if (t) { st.tab = t.dataset.tab; st.fil = 'siap'; render(); $('smkTbl').scrollTop = 0; return; }
     var f = e.target.closest('[data-fil]'); if (f) { st.fil = f.dataset.fil; render(); $('smkTbl').scrollTop = 0; return; }
     var b = e.target.closest('[data-batal]'); if (b) batalkan(b.dataset.batal, b);
+  });
+  $('smkSin').addEventListener('change', function (e) {
+    var c = e.target; if (c.dataset.b === undefined) return;
+    if (c.checked) delete st.lewatiB[c.dataset.b]; else st.lewatiB[c.dataset.b] = 1;
+    c.closest('label').classList.toggle('is-off', !c.checked); tombol();
   });
   $('smkRows').addEventListener('change', function (e) {
     var c = e.target;
