@@ -2575,6 +2575,185 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
 .smk-sin__kosong, .smk-sin__err { margin: 10px 0; font-size: 14px; color: var(--ink-2); }
 @media (max-width: 760px) { .smk-sin { padding: 6px 16px 0; } }
 
+/* =====================================================================
+ * v35 — peran (Super Admin / Admin 2 / Admin 1), Riwayat Pengguna, Dokumen Karyawan Baru
+ * ===================================================================== */
+body:not(.peran-super) .hanya-super { display: none !important; }
+body.peran-admin1 [data-sembunyi~="admin1"] { display: none !important; }
+body.peran-admin1 .dz-a1-lebar { grid-column: span 12; }
+body.peran-admin .dz-grid > [data-sembunyi~="admin1"].dz-c8 { grid-column: span 12; }
+body:not(.peran-super) #hFilters [data-f="pdf"], body:not(.peran-super) [data-logdel] { display: none !important; }
+body:not(.peran-super) .kpi:has(#hsPdf) { display: none; }
+
+/* menu terkunci untuk Admin */
+.side__lock { display: none; flex: none; width: 17px !important; height: 17px !important; margin-left: auto; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; opacity: .7; }
+body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[data-nav="karyawan"], body.peran-admin .side__nav a[data-nav="database"] { color: #9AA6BC; }
+body.peran-admin .side__nav a[data-nav="update"] > svg:first-child, body.peran-admin .side__nav a[data-nav="karyawan"] > svg:first-child, body.peran-admin .side__nav a[data-nav="database"] > svg:first-child { opacity: .55; }
+body.peran-admin .side__lock { display: block; }
+body.peran-admin .side__lock + .side__chev { display: none; }
+.side__tag { flex: none; margin-left: auto; font-style: normal; font-size: 10.5px; font-weight: 700; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; background: #FFF1D6; color: #9A5B00; }
+.side__tag + .side__chev { margin-left: 6px; }
+
+/* label peran di atas kanan + pil peran di tabel */
+.peran-tag { flex: none; align-self: center; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: #EAF2FF; color: #0B4FD1; white-space: nowrap; }
+.peran-tag[data-r="super"] { background: #0F2348; color: #fff; }
+.peran-tag[data-r="admin1"] { background: #E1F8F0; color: #0E8F70; }
+@media (max-width: 900px) { .peran-tag { display: none; } }
+.peran-pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: #EAF2FF; color: #0B4FD1; white-space: nowrap; }
+.peran-pill[data-r="super"] { background: #0F2348; color: #fff; }
+.peran-pill[data-r="admin1"] { background: #E1F8F0; color: #0E8F70; }
+.st--warn { background: #FFF4DC; color: #9A5B00; }
+
+/* kartu branch: ilustrasi lebih kecil, kartu terkunci */
+.dzc { min-height: 158px; }
+.dzc__art { height: 60px; }
+.dzc__art .lmk { max-height: 60px; max-width: 78%; }
+.dzc--all .dzc__art { height: 52px; }
+.dzc--all .lmk--svg { width: 78px; height: 52px; }
+@media (max-width: 760px) { .dzc { min-height: 146px; } .dzc__art { height: 54px; } .dzc__art .lmk { max-height: 54px; } }
+.dzc.is-lock { cursor: not-allowed; }
+.dzc.is-lock > :not(.dzc__lock) { filter: grayscale(1); opacity: .42; }
+.dzc.is-lock::after { opacity: .3; }
+.dzc.is-lock:hover { transform: none; box-shadow: none; border-color: var(--line); }
+.dzc.is-lock:hover .lmk { transform: none; }
+.dzc__lock { position: absolute; top: 9px; right: 9px; z-index: 2; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: #4A5B7A; box-shadow: 0 2px 8px rgba(15, 35, 72, .16); }
+.dzc__lock svg { width: 14px; height: 14px; fill: currentColor; stroke: none; }
+.dzc__lock svg path { fill: none; stroke: currentColor; }
+.dzc--all.is-lock { background: #5B6B86; border-color: #5B6B86; }
+
+/* Pengaturan › Akses & sandi */
+.akses__peran { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 4px 0 16px; }
+.akses__p { padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: #FAFCFF; }
+.akses__p b { display: block; font-size: 14.5px; margin-bottom: 4px; }
+.akses__p span { font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+.akses__p[data-r="super"] { border-color: #C8D3E6; background: #F3F6FB; }
+.akses__p[data-r="admin1"] { border-color: #BDEBDB; background: #F2FCF8; }
+@media (max-width: 860px) { .akses__peran { grid-template-columns: 1fr; } }
+.akses__awal { margin: 0 0 14px; padding: 12px 14px; border-radius: 12px; background: #FFF4DC; color: #7A4A00; font-size: 13.5px; }
+.ak__nm { display: inline-flex; align-items: center; gap: 10px; }
+.ak__ic { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 10px; background: #F3F8FF; overflow: hidden; }
+.ak__ic img, .ak__ic svg { max-width: 30px; max-height: 30px; }
+.akses__tbl .act { white-space: nowrap; }
+.akses__tbl .act .btn + .btn { margin-left: 6px; }
+.akses__in { display: flex; gap: 8px; }
+.akses__in input { flex: 1; min-width: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; }
+.akses__ket { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-3); }
+.dlg--akses .dlg__sub { margin: 4px 0 14px; color: var(--ink-2); font-size: 13.5px; }
+
+/* Riwayat Pengguna */
+.rp__bulan select { min-width: 150px; }
+.rp__ksub { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rp .kpi__ic svg { fill: none !important; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.rp .kpi--blue .kpi__ic svg { stroke: #2A6CEB; } .rp .kpi--green .kpi__ic svg { stroke: #10A37C; } .rp .kpi--purple .kpi__ic svg { stroke: #7B4DF5; } .rp .kpi--orange .kpi__ic svg { stroke: #E07A12; }
+.rp__chart { margin-top: 18px; padding: 20px 22px 14px; }
+.rp__lg { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 12px 0 6px; }
+.rp__lgi { display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 13px; color: var(--ink-2); padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+.rp__lgi i { width: 10px; height: 10px; border-radius: 3px; }
+.rp__lgi:hover { border-color: #B9CCEA; }
+.rp__lgi.is-on { border-color: var(--ink); color: var(--ink); font-weight: 600; box-shadow: 0 0 0 1px var(--ink); }
+.rp__plot { min-height: 230px; }
+.rp__plot svg { display: block; overflow: visible; }
+.rp__grid { stroke: #E7EEF8; stroke-width: 1; }
+.rp__grid.is-0 { stroke: #C9D6EA; }
+.rp__ax { font-size: 11px; fill: #7A8AA6; font-variant-numeric: tabular-nums; }
+.rp__ax.is-min { fill: #D93B45; }
+.rp__ax.is-on { fill: #0F2348; font-weight: 700; }
+.rp__sel { fill: #EAF2FF; }
+.rp__hit { cursor: pointer; }
+.rp__hit:hover { fill: rgba(21, 101, 245, .06); }
+.rp__load, .rp__kosong { padding: 40px 10px; text-align: center; color: var(--ink-3); font-size: 14px; }
+.rp__dua { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 18px; margin-top: 18px; align-items: start; }
+@media (max-width: 1100px) { .rp__dua { grid-template-columns: 1fr; } }
+.rp__hari, .rp__br, .rp__users { padding: 20px 22px; }
+.rp__users { margin-top: 18px; }
+.rp__hari .dz-p__h, .rp__br .dz-p__h { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.rp__rank { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+.rp__ri { --bw: #1565F5; width: 100%; display: grid; grid-template-columns: 22px 38px minmax(0, 1fr) minmax(60px, 32%) 64px; align-items: center; gap: 10px; padding: 9px 12px 9px 10px; font: inherit; text-align: left; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 14px; background: #fff; cursor: pointer; transition: border-color .2s, box-shadow .2s, transform .2s; }
+.rp__ri:hover { border-color: color-mix(in srgb, var(--bw) 45%, #fff); transform: translateY(-1px); }
+.rp__ri.is-on { border-color: var(--bw); box-shadow: 0 0 0 1px var(--bw); }
+.rp__no { font-size: 12px; font-weight: 700; color: var(--ink-3); text-align: center; }
+.rp__ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--bw) 10%, #fff); overflow: hidden; }
+.rp__ic img, .rp__ic svg { max-width: 32px; max-height: 32px; }
+.rp__nm { min-width: 0; }
+.rp__nm b { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rp__nm b em { font-style: normal; font-size: 10.5px; font-weight: 700; color: #fff; background: var(--bw); padding: 2px 7px; border-radius: 999px; margin-left: 4px; vertical-align: 1px; }
+.rp__nm small { display: block; font-size: 12px; color: var(--ink-3); }
+.rp__bar { height: 8px; border-radius: 99px; background: #EEF3FA; overflow: hidden; }
+.rp__bar i { display: block; height: 100%; border-radius: 99px; background: var(--bw); }
+.rp__val { text-align: right; font-weight: 700; font-size: 17px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.rp__val small { display: block; font-size: 11px; font-weight: 500; color: var(--ink-3); }
+@media (max-width: 560px) { .rp__ri { grid-template-columns: 30px minmax(0, 1fr) 54px; } .rp__no, .rp__bar { display: none; } }
+.rp__pilih { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding: 22px; border-radius: 14px; border: 1px dashed #C9D6EA; background: #FAFCFF; color: var(--ink-2); font-size: 14px; }
+.rp__pilih svg { width: 34px; height: 34px; flex: none; fill: none; stroke: #9DB3D6; stroke-width: 1.8; stroke-linecap: round; }
+.rp__pilih p { margin: 0; line-height: 1.55; }
+.rp__dot { display: inline-block; width: 11px; height: 11px; border-radius: 4px; margin-right: 8px; vertical-align: 1px; }
+.rp__br h3 small { font-size: 13px; font-weight: 500; color: var(--ink-3); margin-left: 4px; }
+.rp__tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+@media (max-width: 700px) { .rp__tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.rp__tile { --tc: #0F2348; padding: 11px 12px; border-radius: 12px; background: #F6F9FE; border: 1px solid #E5EDF8; min-width: 0; }
+.rp__tile span { display: block; font-size: 12px; color: var(--ink-3); }
+.rp__tile b { display: block; font-size: 19px; color: var(--tc); font-variant-numeric: tabular-nums; margin-top: 2px; }
+.rp__tile small { display: block; font-size: 12px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rp__komp { display: flex; height: 12px; border-radius: 99px; overflow: hidden; margin: 14px 0 4px; background: #EEF3FA; gap: 2px; }
+.rp__komp i { display: block; height: 100%; }
+.rp__lap { margin-top: 14px; max-height: 420px; overflow: auto; }
+.rp__lap tr.is-hl td { background: #F2F7FF; }
+.rp__h { white-space: nowrap; font-size: 13px; color: var(--ink-3); }
+.rp__chip { --bw: #1565F5; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; color: color-mix(in srgb, var(--bw) 80%, #000); background: color-mix(in srgb, var(--bw) 12%, #fff); margin: 2px 0; white-space: nowrap; }
+
+/* Dokumen Karyawan Baru (belum aktif) */
+.dk__info { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; padding: 14px 16px; border-radius: 14px; background: #FFF7E6; border: 1px solid #F6DFAE; color: #6B4500; font-size: 14px; line-height: 1.55; }
+.dk__info svg { width: 22px; height: 22px; flex: none; fill: none; stroke: #C27C0E; stroke-width: 2; stroke-linecap: round; margin-top: 1px; }
+.dk__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
+@media (max-width: 860px) { .dk__grid { grid-template-columns: 1fr; } }
+.dk__card { position: relative; padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+.dk__card h2 { margin: 0; font-size: 18px; }
+.dk__card p { margin: 0; color: var(--ink-2); font-size: 14px; line-height: 1.55; }
+.dk__card .field input:disabled { background: #F4F6FA; cursor: not-allowed; }
+.dk__card .btn:disabled { opacity: .5; cursor: not-allowed; }
+.dk__badge { position: absolute; top: 18px; right: 18px; font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #FFF1D6; color: #9A5B00; }
+.dk__ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; }
+.dk__ic svg { width: 26px; height: 26px; fill: none; stroke: #fff; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.dk__ic--sk { background: linear-gradient(135deg, #1E9BF0, #1565F5); }
+.dk__ic--bt { background: linear-gradient(135deg, #22C9A0, #0E8F70); }
+.fdrop.is-off { display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 14px; border: 1.5px dashed #C9D6EA; background: #FAFCFF; color: var(--ink-3); cursor: not-allowed; }
+.fdrop.is-off svg { width: 24px; height: 24px; flex: none; fill: none; stroke: #9DB3D6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fdrop.is-off b { display: block; color: var(--ink-2); font-weight: 600; font-size: 14px; }
+.fdrop.is-off small { display: block; font-size: 12.5px; }
+.dk__foot { margin: 14px 2px 0; font-size: 13px; color: var(--ink-3); }
+.side__nav a > span { flex: 1 1 auto; min-width: 0; }
+.side__nav a .side__lock { margin-left: 8px; }
+.side__nav a .side__tag { margin-left: 8px; }
+
+/* Riwayat: pilih bulan & tanggal (v35) */
+.hist__tgl { margin: 0 0 14px; padding: 14px; border-radius: 16px; background: #F6F9FE; border: 1px solid #E3ECF8; }
+.hist__tgl-h { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.hist__tgl .dz-month select { min-width: 190px; }
+.hist__date { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 6px 0 14px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font-size: 13px; color: var(--ink-3); }
+.hist__date input { height: 36px; border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--ink); padding: 0 6px; }
+.hist__date input:focus { outline: none; }
+.hist__date:focus-within { border-color: #8DB4F5; box-shadow: 0 0 0 3px rgba(21, 101, 245, .14); }
+.hist__per { margin: 0 0 0 auto; font-size: 13.5px; color: var(--ink-2); }
+.hist__per b { color: var(--ink); }
+@media (max-width: 760px) { .hist__per { margin-left: 0; width: 100%; } }
+.hist__hari { display: flex; gap: 6px; margin-top: 12px; overflow-x: auto; padding: 2px 2px 6px; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.hh { --isi: 0; position: relative; flex: none; width: 46px; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 0 7px; border-radius: 12px; border: 1px solid #E3ECF8; background: #fff;
+  font: inherit; color: var(--ink-2); cursor: pointer; scroll-snap-align: center; transition: border-color .15s, background-color .15s, transform .15s; }
+.hh small { font-size: 10.5px; color: var(--ink-3); }
+.hh b { font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.hh i { font-style: normal; font-size: 10.5px; font-weight: 700; height: 14px; color: #0B4FD1; }
+.hh.is-isi { background: color-mix(in srgb, #1565F5 calc(var(--isi) * 16%), #fff); border-color: color-mix(in srgb, #1565F5 calc(var(--isi) * 40%), #E3ECF8); }
+.hh:hover { border-color: #8DB4F5; transform: translateY(-1px); }
+.hh.is-min small, .hh.is-min b { color: #D93B45; }
+.hh.is-kini { box-shadow: inset 0 -3px 0 #22C9A0; }
+.hh.is-nanti { opacity: .45; }
+.hh.is-on { background: #1565F5; border-color: #1565F5; }
+.hh.is-on small, .hh.is-on b, .hh.is-on i { color: #fff; }
+.hh--all { width: auto; padding: 6px 12px 7px; justify-content: center; }
+.hh--all b { font-size: 13px; }
+.rp__lap .when { white-space: nowrap; } .rp__lap .when small { display: block; color: var(--ink-3); font-size: 12px; }
+
 </style>
 </head>
 <body class="is-auth">
@@ -2718,9 +2897,11 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
         <a href="#/dashboard" data-nav="dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4.5v-6h-5v6H5a1 1 0 01-1-1z"/></svg><span>Dashboard</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/crosscheck" data-nav="crosscheck"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="12" height="17" rx="2"/><path d="M8.5 8h5M8.5 11.5h3"/><circle cx="16" cy="16" r="3.2"/><path d="M18.4 18.4L21 21"/></svg><span>Crosscheck MCM</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/riwayat" data-nav="riwayat"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span>Riwayat</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
-        <a href="#/update" data-nav="update"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7.5" ry="2.8"/><path d="M4.5 6v6c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8V6M4.5 12v6c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8v-6"/></svg><span>Update Database</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
-        <a href="#/karyawan" data-nav="karyawan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="8" r="3.8"/><path d="M3 20c.5-4 3.3-6.4 7-6.4 1.4 0 2.7.3 3.8 1M18 13.5v6M15 16.5h6"/></svg><span>Tambah Karyawan</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
-        <a href="#/database" data-nav="database"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 9.5L12 4l8.5 5.5"/><path d="M5.5 10v7.5M9.8 10v7.5M14.2 10v7.5M18.5 10v7.5M3.5 20h17"/></svg><span>Database Bank</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
+        <a href="#/pengguna" data-nav="pengguna" class="hanya-super"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M3 19.5c.5-3.6 3-5.6 6-5.6 1.5 0 2.9.5 4 1.4"/><path d="M14.5 20v-4.5M17.5 20v-7M20.5 20v-3"/></svg><span>Riwayat Pengguna</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
+        <a href="#/update" data-nav="update"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7.5" ry="2.8"/><path d="M4.5 6v6c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8V6M4.5 12v6c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8v-6"/></svg><span>Update Database</span><svg class="side__lock" viewBox="0 0 24 24" aria-label="Terkunci" role="img"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.2 10.5V8a3.8 3.8 0 017.6 0v2.5"/></svg><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
+        <a href="#/karyawan" data-nav="karyawan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="8" r="3.8"/><path d="M3 20c.5-4 3.3-6.4 7-6.4 1.4 0 2.7.3 3.8 1M18 13.5v6M15 16.5h6"/></svg><span>Tambah Karyawan</span><svg class="side__lock" viewBox="0 0 24 24" aria-label="Terkunci" role="img"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.2 10.5V8a3.8 3.8 0 017.6 0v2.5"/></svg><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
+        <a href="#/dokumen" data-nav="dokumen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M9 13h6M9 16.5h4"/></svg><span>Karyawan Baru</span><i class="side__tag">Segera</i><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
+        <a href="#/database" data-nav="database"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 9.5L12 4l8.5 5.5"/><path d="M5.5 10v7.5M9.8 10v7.5M14.2 10v7.5M18.5 10v7.5M3.5 20h17"/></svg><span>Database Bank</span><svg class="side__lock" viewBox="0 0 24 24" aria-label="Terkunci" role="img"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.2 10.5V8a3.8 3.8 0 017.6 0v2.5"/></svg><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/pengaturan" data-nav="pengaturan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-1.8-.3 1.6 1.6 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.6 1.6 0 00-1-1.5 1.6 1.6 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.6 1.6 0 00.3-1.8 1.6 1.6 0 00-1.5-1H3a2 2 0 110-4h.1a1.6 1.6 0 001.5-1 1.6 1.6 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.6 1.6 0 001.8.3H9a1.6 1.6 0 001-1.5V3a2 2 0 114 0v.1a1.6 1.6 0 001 1.5 1.6 1.6 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.6 1.6 0 00-.3 1.8V9a1.6 1.6 0 001.5 1H21a2 2 0 110 4h-.1a1.6 1.6 0 00-1.5 1z"/></svg><span>Pengaturan</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
       </nav>
       <div class="side__waves" aria-hidden="true"></div>
@@ -2757,6 +2938,7 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
             <button class="top__user" type="button" id="userBtn" aria-expanded="false" aria-haspopup="menu">
               <span class="top__av" id="userAv" aria-hidden="true">?</span>
               <span class="top__who"><b id="userName"></b><small id="userMail"></small></span>
+              <span class="peran-tag" id="userPeran" hidden></span>
               <svg class="top__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
             </button>
             <div class="pop pop--user" id="userPop" role="menu" hidden>
@@ -2854,22 +3036,22 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
           </article>
 
           <div class="dz-grid">
-            <article class="card dz-p dz-c7">
+            <article class="card dz-p dz-c7" data-sembunyi="admin1">
               <header class="dz-p__h"><h3>Perbandingan Branch</h3><span class="dz-hint">urut dari % tidak cocok tertinggi · klik untuk memilih</span></header>
               <div class="dz-lg"><span><i class="c-aman"></i>Aman</span><span><i class="c-rev"></i>Perlu Review</span><span><i class="c-bad"></i>Tidak Cocok</span></div>
               <div class="cmps" id="bxCmp"></div>
             </article>
-            <article class="card dz-p dz-c5">
+            <article class="card dz-p dz-c5 dz-a1-lebar">
               <header class="dz-p__h"><h3>Tren Harian</h3><span class="dz-hint">baris dicek per hari</span></header>
               <div class="dz-lg"><span><i class="c-aman"></i>Aman</span><span><i class="c-rev"></i>Perlu Review</span><span><i class="c-bad"></i>Tidak Cocok</span></div>
               <div class="dz-chart" id="bxDay"></div>
             </article>
 
-            <article class="card dz-p dz-c6">
+            <article class="card dz-p dz-c6 dz-a1-lebar">
               <header class="dz-p__h"><h3>Komposisi Hasil</h3><span class="dz-hint" id="bxPieHint">bulan ini</span></header>
               <div class="pie" id="bxPie"></div>
             </article>
-            <article class="card dz-p dz-c6">
+            <article class="card dz-p dz-c6" data-sembunyi="admin1">
               <header class="dz-p__h"><h3>Porsi per Branch</h3><span class="dz-hint">jumlah baris dicek</span></header>
               <div class="pie" id="bxShare"></div>
             </article>
@@ -2885,7 +3067,7 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
               <div class="dz-chart" id="bxVol"></div>
             </article>
 
-            <article class="card dz-p dz-c8">
+            <article class="card dz-p dz-c8" data-sembunyi="admin1">
               <header class="dz-p__h"><h3>Ranking Branch</h3><span class="dz-hint">urut dari % tidak cocok terendah · klik baris untuk memilih</span></header>
               <div class="tbl-wrap tbl-wrap--flat">
                 <table class="tbl bx__tbl">
@@ -2894,13 +3076,13 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
                 </table>
               </div>
             </article>
-            <article class="card dz-p dz-c4">
+            <article class="card dz-p dz-c4 hanya-super">
               <header class="dz-p__h"><h3>Database Rekening</h3><a class="card__more" href="#/database">Buka <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6.5l5.5 5.5-5.5 5.5"/></svg></a></header>
               <div class="pie" id="dBankPie"></div>
               <div class="dbsum__chips dz-dbchips"><span class="chip chip--ro"><b id="dDbRo">0</b> RO</span><span class="chip chip--sk"><b id="dDbSk">0</b> surat kuasa</span></div>
             </article>
 
-            <article class="card dz-p dz-c8 dz-recent">
+            <article class="card dz-p dz-c8 dz-recent dz-admin-lebar">
               <header class="dz-p__h"><h3>Hasil Pengecekan Terbaru</h3><a class="card__more" href="#/riwayat">Lihat Semua <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6.5l5.5 5.5-5.5 5.5"/></svg></a></header>
               <div class="tbl-wrap tbl-wrap--flat">
                 <table class="tbl tbl--dash">
@@ -3161,6 +3343,18 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
             </article>
       </div>
       <div class="panel panel--list">
+        <div class="hist__tgl" id="hTgl">
+          <div class="hist__tgl-h">
+            <label class="dz-month"><span class="sr-only">Pilih bulan</span>
+              <svg class="dz-month__ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+              <select id="hBulan"><option value="">Bulan ini</option></select>
+              <svg class="dz-month__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5L12 15l5.5-5.5"/></svg>
+            </label>
+            <label class="hist__date"><span>Tanggal</span><input type="date" id="hTanggal" aria-label="Pilih tanggal riwayat"></label>
+            <p class="hist__per" id="hPer" aria-live="polite"></p>
+          </div>
+          <div class="hist__hari" id="hHari" role="group" aria-label="Pilih tanggal di bulan ini"></div>
+        </div>
         <div class="hist__filters" id="hFilters" role="group" aria-label="Saring riwayat">
           <button type="button" data-f="semua" aria-pressed="true">Semua</button>
           <button type="button" data-f="cc" aria-pressed="false">Crosscheck MCM</button>
@@ -3355,7 +3549,7 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
             <div class="phead__art" aria-hidden="true"></div>
           </header>
           <div class="kpis kpis--5" id="bMinis">
-            <article class="kpi kpi--blue">
+            <article class="kpi kpi--blue hanya-super">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.6"/><circle cx="16.8" cy="9" r="2.8"/><path d="M2.5 19c.4-3.6 3-5.8 6.5-5.8s6.1 2.2 6.5 5.8z"/><path d="M15.2 13.5c3.2-.4 5.8 1.5 6.3 5.5h-4.6c-.2-2.2-.8-3.9-1.7-5.5z"/></svg></span>
               <div class="kpi__body"><p class="kpi__lbl">Total rekening</p><p class="kpi__val" id="bTotal">0</p></div>
               <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
@@ -3528,8 +3722,9 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
           <div class="seg" role="tablist" aria-label="Bagian pengaturan" id="pTabs">
             <button role="tab" aria-selected="true" data-p="ro">Rekening RO</button>
             <button role="tab" aria-selected="false" data-p="sk">Surat kuasa</button>
-            <button role="tab" aria-selected="false" data-p="user">Pengguna</button>
-            <button role="tab" aria-selected="false" data-p="chat">Chatbot</button>
+            <button role="tab" aria-selected="false" data-p="akses" class="hanya-super">Akses &amp; sandi</button>
+            <button role="tab" aria-selected="false" data-p="user" class="hanya-super">Pengguna</button>
+            <button role="tab" aria-selected="false" data-p="chat" class="hanya-super">Chatbot</button>
             <button role="tab" aria-selected="false" data-p="about">Tentang</button>
           </div>
 
@@ -3564,11 +3759,32 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
             </article>
           </div>
 
+          <div class="ppane" data-pp="akses" hidden>
+            <article class="card akses">
+              <div class="card__head"><div><h2>Akses &amp; kata sandi</h2><p>Kata sandi yang dipakai saat masuk menentukan akses. Email tetap dicatat untuk Riwayat Pengguna.</p></div></div>
+              <div class="akses__peran">
+                <div class="akses__p" data-r="super"><b>Super Admin</b><span>Semua menu, update database, Database Bank, Tambah Karyawan, pengguna, chatbot, video, dan Riwayat Pengguna.</span></div>
+                <div class="akses__p" data-r="admin2"><b>Admin 2</b><span>Semua branch: dashboard, crosscheck, riwayat, surat kuasa. Database &amp; spreadsheet terkunci.</span></div>
+                <div class="akses__p" data-r="admin1"><b>Admin 1</b><span>Satu branch saja (sandi per branch). Branch lain di dashboard terkunci, lonceng hanya branch itu.</span></div>
+              </div>
+              <div class="akses__awal" id="akAwal" hidden>Super Admin masih memakai <b>sandi awal</b>. Ganti sandi Super Admin supaya sandi lama tidak berlaku lagi.</div>
+              <div class="tbl-wrap tbl-wrap--flat">
+                <table class="tbl akses__tbl"><thead><tr><th scope="col">Akses</th><th scope="col">Cakupan</th><th scope="col">Status sandi</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
+                  <tbody id="akBody"><tr><td class="empty" colspan="4">Memuat…</td></tr></tbody></table>
+              </div>
+              <ul class="cset__note">
+                <li>Sandi disimpan ter-acak (hash) di server Apps Script. Sandi yang sudah dibuat tidak bisa dilihat lagi, hanya bisa diganti.</li>
+                <li>Saat sandi diganti atau dihapus, semua orang yang masuk dengan sandi itu otomatis keluar.</li>
+                <li>Branch diambil dari kolom BRANCH di sheet SITE.</li>
+              </ul>
+            </article>
+          </div>
+
           <div class="ppane" data-pp="user" hidden>
             <article class="card">
               <div class="card__head"><div><h2>Pengguna</h2><p>Email yang pernah masuk. Blokir untuk menutup akses.</p></div></div>
               <div class="tbl-wrap tbl-wrap--flat">
-                <table class="tbl"><thead><tr><th scope="col">Email</th><th scope="col">Nama</th><th scope="col">Login terakhir</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead><tbody id="uBody"><tr><td class="empty" colspan="5">Memuat…</td></tr></tbody></table>
+                <table class="tbl"><thead><tr><th scope="col">Email</th><th scope="col">Nama</th><th scope="col">Akses terakhir</th><th scope="col">Login terakhir</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead><tbody id="uBody"><tr><td class="empty" colspan="5">Memuat…</td></tr></tbody></table>
               </div>
             </article>
           </div>
@@ -3601,7 +3817,7 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
             </article>
           </div>
           <div class="ppane" data-pp="about" hidden>
-            <article class="card vset">
+            <article class="card vset hanya-super">
               <div class="card__head"><div><h2>Video tutorial di halaman login</h2><p>Cukup pilih file video (MP4). Video disimpan otomatis ke Google Drive aplikasi dan langsung diputar dari tombol <b>Tutorial</b> di halaman login.</p></div></div>
               <label class="fdrop vset__up" id="vupDrop">
                 <input type="file" id="vupFile" accept="video/mp4,video/webm,.mp4,.webm" class="sr-only">
@@ -3643,6 +3859,78 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
     
             </article>
           </div>
+        </section>
+        <section class="view rp" data-view="pengguna" aria-labelledby="rpTitle">
+          <header class="phead">
+            <div class="phead__main">
+              <div class="phead__eyebrow"><button class="phead__back" type="button" data-back hidden aria-label="Kembali ke halaman sebelumnya" title="Kembali"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg><span>Kembali</span></button><span class="phead__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M3 19.5c.5-3.6 3-5.6 6-5.6 1.5 0 2.9.5 4 1.4"/><path d="M14.5 20v-4.5M17.5 20v-7M20.5 20v-3"/></svg></span><span class="phead__eyetxt">Khusus Super Admin</span></div>
+              <h1 id="rpTitle">Riwayat <span>Pengguna</span></h1>
+              <p class="phead__lead">Aktivitas crosscheck semua branch per hari, siapa yang mengerjakan, dan hasilnya.</p>
+              <div class="phead__actions">
+                <label class="dz-month rp__bulan"><span class="sr-only">Pilih bulan</span>
+                  <svg class="dz-month__ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+                  <select id="rpBulan"></select>
+                  <svg class="dz-month__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5L12 15l5.5-5.5"/></svg>
+                </label>
+                <button class="btn btn--white" type="button" id="rpMuat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 10-2.3 5.7M20 5v6h-6"/></svg>Muat ulang</button>
+              </div>
+            </div>
+            <div class="phead__art" aria-hidden="true"></div>
+          </header>
+          <div class="kpis kpis--4" id="rpKpi"></div>
+          <article class="card rp__chart">
+            <header class="dz-p__h"><div><h3 id="rpChartT">Aktivitas harian per branch</h3><span class="dz-hint" id="rpChartS">jumlah laporan crosscheck per tanggal · klik batang untuk melihat tanggal itu</span></div></header>
+            <div class="rp__lg" id="rpLg"></div>
+            <div class="rp__plot" id="rpPlot"></div>
+          </article>
+          <div class="rp__dua">
+            <article class="card rp__hari" id="rpHari"></article>
+            <article class="card rp__br" id="rpBranch"></article>
+          </div>
+          <article class="card rp__users">
+            <header class="dz-p__h"><div><h3>Pengguna</h3><span class="dz-hint" id="rpUserS">laporan bulan ini per email</span></div></header>
+            <div class="tbl-wrap tbl-wrap--flat">
+              <table class="tbl"><thead><tr><th scope="col">Email</th><th scope="col">Akses terakhir</th><th scope="col">Login terakhir</th><th scope="col" class="r">Laporan</th><th scope="col" class="r">Baris</th><th scope="col">Branch dikerjakan</th></tr></thead>
+                <tbody id="rpUsers"></tbody></table>
+            </div>
+          </article>
+          <div class="bx-tip" id="rpTip" role="tooltip" hidden></div>
+        </section>
+
+        <section class="view dk" data-view="dokumen" aria-labelledby="dkTitle">
+          <header class="phead">
+            <div class="phead__main">
+              <div class="phead__eyebrow"><button class="phead__back" type="button" data-back hidden aria-label="Kembali ke halaman sebelumnya" title="Kembali"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg><span>Kembali</span></button><span class="phead__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M9 13h6M9 16.5h4"/></svg></span><span class="phead__eyetxt">Surat kuasa &amp; buku tabungan</span></div>
+              <h1 id="dkTitle">Dokumen <span>Karyawan Baru</span></h1>
+              <p class="phead__lead">Upload surat kuasa dan buku tabungan untuk karyawan baru.</p>
+            </div>
+            <div class="phead__art" aria-hidden="true"></div>
+          </header>
+          <div class="dk__info" role="note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.2v.3"/></svg>
+            <div><b>Belum aktif.</b> Moneywise belum bisa membedakan karyawan baru dan karyawan lama, jadi upload di halaman ini dikunci dulu. Setelah ada penanda karyawan baru, fitur ini dinyalakan tanpa mengubah tampilan.</div>
+          </div>
+          <div class="dk__grid">
+            <article class="card dk__card" aria-disabled="true">
+              <span class="dk__badge">Segera</span>
+              <div class="dk__ic dk__ic--sk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M8.5 15.5c1.2-1.6 2.2-1.6 3 0s1.8 1.6 3 0"/></svg></div>
+              <h2>Surat kuasa karyawan baru</h2>
+              <p>Untuk karyawan baru yang gajinya ditransfer ke rekening orang lain.</p>
+              <label class="field"><span>Karyawan</span><input disabled placeholder="Cari nama karyawan baru…"></label>
+              <div class="fdrop is-off"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg><span><b>Pilih file surat kuasa</b><small>PDF, JPG, atau PNG · foto dikecilkan otomatis</small></span></div>
+              <button class="btn btn--primary" type="button" disabled>Upload surat kuasa</button>
+            </article>
+            <article class="card dk__card" aria-disabled="true">
+              <span class="dk__badge">Segera</span>
+              <div class="dk__ic dk__ic--bt"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="14" height="17" rx="2"/><path d="M8 3.5v17M11 8h4M11 11.5h4"/></svg></div>
+              <h2>Buku tabungan</h2>
+              <p>Halaman depan buku tabungan untuk memastikan nama dan nomor rekening karyawan baru.</p>
+              <label class="field"><span>Karyawan</span><input disabled placeholder="Cari nama karyawan baru…"></label>
+              <div class="fdrop is-off"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg><span><b>Pilih foto / scan buku tabungan</b><small>JPG, PNG, atau PDF · foto dikecilkan otomatis</small></span></div>
+              <button class="btn btn--primary" type="button" disabled>Upload buku tabungan</button>
+            </article>
+          </div>
+          <p class="dk__foot">File akan disimpan di Google Drive aplikasi (privat), sama seperti surat kuasa sekarang. Foto dikecilkan dulu sebelum diupload supaya Drive tidak cepat penuh.</p>
         </section>
       </main>
     </div>
@@ -3730,6 +4018,23 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
   </dialog>
 
   <!-- Dialog edit RO -->
+  <dialog class="dlg dlg--akses" id="dlgAkses" aria-labelledby="akTitle">
+    <form method="dialog" id="akForm" novalidate>
+      <h3 id="akTitle">Atur sandi</h3>
+      <p class="dlg__sub" id="akSub"></p>
+      <div class="form">
+        <label class="field"><span>Sandi baru</span>
+          <span class="akses__in"><input id="akSandi" type="text" autocomplete="off" spellcheck="false" minlength="8" placeholder="minimal 8 karakter"><button class="btn btn--white btn--sm" type="button" id="akAcak">Buat acak</button></span></label>
+        <p class="akses__ket">Catat sandi ini lalu berikan ke orang yang berhak. Setelah disimpan, sandi tidak bisa dilihat lagi.</p>
+        <p class="err" id="akErr" hidden></p>
+      </div>
+      <div class="dlg__cta">
+        <button class="btn btn--ghost" value="cancel" id="akBatal" formnovalidate>Batal</button>
+        <button class="btn btn--primary" value="ok" id="akOk">Simpan sandi</button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog class="dlg" id="dlgRo" aria-labelledby="dlgRoTitle">
     <form method="dialog" id="roEditForm" novalidate>
       <h3 id="dlgRoTitle">Edit RO</h3>
@@ -4915,6 +5220,12 @@ function cekKaryawanMurni_(rows, db) {
   }
   function setSesi(v) { mem = v; try { v ? localStorage.setItem(SESI_KEY, JSON.stringify(v)) : localStorage.removeItem(SESI_KEY); } catch (e) { /* abaikan */ } }
   function getToken() { var v = getSesi(); return v ? v.sesi : ''; }
+  // peran pengguna (v35): super | admin2 | admin1 (+branch). Sesi lama tanpa peran harus masuk lagi.
+  function peran() {
+    var v = getSesi() || {};
+    return { role: v.role || '', branch: v.branch || '', label: v.peran || '', super: v.role === 'super', admin1: v.role === 'admin1' };
+  }
+  (function () { var v = getSesi(); if (v && v.sesi && !v.role) { mem = null; try { localStorage.removeItem(SESI_KEY); } catch (e) { /* abaikan */ } } })();
 
   // Dibuka langsung dari link Apps Script? Maka kirim lewat google.script.run (tanpa SCRIPT_URL).
   var GAS = typeof google !== 'undefined' && google.script && google.script.run;
@@ -4950,15 +5261,25 @@ function cekKaryawanMurni_(rows, db) {
       $('userMail').textContent = v.email || '';
       $('userAv').textContent = (nama || v.email || '?').replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase() || '?';
     }
+    terapkanPeran();
     if (state.res) updateAction();
     connListeners.forEach(function (f) { try { f(on); } catch (e) { /* abaikan */ } });
   }
   var connListeners = [];
   $('toastX').addEventListener('click', function () { $('toast').hidden = true; clearTimeout(toastTimer); });
-  ['navSheet', 'doneSheet', 'updSheet', 'setSheet'].forEach(function (id) {
-    var a = $(id);
-    if (CFG.SPREADSHEET_URL) a.href = CFG.SPREADSHEET_URL; else a.hidden = true;
-  });
+  // tampilan per peran: kelas di <body> + link spreadsheet hanya untuk Super Admin (alamatnya dikirim server saat login)
+  function terapkanPeran() {
+    var p = connected() ? peran() : { role: '' }, b = document.body, v = getSesi() || {};
+    ['super', 'admin2', 'admin1'].forEach(function (r) { b.classList.toggle('peran-' + r, p.role === r); });
+    b.classList.toggle('peran-admin', p.role === 'admin1' || p.role === 'admin2');
+    var tag = $('userPeran');
+    if (tag) { tag.hidden = !p.role; tag.textContent = p.role === 'super' ? 'Super Admin' : p.role === 'admin2' ? 'Admin 2 · semua branch' : p.role === 'admin1' ? 'Admin 1 · ' + (window.APP && APP.infoBranch ? APP.infoBranch(p.branch).label : p.branch) : ''; tag.dataset.r = p.role; }
+    ['navSheet', 'doneSheet', 'updSheet', 'setSheet'].forEach(function (id) {
+      var a = $(id); if (!a) return;
+      var url = p.role === 'super' ? (v.sheetUrl || CFG.SPREADSHEET_URL || '') : '';
+      if (url) { a.href = url; a.hidden = false; } else { a.removeAttribute('href'); a.hidden = true; }
+    });
+  }
 
   async function post(payload) {
     payload = Object.assign({}, payload);
@@ -5006,6 +5327,31 @@ function cekKaryawanMurni_(rows, db) {
     window.scrollTo(0, 0);
   }
   var openSettings = function () { showLogin(''); };
+
+  /* ---------- kompres foto (JPG/PNG/WebP) sebelum diupload, supaya Drive tidak cepat penuh ----------
+   * Sisi terpanjang maks 2000 px, JPEG kualitas 0,82. PDF dan file kecil (< 400 KB) tidak diubah.
+   * Hasil hanya dipakai bila benar-benar lebih kecil. */
+  function kompresGambar(file) {
+    if (!file || !/^image\/(jpe?g|png|webp)$/i.test(file.type) || file.size < 400 * 1024) return Promise.resolve(file);
+    return new Promise(function (ok) {
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        try {
+          var s = Math.min(1, 2000 / Math.max(img.naturalWidth, img.naturalHeight)), w = Math.round(img.naturalWidth * s), h = Math.round(img.naturalHeight * s);
+          var c = document.createElement('canvas'); c.width = w; c.height = h;
+          var cx = c.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, w, h); cx.drawImage(img, 0, 0, w, h);
+          c.toBlob(function (b) {
+            URL.revokeObjectURL(url);
+            if (!b || b.size >= file.size) return ok(file);
+            var f = new File([b], file.name.replace(/\.(png|webp|jpe?g)$/i, '') + '.jpg', { type: 'image/jpeg' });
+            f.ukuranAsli = file.size; ok(f);
+          }, 'image/jpeg', 0.82);
+        } catch (e) { URL.revokeObjectURL(url); ok(file); }
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); ok(file); };
+      img.src = url;
+    });
+  }
 
   /* ---------- progres bersama: "Sudah 5/10 · 50%" + lama berjalan ----------
    * hitung(x, n): kemajuan nyata (baris/halaman yang benar-benar sudah diproses)
@@ -5065,6 +5411,7 @@ function cekKaryawanMurni_(rows, db) {
   function kunciIdb() { var s = getSesi(); return 'db:' + ((s && s.email) || ''); }
   var idbMuat = null;
   function ambilDatabase(paksa) {
+    if (!peran().super) return Promise.reject(new Error('Database hanya bisa dibuka Super Admin.'));
     if (!paksa && databaseSegar()) return Promise.resolve(dbs.isi);
     if (dbs.janji && dbs.janjiGen === dbs.gen) return dbs.janji;
     var gen = dbs.gen;
@@ -5143,11 +5490,12 @@ function cekKaryawanMurni_(rows, db) {
     try {
       var out = await post({ action: 'login', email: email, kode: kode });
       if (!out.ok) throw new Error(out.error || 'Gagal masuk.');
-      setSesi({ sesi: out.sesi, email: out.email, nama: out.nama });
+      setSesi({ sesi: out.sesi, email: out.email, nama: out.nama, role: out.role || '', branch: out.branch || '', peran: out.peran || '', sheetUrl: out.sheetUrl || '' });
       $('loginPass').value = '';
       refreshConn();
       window.scrollTo(0, 0);
-      toast('Selamat datang, ' + (out.nama || out.email) + '. Terhubung ke spreadsheet (' + num(out.totalBarisSheet) + ' baris).');
+      if (out.sandiAwal) toast('Masuk sebagai Super Admin dengan sandi awal. Buat sandi per branch, Admin 2, dan sandi Super Admin baru di Pengaturan › Akses.', true);
+      else toast('Selamat datang, ' + (out.nama || out.email) + ' (' + (out.peran || 'pengguna') + ').');
     } catch (x) {
       err.textContent = x.message; err.hidden = false;
       $('loginPass').select();
@@ -5855,7 +6203,7 @@ function cekKaryawanMurni_(rows, db) {
     bukaVideo: function (v) { if (A_bukaVideo) A_bukaVideo(v); }, setVideo: function (v) { VIDEO = v || null; },
     post: post, getToken: getToken, connected: connected, openSettings: openSettings, logout: logout, konfirmasi: konfirmasi,
     progres: progres, jeda: jeda, ambilDatabase: ambilDatabase, databaseLokal: databaseLokal, simpanLokal: simpanLokal, ambilLokal: ambilLokal, dbJanji: dbJanji, databaseSegar: databaseSegar, dataBasi: dataBasi, petaDari: petaDari,
-    esc: esc, num: num, rp: rp, toast: toast, warnaBranch: warnaBranch, cfg: CFG, sesi: getSesi, gas: !!GAS,
+    esc: esc, num: num, rp: rp, toast: toast, peran: peran, terapkanPeran: terapkanPeran, kompresGambar: kompresGambar, warnaBranch: warnaBranch, cfg: CFG, sesi: getSesi, gas: !!GAS,
     onConn: function (f) { connListeners.push(f); f(connected()); }
   };
 
@@ -6050,8 +6398,15 @@ function cekKaryawanMurni_(rows, db) {
   function emailKu() { var s = (A.sesi && A.sesi()) || {}; return s.email || ''; }
   function normQ(x) { return String(x || '').toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim(); }
   function urutAlami(a, b) { return String(a).localeCompare(String(b), 'id', { numeric: true }); }
+  function branchKu() { var p = A.peran ? A.peran() : {}; return p.admin1 ? String(p.branch || '').toUpperCase() : ''; }
   function isiTujuan(sites, error) {
     tj.error = error || '';
+    var bku = branchKu();
+    if (bku) {   // Admin 1: hanya site di branch-nya, branch terpilih otomatis
+      var semua = sites || [];
+      sites = semua.filter(function (x) { return String(x[1] || '').toUpperCase() === bku; });
+      if (!tj.branch || tj.branch !== bku) { tj.branch = bku; tj.siap = true; }
+    }
     tj.list = (sites || []).map(function (x) {
       var k = normQ(x[0]), kata = k.split(' ').filter(Boolean);
       return { nama: x[0], branch: x[1] || '', k: k, kata: kata, sing: kata.map(function (w) { return w.charAt(0); }).join('') };
@@ -6079,7 +6434,7 @@ function cekKaryawanMurni_(rows, db) {
       return '<button type="button" role="radio" aria-checked="' + on + '" class="bchip' + (on ? ' is-on' : '') + '" data-branch="' + esc(v) + '" style="--bw:' + warna + '">' +
         '<span class="bchip__ic">' + (A.ikonBranch ? A.ikonBranch(v) : '') + '</span><span>' + esc(label) + '</span><b>' + num(n) + '</b></button>';
     };
-    el.innerHTML = chip('ALL', 'Semua Branch', tj.list.length, '#0F2348') + tj.opsiBranch.map(function (b) { return chip(b, A.infoBranch ? A.infoBranch(b).label : b, tj.jmlBranch[b], A.warnaBranch(b)); }).join('');
+    el.innerHTML = (branchKu() ? '' : chip('ALL', 'Semua Branch', tj.list.length, '#0F2348')) + tj.opsiBranch.map(function (b) { return chip(b, A.infoBranch ? A.infoBranch(b).label : b, tj.jmlBranch[b], A.warnaBranch(b)); }).join('');
     var on = el.querySelector('.is-on'); if (on && el.scrollWidth > el.clientWidth + 4) el.scrollLeft = Math.max(0, on.offsetLeft - 14);
   }
   function renderMode() {
@@ -6235,6 +6590,7 @@ function cekKaryawanMurni_(rows, db) {
     $('xSiteX').addEventListener('click', function () { pilihSite(null); input.focus(); });
     $('xBranch').addEventListener('click', function (e) {
       var b = e.target.closest('[data-branch]'); if (!b) return;
+      if (branchKu() && b.dataset.branch !== branchKu()) return;
       tj.branch = b.dataset.branch; renderBranch();
       if ($('xIngat').checked) simpanIngat();
       if (tj.site && tj.branch !== 'ALL' && tj.site.branch !== tj.branch) pilihSite(null);
@@ -6323,7 +6679,7 @@ function cekKaryawanMurni_(rows, db) {
     try { $('xProg').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (x) { /* abaikan */ }
     try {
       var isi = null;
-      if (window.COCOK) {
+      if (window.COCOK && A.peran && A.peran().super) {   // Admin: dicocokkan di server (database tidak dikirim ke browser)
         // pastikan memakai data terbaru (database rekening & personalia); biasanya sudah selesai dicek saat file dipilih
         if (A.dbJanji() || !A.databaseSegar()) pg.tahap('Memastikan data terbaru…', 30, 2000, 'Database rekening & data personalia');
         try { isi = await (A.dbJanji() || A.ambilDatabase()); } catch (e) { isi = A.databaseSegar(); }
@@ -6951,10 +7307,18 @@ function cekKaryawanMurni_(rows, db) {
     $('skDrop').classList.toggle('has-file', !!skFile);
     $('skFileTxt').innerHTML = skFile ? '<b>' + esc(skFile.name) + '</b><small>' + ukuranTeks(skFile.size) + ' · klik untuk ganti</small>' : '<b>Pilih file surat kuasa</b><small>PDF, JPG, atau PNG · maks. 100 MB</small>';
   }
-  $('skFile').addEventListener('change', function () { setSkFile(this.files[0]); this.value = ''; });
+  // foto surat kuasa dikecilkan dulu (hemat Drive); PDF tidak diubah
+  function pilihSkFile(f) {
+    if (!f) { setSkFile(null); return; }
+    A.kompresGambar(f).then(function (k) {
+      setSkFile(k);
+      if (k !== f && k.ukuranAsli) $('skFileTxt').querySelector('small').textContent = ukuranTeks(k.size) + ' (dikecilkan dari ' + ukuranTeks(k.ukuranAsli) + ') · klik untuk ganti';
+    });
+  }
+  $('skFile').addEventListener('change', function () { pilihSkFile(this.files[0]); this.value = ''; });
   ['dragenter', 'dragover'].forEach(function (ev) { $('skDrop').addEventListener(ev, function (e) { e.preventDefault(); $('skDrop').classList.add('is-over'); }); });
   ['dragleave', 'drop'].forEach(function (ev) { $('skDrop').addEventListener(ev, function (e) { e.preventDefault(); $('skDrop').classList.remove('is-over'); }); });
-  $('skDrop').addEventListener('drop', function (e) { setSkFile(e.dataTransfer.files[0]); });
+  $('skDrop').addEventListener('drop', function (e) { pilihSkFile(e.dataTransfer.files[0]); });
   function opsiHub(ro) {
     var o = ro ? ['RO (penampung gaji)', 'Istri', 'Suami', 'Orang tua', 'Anak', 'Saudara', 'Lainnya'] : ['Istri', 'Suami', 'Orang tua', 'Anak', 'Saudara', 'Lainnya'];
     $('skHub').innerHTML = o.map(function (x) { return '<option>' + x + '</option>'; }).join('');
@@ -7347,7 +7711,50 @@ function cekKaryawanMurni_(rows, db) {
   });
 
   /* ---------- riwayat: upload PDF + crosscheck + log aktivitas ---------- */
-  var histBusy = false, hist = [], histFilter = 'semua', logAkt = [];
+  var histBusy = false, hist = [], histFilter = 'semua', logAkt = [], logSemua = [];
+  // periode riwayat (v35): bulan 'yyyy-MM' + tanggal 'yyyy-MM-dd' (kosong = sebulan penuh)
+  var per = { bulan: '', tanggal: '', hari: {}, hariPdf: {}, ulang: false };
+  var NAMA_BLN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  var HARI_P = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+  function labelBln(k) { var p = String(k).split('-'); return NAMA_BLN[Number(p[1]) - 1] + ' ' + p[0]; }
+  function labelTgl(t) { var p = String(t).split('-'); return Number(p[2]) + ' ' + NAMA_BLN[Number(p[1]) - 1] + ' ' + p[0]; }
+  function bulanKini() { var d = new Date(Date.now() + 7 * 3600e3); return d.getUTCFullYear() + '-' + ('0' + (d.getUTCMonth() + 1)).slice(-2); }
+  function tglWIB(iso) { var d = new Date(new Date(iso).getTime() + 7 * 3600e3); return isNaN(d) ? '' : d.toISOString().slice(0, 10); }
+  function teksPeriode() { return per.tanggal ? 'tanggal ' + labelTgl(per.tanggal) : labelBln(per.bulan); }
+  function renderPeriode(bulanAda) {
+    if (bulanAda) {
+      $('hBulan').innerHTML = bulanAda.map(function (b) {
+        return '<option value="' + b.k + '"' + (b.k === per.bulan ? ' selected' : '') + '>' + esc(labelBln(b.k)) + (b.n != null ? ' (' + num(b.n) + ')' : '') + '</option>';
+      }).join('');
+    }
+    $('hTanggal').value = per.tanggal || '';
+    var p = per.bulan.split('-'), akhir = new Date(Number(p[0]), Number(p[1]), 0).getDate(), maks = 0, h, html = '';
+    for (h = 1; h <= akhir; h++) maks = Math.max(maks, (per.hari[h] || 0) + (per.hariPdf[h] || 0));
+    html = '<button type="button" class="hh hh--all' + (per.tanggal ? '' : ' is-on') + '" data-hh="0" aria-pressed="' + !per.tanggal + '"><b>Semua</b><small>sebulan</small></button>';
+    var hariIni = tglWIB(new Date().toISOString());
+    for (h = 1; h <= akhir; h++) {
+      var t = per.bulan + '-' + ('0' + h).slice(-2), n = (per.hari[h] || 0) + (per.hariPdf[h] || 0), wd = new Date(Number(p[0]), Number(p[1]) - 1, h).getDay(), on = per.tanggal === t;
+      html += '<button type="button" class="hh' + (on ? ' is-on' : '') + (n ? ' is-isi' : '') + (wd === 0 ? ' is-min' : '') + (t === hariIni ? ' is-kini' : '') + (t > hariIni ? ' is-nanti' : '') + '" data-hh="' + h + '" aria-pressed="' + on + '"' +
+        ' title="' + esc(labelTgl(t)) + ': ' + (n ? num(n) + ' riwayat' : 'tidak ada riwayat') + '" style="--isi:' + (maks ? Math.max(.18, n / maks) : 0) + '">' +
+        '<small>' + HARI_P[wd] + '</small><b>' + h + '</b><i>' + (n ? num(n) : '') + '</i></button>';
+    }
+    $('hHari').innerHTML = html;
+    var on = $('hHari').querySelector('.is-on:not(.hh--all)') || $('hHari').querySelector('.is-kini');
+    if (on) { var el = $('hHari'); el.scrollLeft = Math.max(0, on.offsetLeft - el.clientWidth / 2 + on.offsetWidth / 2); }
+  }
+  function pilihPeriode(bulan, tanggal) {
+    per.bulan = bulan || per.bulan || bulanKini(); per.tanggal = tanggal || '';
+    if (per.tanggal) per.bulan = per.tanggal.slice(0, 7);
+    loadHistory();
+  }
+  $('hBulan').addEventListener('change', function () { per.hari = {}; per.hariPdf = {}; pilihPeriode(this.value, ''); });
+  $('hTanggal').addEventListener('change', function () { var v = this.value; if (/^\d{4}-\d{2}-\d{2}$/.test(v)) { if (v.slice(0, 7) !== per.bulan) { per.hari = {}; per.hariPdf = {}; } pilihPeriode(v.slice(0, 7), v); } else pilihPeriode(per.bulan, ''); });
+  $('hHari').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-hh]'); if (!b) return;
+    var h = Number(b.dataset.hh), t = h ? per.bulan + '-' + ('0' + h).slice(-2) : '';
+    pilihPeriode(per.bulan, t === per.tanggal ? '' : t);
+  });
+  A.riwayatTanggal = function (tanggal) { pilihPeriode(String(tanggal).slice(0, 7), tanggal); };
   function waktuCell(x) {
     var t = x.waktuTeks || fmtWaktu(x.waktu), m = /^(\d{2}\/\d{2}\/\d{4}) (\d{2}:\d{2})$/.exec(t);
     return m ? m[1] + '<small>pukul ' + m[2] + ' WIB</small>' : esc(t);
@@ -7376,9 +7783,9 @@ function cekKaryawanMurni_(rows, db) {
     var empty = $('hEmpty'), wrap = $('hWrap');
     var head = document.querySelector('#hWrap thead tr');
     if (histFilter === 'log') {
-      $('hClear').hidden = !logAkt.length; $('hClearTxt').textContent = 'Hapus semua log';
+      $('hClear').hidden = !logAkt.length || !(A.peran && A.peran().super); $('hClearTxt').textContent = 'Hapus semua log';
       head.innerHTML = '<th scope="col">Waktu</th><th scope="col">Jenis</th><th scope="col">Kejadian</th><th scope="col">Oleh</th><th scope="col">Detail</th><th scope="col"><span class="sr-only">Aksi</span></th>';
-      if (!logAkt.length) { $('hBody').innerHTML = ''; wrap.hidden = true; empty.hidden = false; empty.textContent = 'Belum ada aktivitas tercatat.'; return; }
+      if (!logAkt.length) { $('hBody').innerHTML = ''; wrap.hidden = true; empty.hidden = false; empty.textContent = 'Tidak ada aktivitas tercatat di ' + teksPeriode() + '. Log menyimpan sekitar 400 aktivitas terakhir.'; return; }
       empty.hidden = true; wrap.hidden = false;
       $('hBody').innerHTML = logAkt.map(function (a) {
         return '<tr><td class="when" data-label="Waktu">' + waktuCell(a) + '</td><td data-label="Jenis"><span class="kind kind--log">' + esc(a.jenis) + '</span></td><td class="lead" data-label="Kejadian">' + esc(a.judul) +
@@ -7389,7 +7796,7 @@ function cekKaryawanMurni_(rows, db) {
     }
     head.innerHTML = '<th scope="col">Waktu</th><th scope="col">Jenis</th><th scope="col">File</th><th scope="col">Oleh</th><th scope="col">Hasil</th><th scope="col"><span class="sr-only">Aksi</span></th>';
     var list = listAktif();
-    if (!list.length) { $('hClear').hidden = true; $('hBody').innerHTML = ''; wrap.hidden = true; empty.hidden = false; empty.textContent = hist.length ? 'Belum ada riwayat untuk jenis ini.' : 'Belum ada riwayat. Upload PDF atau crosscheck pertama akan muncul di sini.'; return; }
+    if (!list.length) { $('hClear').hidden = true; $('hBody').innerHTML = ''; wrap.hidden = true; empty.hidden = false; empty.textContent = hist.length ? 'Belum ada riwayat jenis ini di ' + teksPeriode() + '.' : 'Tidak ada riwayat di ' + teksPeriode() + '. Pilih bulan atau tanggal lain di atas.'; return; }
     empty.hidden = true; wrap.hidden = false;
     updateClear();
     $('hBody').innerHTML = list.map(function (h) {
@@ -7413,8 +7820,8 @@ function cekKaryawanMurni_(rows, db) {
   var NAMA_JENIS = { semua: 'semua riwayat', cc: 'semua riwayat crosscheck', pdf: 'semua riwayat upload PDF' };
   function updateClear() {
     var n = listAktif().length;
-    $('hClear').hidden = !n || histFilter === 'log';
-    $('hClearTxt').textContent = histFilter === 'semua' ? 'Hapus semua' : histFilter === 'cc' ? 'Hapus semua crosscheck' : 'Hapus semua upload';
+    $('hClear').hidden = !n || histFilter === 'log' || !(A.peran && A.peran().super);
+    $('hClearTxt').textContent = (histFilter === 'semua' ? 'Hapus semua' : histFilter === 'cc' ? 'Hapus semua crosscheck' : 'Hapus semua upload') + (per.bulan ? ' di ' + (per.tanggal ? 'tanggal ini' : 'bulan ini') : '');
   }
   function catatanPdf(h) {
     if (h.karyawan) return '<p class="confirm__note"><b>' + num(h.dataTercatat) + ' karyawan</b> yang ditambahkan saat itu <b>ikut dihapus</b> dari sheet Data Upah.</p>';
@@ -7428,13 +7835,23 @@ function cekKaryawanMurni_(rows, db) {
     histBusy = true;
     if (!hist.length) { empty.hidden = false; empty.textContent = 'Memuat riwayat…'; }
     try {
-      var res = await Promise.all([A.post({ action: 'riwayat' }), A.post({ action: 'riwayatUpload' }), A.post({ action: 'aktivitas', limit: 200 })]);
+      var sup = A.peran && A.peran().super;
+      if (!per.bulan) per.bulan = bulanKini();
+      var q = { bulan: per.bulan, tanggal: per.tanggal || undefined };
+      $('hPer').textContent = 'Memuat ' + teksPeriode() + '…';
+      var res = await Promise.all([A.post({ action: 'riwayat', bulan: q.bulan, tanggal: q.tanggal }), sup ? A.post({ action: 'riwayatUpload', bulan: q.bulan, tanggal: q.tanggal }) : Promise.resolve({ ok: true, riwayat: [] }), A.post({ action: 'aktivitas', limit: 200 })]);
       if (!res[0].ok) throw new Error(res[0].error || 'Gagal memuat.');
       if (!res[1].ok) throw new Error(res[1].error || 'Gagal memuat.');
       hist = (res[0].riwayat || []).map(function (x) { x.jenis = 'cc'; return x; })
         .concat((res[1].riwayat || []).map(function (x) { x.jenis = 'pdf'; return x; }))
         .sort(function (a, b) { return String(b.waktu).localeCompare(String(a.waktu)); });
-      logAkt = (res[2] && res[2].aktivitas) || [];
+      logSemua = (res[2] && res[2].aktivitas) || [];
+      logAkt = logSemua.filter(function (a) { var t = tglWIB(a.waktu); return per.tanggal ? t === per.tanggal : t.slice(0, 7) === per.bulan; });
+      if (res[0].hari) per.hari = res[0].hari;
+      if (res[1].hari) per.hariPdf = res[1].hari; else if (!sup) per.hariPdf = {};
+      renderPeriode(res[0].bulanAda);
+      var nCc = (res[0].riwayat || []).length, nPdf = (res[1].riwayat || []).length;
+      $('hPer').innerHTML = '<b>' + esc(teksPeriode()) + '</b> · ' + num(nCc) + ' crosscheck' + (sup ? ', ' + num(nPdf) + ' upload' : '');
       hitungKpiRiwayat();
       renderHistory();
     } catch (err) {
@@ -7490,12 +7907,14 @@ function cekKaryawanMurni_(rows, db) {
     var data = list.reduce(function (s, h) { return s + (h.jenis === 'pdf' ? (h.dataTercatat || 0) : 0); }, 0);
     var punyaPdf = list.some(function (h) { return h.jenis === 'pdf'; });
     var ok = await A.konfirmasi({
-      judul: 'Hapus ' + NAMA_JENIS[f] + '?',
-      isi: '<p><b>' + num(list.length) + ' riwayat</b> akan dihapus dan tidak bisa dikembalikan.</p>' +
+      judul: 'Hapus ' + NAMA_JENIS[f] + ' di ' + teksPeriode() + '?',
+      isi: '<p><b>' + num(list.length) + ' riwayat</b> di <b>' + esc(teksPeriode()) + '</b> akan dihapus dan tidak bisa dikembalikan. Riwayat di bulan/tanggal lain tidak ikut terhapus.</p>' +
         (punyaPdf ? '<p class="confirm__note">' + (data ? '<b>' + num(data) + ' rekening</b> yang masuk dari upload-upload ini <b>ikut dihapus</b> dari sheet Data Upah. ' : '') + 'Upload sebelum fitur jejak data tidak menghapus barisnya. Jejak penghapusan tetap tercatat di Log aktivitas.</p>' : ''),
       ok: 'Ya, hapus semua',
       jalankan: async function () {
-        var out = await A.post({ action: 'hapusSemuaRiwayat', jenis: f });
+        var out = await A.post({ action: 'hapusSemuaRiwayat', jenis: f,
+          ccIds: list.filter(function (h) { return h.jenis === 'cc'; }).map(function (h) { return h.id; }),
+          pdfKunci: list.filter(function (h) { return h.jenis === 'pdf'; }).map(function (h) { return new Date(h.waktu).getTime() + '|' + (h.oleh || ''); }) });
         if (!out.ok) throw new Error(out.error || 'Server menolak.');
         if (out.barisDihapus) A.toast(num(out.barisDihapus) + ' baris data ikut dihapus dari Data Upah.', true);
       }
@@ -7704,14 +8123,19 @@ function cekKaryawanMurni_(rows, db) {
   'use strict';
   var A = window.APP, $ = function (id) { return document.getElementById(id); };
   var esc = A.esc, num = A.num;
-  var VIEWS = ['dashboard', 'crosscheck', 'riwayat', 'update', 'karyawan', 'database', 'pengaturan'];
-  var JUDUL = { dashboard: 'Dashboard', crosscheck: 'Crosscheck MCM', riwayat: 'Riwayat', update: 'Update Database', karyawan: 'Tambah Karyawan', database: 'Database Bank', pengaturan: 'Pengaturan' };
+  var VIEWS = ['dashboard', 'crosscheck', 'riwayat', 'update', 'karyawan', 'database', 'pengaturan', 'pengguna', 'dokumen'];
+  var JUDUL = { dashboard: 'Dashboard', crosscheck: 'Crosscheck MCM', riwayat: 'Riwayat', update: 'Update Database', karyawan: 'Tambah Karyawan', database: 'Database Bank', pengaturan: 'Pengaturan', pengguna: 'Riwayat Pengguna', dokumen: 'Dokumen Karyawan Baru' };
+  // halaman yang hanya bisa dibuka Super Admin (Admin 1 & 2 melihat menunya terkunci)
+  var HANYA_SUPER = { update: 1, karyawan: 1, database: 1, pengguna: 1 };
+  function terkunci(v) { return HANYA_SUPER[v] && !(A.peran && A.peran().super); }
+  function kabarKunci(v) { A.toast((JUDUL[v] || 'Menu ini') + ' hanya bisa dibuka Super Admin. Database dan spreadsheet dikunci untuk Admin 1 & Admin 2.'); }
 
   /* ---------- navigasi + tombol Kembali (posisi gulir diingat) ---------- */
   var current = null, tumpuk = [], posisi = {};
   function catatPosisi() { if (current) posisi[current] = window.scrollY; }
   function go(v, opts) {
     if (VIEWS.indexOf(v) === -1) v = 'dashboard';
+    if (terkunci(v)) { kabarKunci(v); return; }
     if (v === current) { tampil(v, opts); return; }
     if (current && !(opts && opts.tanpaJejak)) { catatPosisi(); tumpuk.push({ v: current, y: window.scrollY }); if (tumpuk.length > 40) tumpuk.shift(); }
     try { history.pushState({ mw: tumpuk.length }, '', '#/' + v); } catch (e) { /* abaikan */ }
@@ -7728,6 +8152,7 @@ function cekKaryawanMurni_(rows, db) {
   }
   A.kembali = kembali;
   function tampil(v, opts) {
+    if (terkunci(v)) { v = 'dashboard'; try { history.replaceState({ mw: tumpuk.length }, '', '#/dashboard'); } catch (e) { /* abaikan */ } }
     var ganti = current !== v;
     current = v;
     document.querySelectorAll('.view').forEach(function (el) { el.classList.toggle('is-on', el.dataset.view === v); });
@@ -7752,6 +8177,7 @@ function cekKaryawanMurni_(rows, db) {
     if (v === 'pengaturan') muatPengaturan();
     if (v === 'karyawan' && A.karyawanTampil) A.karyawanTampil();
     if (v === 'riwayat' && ganti && A.refreshHistory) A.refreshHistory();
+    if (v === 'pengguna' && A.muatRiwayatPengguna) A.muatRiwayatPengguna();
   }
   A.go = go;
   function dariHash() { var m = /^#\/(\w+)/.exec(location.hash); return m ? m[1] : 'dashboard'; }
@@ -7917,8 +8343,10 @@ function cekKaryawanMurni_(rows, db) {
     $('bellList').innerHTML = d.aktivitas.map(liAkt).join('') || '<li class="act__empty">Belum ada aktivitas.</li>';
     updateDot(d.aktivitas);
     // database (pie per bank)
-    $('dDbRo').textContent = num(d.db.ro); $('dDbSk').textContent = num(d.db.sk);
-    if (A.renderBankPie) { try { A.renderBankPie(d.db); } catch (e) { console.warn(e); } }
+    if (d.db) {
+      $('dDbRo').textContent = num(d.db.ro); $('dDbSk').textContent = num(d.db.sk);
+      if (A.renderBankPie) { try { A.renderBankPie(d.db); } catch (e) { console.warn(e); } }
+    }
     // hasil terbaru
     $('dRecent').innerHTML = d.terbaru.map(function (r) {
       var g = r.ringkas || {}, ok = (g.COCOK || 0) + (g.RO || 0) + (g.SK || 0), rev = g.MIRIP || 0, bad = Math.max(0, (g.BEDA || 0) - (g.SK || 0)) + (g.TIDAK_ADA || 0);
@@ -8144,7 +8572,9 @@ function cekKaryawanMurni_(rows, db) {
 
   /* ---------- pengaturan ---------- */
   var pTab = 'ro';
+  var TAB_SUPER = { user: 1, chat: 1, akses: 1 };
   function pilihPTab(t) {
+    if (TAB_SUPER[t] && !(A.peran && A.peran().super)) t = 'ro';
     pTab = t;
     document.querySelectorAll('#pTabs [data-p]').forEach(function (x) { x.setAttribute('aria-selected', String(x.dataset.p === t)); });
     document.querySelectorAll('.ppane').forEach(function (p) { p.hidden = p.dataset.pp !== pTab; });
@@ -8155,7 +8585,8 @@ function cekKaryawanMurni_(rows, db) {
   async function muatKpiSetting() {
     if (pBusy) return; pBusy = true;
     try {
-      var r = await Promise.all([A.post({ action: 'daftarRO' }), A.post({ action: 'daftarSK' }), A.post({ action: 'pengguna' })]);
+      var sup = A.peran && A.peran().super;
+      var r = await Promise.all([A.post({ action: 'daftarRO' }), A.post({ action: 'daftarSK' }), sup ? A.post({ action: 'pengguna' }) : Promise.resolve({ pengguna: [] })]);
       var ro = r[0].ro || [], orang = {};
       ro.forEach(function (x) { orang[x.nama] = 1; });
       $('psRo').textContent = num(ro.length); $('psRoOrang').textContent = num(Object.keys(orang).length);
@@ -8169,12 +8600,14 @@ function cekKaryawanMurni_(rows, db) {
     } catch (e) { /* abaikan */ } finally { pBusy = false; }
   }
   function muatPengaturan() {
+    if (TAB_SUPER[pTab] && !(A.peran && A.peran().super)) { pilihPTab('ro'); return; }
     muatKpiSetting();
     if (pTab === 'ro') muatRO();
     if (pTab === 'sk') muatSK();
     if (pTab === 'user') muatUser();
-    if (pTab === 'about') muatVideoSet();
+    if (pTab === 'about' && A.peran && A.peran().super) muatVideoSet();
     if (pTab === 'chat' && A.muatChatSet) A.muatChatSet();
+    if (pTab === 'akses' && A.muatAkses) A.muatAkses();
   }
   async function muatRO() {
     try { var out = await A.post({ action: 'daftarRO' }); if (!out.ok) throw new Error(out.error); renderRO(out.ro); }
@@ -8344,10 +8777,10 @@ function cekKaryawanMurni_(rows, db) {
     var saya = ((A.sesi && A.sesi()) || {}).email || '';
     $('uBody').innerHTML = list.map(function (u) {
       var aktif = !/^(tidak|no|n|0|nonaktif|blokir)$/i.test(u.aktif), aku = u.email.toLowerCase() === saya.toLowerCase();
-      return '<tr><td class="lead" data-label="Email">' + esc(u.email) + (aku ? ' <span class="tag tag--sk">Anda</span>' : '') + '</td><td data-label="Nama">' + esc(u.nama || '-') + '</td><td data-label="Login terakhir">' + esc(u.login || '-') +
+      return '<tr><td class="lead" data-label="Email">' + esc(u.email) + (aku ? ' <span class="tag tag--sk">Anda</span>' : '') + '</td><td data-label="Nama">' + esc(u.nama || '-') + '</td><td data-label="Akses terakhir">' + (u.akses ? '<span class="peran-pill" data-r="' + (/^super/i.test(u.akses) ? 'super' : /^admin 2/i.test(u.akses) ? 'admin2' : 'admin1') + '">' + esc(u.akses) + '</span>' : '-') + '</td><td data-label="Login terakhir">' + esc(u.login || '-') +
         '</td><td data-label="Status"><span class="st ' + (aktif ? 'st--on">Aktif' : 'st--off">Diblokir') + '</span></td><td class="act">' +
         (aku ? '' : '<button class="btn btn--ghost btn--xs' + (aktif ? ' btn--danger-ghost' : '') + '" type="button" data-user="' + esc(u.email) + '" data-aktif="' + (aktif ? '0' : '1') + '">' + (aktif ? 'Blokir' : 'Buka blokir') + '</button>') + '</td></tr>';
-    }).join('') || '<tr><td class="empty" colspan="5">Belum ada pengguna.</td></tr>';
+    }).join('') || '<tr><td class="empty" colspan="6">Belum ada pengguna.</td></tr>';
   }
   $('uBody').addEventListener('click', async function (e) {
     var b = e.target.closest('[data-user]');
@@ -8421,16 +8854,18 @@ function cekKaryawanMurni_(rows, db) {
 
   /* ---------- mulai ---------- */
   A.onConn(function (on) {
+    if (A.terapkanPeran) A.terapkanPeran();
     if (!on) { db.rows = null; db.basi = true; current = null; tumpuk = []; return; }
+    var superAdmin = A.peran && A.peran().super;
     try { history.replaceState({ mw: 0 }, '', '#/' + dariHash()); } catch (e) { /* abaikan */ }
     tampil(dariHash(), { noScroll: true });
     muatBell();
     // daftar branch/site untuk Crosscheck MCM disiapkan di belakang (ringan), supaya chip branch langsung ada
     setTimeout(function () { if (A.connected() && A.siapTujuan) A.siapTujuan(); }, 900);
     // siapkan database untuk crosscheck & Tambah Karyawan di belakang, supaya klik pertama langsung jalan
-    setTimeout(function () { if (A.connected() && A.ambilDatabase) A.ambilDatabase().catch(function () { }); }, 2500);
+    if (superAdmin) setTimeout(function () { if (A.connected() && A.ambilDatabase) A.ambilDatabase().catch(function () { }); }, 2500);
     // bersihkan baris dobel lama (nama & no rekening sama) sekali per sesi, diam-diam di belakang
-    if (!A.__dobelCek) {
+    if (superAdmin && !A.__dobelCek) {
       A.__dobelCek = true;
       setTimeout(function () { bersihkanDobel(true); }, 3500);
     }
@@ -8532,6 +8967,7 @@ function cekKaryawanMurni_(rows, db) {
     var simpan = lsGet('mw_bx_branch');
     if (simpan !== null && !bx.dipilih) { bx.branch = simpan; bx.dipilih = true; }
     if (bx.branch !== 'ALL' && semuaBranch().indexOf(bx.branch) === -1) bx.branch = 'ALL';
+    if (branchKu()) bx.branch = branchKu();   // Admin 1: selalu branch-nya sendiri
     $('bxBulan').innerHTML = bl.slice().reverse().map(function (k) { return '<option value="' + k + '"' + (k === bx.bulan ? ' selected' : '') + '>' + esc(labelBulan(k)) + '</option>'; }).join('');
     render();
     bx.instan = false;
@@ -8547,13 +8983,19 @@ function cekKaryawanMurni_(rows, db) {
 
   /* ---------- kartu branch (landmark) ---------- */
   var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5a7 7 0 0 0-7 7c0 5 6 11.3 6.3 11.6.4.4 1 .4 1.4 0 .3-.3 6.3-6.6 6.3-11.6a7 7 0 0 0-7-7zm0 9.6a2.6 2.6 0 1 1 0-5.2 2.6 2.6 0 0 1 0 5.2z"/></svg>';
+  // Admin 1 hanya boleh membuka branch-nya; kartu lain tampil tetapi terkunci
+  function branchKu() { var p = A.peran ? A.peran() : {}; return p.admin1 ? String(p.branch || '').toUpperCase() : ''; }
+  function dikunci(b) { var k = branchKu(); return !!k && b !== k; }
+  var GEMBOK = '<span class="dzc__lock" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.2 10.5V8a3.8 3.8 0 017.6 0v2.5" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></span>';
   function renderCards(L) {
     var mB = (bx.data.bulanan || {})[bx.bulan] || {};
     var kartu = function (b) {
+      var kunci = dikunci(b);
       var on = bx.branch === b, r = b === 'ALL' ? agg(bx.bulan, 'ALL') : rk(mB[b] || nol()), i = b === 'ALL' ? null : info(b);
       var t = '<b>' + esc(namaB(b)) + (i && i.kota ? ' · ' + esc(i.kota) : '') + '</b><span class="tip__s">' + num(r.file) + ' file · ' + num(r.baris) + ' baris' + (r.baris ? ' · ' + fp(persen(r.merah, r.baris)) + '% tidak cocok' : '') + '</span>' + (r.baris ? baris3(r) : '');
-      return '<button type="button" role="radio" aria-checked="' + on + '" class="dzc' + (b === 'ALL' ? ' dzc--all' : '') + (b === TANPA ? ' dzc--none' : '') + (on ? ' is-on' : '') + '" data-bx="' + esc(b) + '" data-tip="' + esc(t) + '" style="--bw:' + warna(b) + '">' +
-        '<span class="dzc__art">' + A.ilustrasiBranch(b) + '</span>' +
+      if (kunci) t = '<b>' + esc(namaB(b)) + (i && i.kota ? ' · ' + esc(i.kota) : '') + '</b><span class="tip__s">Terkunci · akses Anda hanya ' + esc(namaB(branchKu())) + '</span>';
+      return '<button type="button" role="radio" aria-checked="' + on + '"' + (kunci ? ' aria-disabled="true"' : '') + ' class="dzc' + (b === 'ALL' ? ' dzc--all' : '') + (b === TANPA ? ' dzc--none' : '') + (on ? ' is-on' : '') + (kunci ? ' is-lock' : '') + '" data-bx="' + esc(b) + '" data-tip="' + esc(t) + '" style="--bw:' + warna(b) + '">' +
+        (kunci ? GEMBOK : '') + '<span class="dzc__art">' + A.ilustrasiBranch(b) + '</span>' +
         '<span class="dzc__n">' + esc(namaB(b)) + '</span>' +
         (b === 'ALL' ? '' : '<span class="dzc__k">' + PIN + esc(i.kota || '—') + '</span>') +
         '<span class="dzc__c">' + num(r.file) + '</span></button>';
@@ -8972,7 +9414,12 @@ function cekKaryawanMurni_(rows, db) {
   A.infoDashboard = function () { return bx.data ? { bulan: labelBulan(bx.bulan), branch: bx.branch === 'ALL' ? 'Semua branch' : namaB(bx.branch), site: bx.site ? labelSite(bx.site.split('|').slice(1).join('|')) : '' } : null; };
 
   /* ---------- interaksi ---------- */
-  function pilihBranch(b) { bx.branch = bx.branch === b && b !== 'ALL' ? 'ALL' : b; bx.site = ''; bx.siteSemua = false; lsSet('mw_bx_branch', bx.branch); bx.dipilih = true; tip.hidden = true; render(); }
+  function pilihBranch(b) {
+    if (dikunci(b)) { A.toast(namaB(b) + ' terkunci. Akses Anda hanya branch ' + namaB(branchKu()) + '.'); return; }
+    if (branchKu()) return;
+    pilihBranch0(b);
+  }
+  function pilihBranch0(b) { bx.branch = bx.branch === b && b !== 'ALL' ? 'ALL' : b; bx.site = ''; bx.siteSemua = false; lsSet('mw_bx_branch', bx.branch); bx.dipilih = true; tip.hidden = true; render(); }
   VIEW.addEventListener('click', function (e) { var t = e.target.closest('[data-bx]'); if (t && VIEW.contains(t)) pilihBranch(t.dataset.bx); });
   $('bxBulan').addEventListener('change', function () { bx.bulan = this.value; render(); });
   var rt, lebarAkhir = 0;
@@ -9431,6 +9878,276 @@ function cekKaryawanMurni_(rows, db) {
   $('smkUndo').addEventListener('click', function () { batalkan(this.dataset.batal, this); });
   var tb = $('bSamakan');
   if (tb) tb.addEventListener('click', function () { A.bukaSamakan(); });
+})();
+
+</script>
+  <script>
+/* Moneywise — Riwayat Pengguna (khusus Super Admin) + Pengaturan › Akses & sandi (v35) */
+(function () {
+  'use strict';
+  var A = window.APP, $ = function (id) { return document.getElementById(id); };
+  var esc = A.esc, num = A.num;
+  var C = { cocok: '#1FBF86', review: '#F2B33D', tidak: '#E5484D' };
+  function warna(b) { return b ? A.warnaBranch(b) : '#8A97AE'; }
+  function labelB(b) { return !b ? 'Tanpa branch' : A.infoBranch ? A.infoBranch(b).label : b; }
+  function kotaB(b) { return b && A.infoBranch ? A.infoBranch(b).kota || '' : ''; }
+  var BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  function labelBulan(k) { var p = String(k).split('-'); return BULAN[Number(p[1]) - 1] + ' ' + p[0]; }
+  function persen(a, b) { return b ? Math.round(a / b * 1000) / 10 : 0; }
+  function rpJuta(n) { return n >= 1e9 ? (n / 1e9).toLocaleString('id-ID', { maximumFractionDigits: 2 }) + ' M' : n >= 1e6 ? (n / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt' : num(Math.round(n)); }
+
+  /* ======================= RIWAYAT PENGGUNA ======================= */
+  var rp = { data: null, bulan: '', hari: 0, branch: '', busy: false };
+  var tip = $('rpTip');
+  function tampilTip(e, html) {
+    tip.innerHTML = html; tip.hidden = false;
+    var w = tip.offsetWidth, h = tip.offsetHeight, l = e.clientX + 14, t = e.clientY - h - 12;
+    if (l + w > innerWidth - 8) l = e.clientX - w - 14;
+    if (t < 8) t = e.clientY + 16;
+    tip.style.left = l + 'px'; tip.style.top = t + 'px';
+  }
+  document.addEventListener('mousemove', function (e) {
+    var t = e.target.closest && e.target.closest('[data-rptip]');
+    if (t && t.closest('[data-view="pengguna"]')) tampilTip(e, t.getAttribute('data-rptip')); else if (tip) tip.hidden = true;
+  });
+
+  A.muatRiwayatPengguna = async function (bulan) {
+    if (!(A.peran && A.peran().super) || rp.busy) return;
+    rp.busy = true;
+    if (!rp.data) $('rpPlot').innerHTML = '<div class="rp__load">Memuat aktivitas…</div>';
+    try {
+      var out = await A.post({ action: 'riwayatPengguna', bulan: bulan || rp.bulan || undefined });
+      if (!out.ok) throw new Error(out.error || 'Gagal memuat.');
+      if (out.bulan !== rp.bulan) { rp.hari = 0; }
+      rp.data = out; rp.bulan = out.bulan;
+      $('rpBulan').innerHTML = out.bulanAda.map(function (k) { return '<option value="' + k + '"' + (k === out.bulan ? ' selected' : '') + '>' + esc(labelBulan(k)) + '</option>'; }).join('');
+      render();
+    } catch (e) {
+      $('rpPlot').innerHTML = '<div class="rp__load">Riwayat pengguna belum bisa dimuat: ' + esc(e.message) + '</div>';
+    } finally { rp.busy = false; }
+  };
+  $('rpBulan').addEventListener('change', function () { rp.branch = ''; A.muatRiwayatPengguna(this.value); });
+  $('rpMuat').addEventListener('click', function () { A.muatRiwayatPengguna(rp.bulan); });
+
+  function daftarBranch() {
+    var d = rp.data, ada = {};
+    d.laporan.forEach(function (l) { ada[l.branch || ''] = 1; });
+    var L = (d.branch || []).slice();
+    Object.keys(ada).forEach(function (b) { if (L.indexOf(b) === -1) L.push(b); });
+    return L;
+  }
+  function ringkas(list) {
+    var r = { file: 0, baris: 0, cocok: 0, review: 0, tidak: 0, nominal: 0, orang: {} };
+    list.forEach(function (l) { r.file++; r.baris += l.baris; r.cocok += l.cocok; r.review += l.review; r.tidak += l.tidak; r.nominal += l.nominal; r.orang[l.oleh] = 1; });
+    r.nOrang = Object.keys(r.orang).length;
+    return r;
+  }
+  function render() {
+    var d = rp.data, L = daftarBranch(), semua = ringkas(d.laporan);
+    // per branch bulan ini
+    var perB = {};
+    L.forEach(function (b) { perB[b] = ringkas(d.laporan.filter(function (l) { return (l.branch || '') === b; })); });
+    var top = L.slice().sort(function (a, b) { return perB[b].file - perB[a].file; })[0];
+    var hariAktif = {}; d.laporan.forEach(function (l) { hariAktif[l.hari] = (hariAktif[l.hari] || 0) + 1; });
+    var hariTop = Object.keys(hariAktif).sort(function (a, b) { return hariAktif[b] - hariAktif[a]; })[0];
+    var kpi = function (cls, ic, lbl, val, sub) {
+      return '<article class="kpi kpi--' + cls + '"><span class="kpi__ic">' + ic + '</span><div class="kpi__body"><p class="kpi__lbl">' + lbl + '</p><p class="kpi__val">' + val + '</p>' + (sub ? '<p class="rp__ksub">' + sub + '</p>' : '') + '</div></article>';
+    };
+    $('rpKpi').innerHTML =
+      kpi('blue', '<svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg>', 'Laporan crosscheck', num(semua.file), num(semua.baris) + ' baris · ' + labelBulan(d.bulan)) +
+      kpi('green', '<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>', 'Branch paling aktif', semua.file && top !== undefined ? esc(labelB(top)) : '–', semua.file ? num(perB[top].file) + ' laporan (' + persen(perB[top].file, semua.file) + '%)' : 'belum ada laporan') +
+      kpi('purple', '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.6"/><path d="M2.5 19c.4-3.6 3-5.8 6.5-5.8s6.1 2.2 6.5 5.8z"/></svg>', 'Pengguna aktif', num(semua.nOrang), 'email yang melakukan crosscheck') +
+      kpi('orange', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>', 'Hari tersibuk', hariTop ? 'Tgl ' + hariTop : '–', hariTop ? num(hariAktif[hariTop]) + ' laporan' : '');
+    renderChart(L);
+    renderHari(L);
+    renderBranch(L, perB);
+    renderUsers();
+  }
+
+  /* ---- grafik batang bertumpuk: tanggal 1..akhir bulan, warna = branch ---- */
+  function renderChart(L) {
+    var d = rp.data, el = $('rpPlot'), W = Math.max(320, el.clientWidth || 900), H = W < 560 ? 230 : 280;
+    var kiri = 34, kanan = 10, atas = 14, bawah = 28, n = d.hari, lw = (W - kiri - kanan) / n, bw = Math.max(4, Math.min(26, lw * 0.66));
+    var per = [], maks = 0;
+    for (var h = 1; h <= n; h++) {
+      var o = {}; d.laporan.forEach(function (l) { if (l.hari === h) o[l.branch || ''] = (o[l.branch || ''] || 0) + 1; });
+      var tot = 0; Object.keys(o).forEach(function (k) { tot += o[k]; });
+      per.push({ h: h, o: o, tot: tot }); if (tot > maks) maks = tot;
+    }
+    var skala = maks <= 4 ? 4 : Math.ceil(maks / 4) * 4, tinggi = H - atas - bawah, y = function (v) { return atas + tinggi - v / skala * tinggi; };
+    var g = '';
+    for (var t = 0; t <= 4; t++) { var v = skala / 4 * t, yy = y(v); g += '<line x1="' + kiri + '" x2="' + (W - kanan) + '" y1="' + yy + '" y2="' + yy + '" class="rp__grid' + (t ? '' : ' is-0') + '"/><text x="' + (kiri - 6) + '" y="' + (yy + 4) + '" class="rp__ax" text-anchor="end">' + num(v) + '</text>'; }
+    var minggu = function (hh) { var p = d.bulan.split('-'); return new Date(Number(p[0]), Number(p[1]) - 1, hh).getDay() === 0; };
+    per.forEach(function (p) {
+      var x = kiri + (p.h - 1) * lw + (lw - bw) / 2, acc = 0, on = rp.hari === p.h;
+      if (on) g += '<rect x="' + (kiri + (p.h - 1) * lw + 1) + '" y="' + atas + '" width="' + (lw - 2) + '" height="' + tinggi + '" rx="6" class="rp__sel"/>';
+      var urut = L.filter(function (b) { return p.o[b]; });
+      var tipH = '<b>' + p.h + ' ' + labelBulan(d.bulan) + '</b><span class="tip__s">' + num(p.tot) + ' laporan</span>' +
+        urut.slice().sort(function (a, b) { return p.o[b] - p.o[a]; }).map(function (b, i) { return '<span class="tip__r"><i style="background:' + warna(b) + '"></i>' + esc(labelB(b)) + (i === 0 && urut.length > 1 ? ' ★' : '') + '<b>' + num(p.o[b]) + '</b></span>'; }).join('');
+      urut.forEach(function (b) {
+        var hgt = p.o[b] / skala * tinggi;
+        g += '<rect x="' + x + '" y="' + (y(acc) - hgt) + '" width="' + bw + '" height="' + Math.max(0, hgt - 1) + '" rx="' + Math.min(4, bw / 3) + '" fill="' + warna(b) + '"' + (rp.branch && rp.branch !== b ? ' opacity=".28"' : '') + '/>';
+        acc += p.o[b];
+      });
+      g += '<rect x="' + (kiri + (p.h - 1) * lw) + '" y="' + atas + '" width="' + lw + '" height="' + (tinggi + bawah) + '" fill="transparent" class="rp__hit" data-rphari="' + p.h + '" data-rptip="' + esc(tipH) + '"/>';
+      if (n <= 16 || p.h === 1 || p.h % 2 === 1 || on) g += '<text x="' + (kiri + (p.h - 0.5) * lw) + '" y="' + (H - 9) + '" class="rp__ax' + (on ? ' is-on' : '') + (minggu(p.h) ? ' is-min' : '') + '" text-anchor="middle">' + p.h + '</text>';
+    });
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" role="img" aria-label="Jumlah laporan crosscheck per tanggal, ditumpuk per branch">' + g + '</svg>';
+    $('rpLg').innerHTML = L.filter(function (b) { return rp.data.laporan.some(function (l) { return (l.branch || '') === b; }); }).map(function (b) {
+      return '<button type="button" class="rp__lgi' + (rp.branch === b ? ' is-on' : '') + '" data-rpbr="' + esc(b) + '"><i style="background:' + warna(b) + '"></i>' + esc(labelB(b)) + '</button>';
+    }).join('') || '<span class="dz-hint">Belum ada crosscheck di ' + esc(labelBulan(d.bulan)) + '.</span>';
+    $('rpChartS').textContent = rp.hari ? 'tanggal ' + rp.hari + ' dipilih · klik lagi untuk melepas' : 'jumlah laporan crosscheck per tanggal · klik batang untuk melihat tanggal itu';
+  }
+
+  /* ---- panel tanggal terpilih: branch mana paling banyak ---- */
+  function renderHari(L) {
+    var d = rp.data, el = $('rpHari'), h = rp.hari;
+    var list = h ? d.laporan.filter(function (l) { return l.hari === h; }) : d.laporan;
+    var perB = L.map(function (b) { return { b: b, r: ringkas(list.filter(function (l) { return (l.branch || '') === b; })) }; }).filter(function (o) { return o.r.file; })
+      .sort(function (a, b) { return b.r.file - a.r.file || b.r.baris - a.r.baris; });
+    var maks = perB.length ? perB[0].r.file : 1;
+    el.innerHTML = '<header class="dz-p__h"><div><h3>' + (h ? 'Tanggal ' + h + ' ' + esc(labelBulan(d.bulan)) : 'Sebulan penuh') + '</h3><span class="dz-hint">branch paling aktif · klik untuk lihat hasilnya</span></div>' +
+      (h ? '<button class="btn btn--ghost btn--xs" type="button" data-rphari="0">Lihat sebulan</button>' : '') + '</header>' +
+      (perB.length ? '<ol class="rp__rank">' + perB.map(function (o, i) {
+        return '<li><button type="button" class="rp__ri' + (rp.branch === o.b ? ' is-on' : '') + '" data-rpbr="' + esc(o.b) + '" style="--bw:' + warna(o.b) + '">' +
+          '<span class="rp__no">' + (i + 1) + '</span><span class="rp__ic">' + (A.ikonBranch ? A.ikonBranch(o.b || 'TANPA') : '') + '</span>' +
+          '<span class="rp__nm"><b>' + esc(labelB(o.b)) + (i === 0 && perB.length > 1 ? ' <em>terbanyak</em>' : '') + '</b><small>' + num(o.r.baris) + ' baris · ' + num(o.r.nOrang) + ' pengguna</small></span>' +
+          '<span class="rp__bar"><i style="width:' + Math.max(4, o.r.file / maks * 100) + '%"></i></span><span class="rp__val">' + num(o.r.file) + '<small>laporan</small></span></button></li>';
+      }).join('') + '</ol>' : '<p class="rp__kosong">Tidak ada crosscheck ' + (h ? 'di tanggal ini.' : 'di bulan ini.') + '</p>');
+  }
+
+  /* ---- panel branch: hasil sebulan + daftar laporan ---- */
+  function renderBranch(L, perB) {
+    var d = rp.data, el = $('rpBranch'), b = rp.branch;
+    if (!rp.pilihB) {
+      el.innerHTML = '<header class="dz-p__h"><div><h3>Hasil per branch</h3><span class="dz-hint">' + esc(labelBulan(d.bulan)) + '</span></div></header>' +
+        '<div class="rp__pilih"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><p>Klik nama branch di grafik atau di daftar sebelah untuk melihat hasil crosscheck branch itu selama sebulan.</p></div>';
+      return;
+    }
+    var list = d.laporan.filter(function (l) { return (l.branch || '') === b; }), r = perB[b] || ringkas(list);
+    var tile = function (lbl, v, sub, w) { return '<div class="rp__tile"' + (w ? ' style="--tc:' + w + '"' : '') + '><span>' + lbl + '</span><b>' + v + '</b>' + (sub ? '<small>' + sub + '</small>' : '') + '</div>'; };
+    var bar = r.baris ? '<div class="rp__komp" role="img" aria-label="Komposisi hasil">' +
+      [['cocok', C.cocok, 'Cocok'], ['review', C.review, 'Perlu review'], ['tidak', C.tidak, 'Tidak cocok']].map(function (k) {
+        var p = persen(r[k[0]], r.baris); return p ? '<i style="width:' + p + '%;background:' + k[1] + '" data-rptip="<b>' + k[2] + '</b><span class=&quot;tip__s&quot;>' + num(r[k[0]]) + ' baris · ' + p + '%</span>"></i>' : '';
+      }).join('') + '</div>' : '';
+    el.innerHTML = '<header class="dz-p__h"><div><h3><span class="rp__dot" style="background:' + warna(b) + '"></span>' + esc(labelB(b)) + (kotaB(b) ? ' <small>' + esc(kotaB(b)) + '</small>' : '') + '</h3><span class="dz-hint">semua laporan ' + esc(labelBulan(d.bulan)) + '</span></div>' +
+      '<button class="btn btn--ghost btn--xs" type="button" data-rpbr="__tutup">Tutup</button></header>' +
+      '<div class="rp__tiles">' + tile('Laporan', num(r.file), num(r.nOrang) + ' pengguna') + tile('Baris dicek', num(r.baris), 'Rp ' + rpJuta(r.nominal)) +
+      tile('Cocok', num(r.cocok), persen(r.cocok, r.baris) + '%', C.cocok) + tile('Perlu review', num(r.review), persen(r.review, r.baris) + '%', C.review) + tile('Tidak cocok', num(r.tidak), persen(r.tidak, r.baris) + '%', C.tidak) + '</div>' + bar +
+      '<div class="tbl-wrap tbl-wrap--flat rp__lap"><table class="tbl"><thead><tr><th scope="col">Tanggal</th><th scope="col">File</th><th scope="col">Oleh</th><th scope="col" class="r">Baris</th><th scope="col">Hasil</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead><tbody>' +
+      list.slice().reverse().map(function (l) {
+        return '<tr' + (rp.hari && l.hari === rp.hari ? ' class="is-hl"' : '') + '><td class="when" data-label="Tanggal">' + l.hari + ' ' + esc(labelBulan(d.bulan).split(' ')[0].slice(0, 3)) + '<small>' + esc(l.jam) + ' WIB</small></td>' +
+          '<td class="lead" data-label="File">' + esc(l.file) + (l.site ? '<small class="dsite">' + esc(l.site) + '</small>' : '') + '</td><td data-label="Oleh">' + esc(l.oleh || '-') + '</td><td class="r" data-label="Baris">' + num(l.baris) + '</td>' +
+          '<td data-label="Hasil"><span class="rp__h"><b style="color:' + C.cocok + '">' + num(l.cocok) + '</b> · <b style="color:#B7791F">' + num(l.review) + '</b> · <b style="color:' + C.tidak + '">' + num(l.tidak) + '</b></span></td>' +
+          '<td class="act"><button class="btn btn--ghost btn--sm" type="button" data-rplap="' + esc(l.id) + '">Lihat laporan</button></td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+
+  function renderUsers() {
+    var d = rp.data, per = {};
+    d.laporan.forEach(function (l) { var p = per[l.oleh] || (per[l.oleh] = { file: 0, baris: 0, br: {} }); p.file++; p.baris += l.baris; p.br[l.branch || ''] = (p.br[l.branch || ''] || 0) + 1; });
+    var peng = {}; (d.pengguna || []).forEach(function (u) { peng[String(u.email).toLowerCase()] = u; });
+    var emails = Object.keys(per); (d.pengguna || []).forEach(function (u) { if (emails.indexOf(u.email) === -1) emails.push(u.email); });
+    emails.sort(function (a, b) { return ((per[b] || {}).file || 0) - ((per[a] || {}).file || 0) || String(a).localeCompare(String(b)); });
+    $('rpUsers').innerHTML = emails.map(function (e) {
+      var u = peng[String(e).toLowerCase()] || {}, p = per[e] || { file: 0, baris: 0, br: {} };
+      var r = /^super/i.test(u.akses || '') ? 'super' : /^admin 2/i.test(u.akses || '') ? 'admin2' : u.akses ? 'admin1' : '';
+      return '<tr><td class="lead" data-label="Email">' + esc(e || '-') + (u.nama ? '<small class="dsite">' + esc(u.nama) + '</small>' : '') + '</td>' +
+        '<td data-label="Akses terakhir">' + (u.akses ? '<span class="peran-pill" data-r="' + r + '">' + esc(u.akses) + '</span>' : '-') + '</td><td data-label="Login terakhir">' + esc(u.login || '-') + '</td>' +
+        '<td class="r" data-label="Laporan"><b>' + num(p.file) + '</b></td><td class="r" data-label="Baris">' + num(p.baris) + '</td>' +
+        '<td data-label="Branch dikerjakan">' + (Object.keys(p.br).map(function (b) { return '<span class="rp__chip" style="--bw:' + warna(b) + '">' + esc(labelB(b)) + ' ' + num(p.br[b]) + '</span>'; }).join(' ') || '<span class="dz-hint">–</span>') + '</td></tr>';
+    }).join('') || '<tr><td class="empty" colspan="6">Belum ada pengguna.</td></tr>';
+  }
+
+  document.querySelector('[data-view="pengguna"]').addEventListener('click', function (e) {
+    var hh = e.target.closest('[data-rphari]');
+    if (hh) { var v = Number(hh.dataset.rphari); rp.hari = rp.hari === v ? 0 : v; tip.hidden = true; render(); return; }
+    var bb = e.target.closest('[data-rpbr]');
+    if (bb) {
+      var b = bb.dataset.rpbr;
+      if (b === '__tutup') { rp.branch = ''; rp.pilihB = false; } else if (rp.pilihB && rp.branch === b) { rp.branch = ''; rp.pilihB = false; } else { rp.branch = b; rp.pilihB = true; }
+      tip.hidden = true; render();
+      if (rp.pilihB && innerWidth < 1100) $('rpBranch').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    var lp = e.target.closest('[data-rplap]');
+    if (lp && A.bukaLaporan) A.bukaLaporan(lp.dataset.rplap);
+  });
+  var rt;
+  window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (rp.data && document.querySelector('[data-view="pengguna"].is-on')) renderChart(daftarBranch()); }, 200); });
+
+  /* ======================= PENGATURAN › AKSES & SANDI ======================= */
+  var ak = { info: null, target: null };
+  A.muatAkses = async function () {
+    if (!(A.peran && A.peran().super)) return;
+    try {
+      var out = await A.post({ action: 'aksesInfo' });
+      if (!out.ok) throw new Error(out.error);
+      ak.info = out; renderAkses();
+    } catch (e) { $('akBody').innerHTML = '<tr><td class="empty" colspan="4">' + esc(e.message || 'Gagal memuat.') + '</td></tr>'; }
+  };
+  function status(diatur, awal) {
+    return awal ? '<span class="st st--warn">Sandi awal</span>' : diatur ? '<span class="st st--on">Sudah diatur</span>' : '<span class="st st--off">Belum diatur</span>';
+  }
+  function renderAkses() {
+    var o = ak.info;
+    $('akAwal').hidden = o.superDiatur;
+    var baris = function (jenis, b, judul, cakupan, st, bolehHapus, ic) {
+      return '<tr><td class="lead" data-label="Akses"><span class="ak__nm">' + (ic || '') + '<span><b>' + judul + '</b></span></span></td><td data-label="Cakupan">' + cakupan + '</td><td data-label="Status sandi">' + st + '</td>' +
+        '<td class="act"><button class="btn btn--white btn--xs" type="button" data-ak="' + jenis + '" data-akb="' + esc(b || '') + '">' + (st.indexOf('st--on') > -1 || st.indexOf('st--warn') > -1 ? 'Ganti sandi' : 'Buat sandi') + '</button>' +
+        (bolehHapus ? '<button class="btn btn--ghost btn--xs btn--danger-ghost" type="button" data-akhapus="' + jenis + '" data-akb="' + esc(b || '') + '">Hapus</button>' : '') + '</td></tr>';
+    };
+    $('akBody').innerHTML =
+      baris('super', '', '<span class="peran-pill" data-r="super">Super Admin</span>', 'Semua menu + database', status(o.superDiatur, !o.superDiatur), false) +
+      baris('admin2', '', '<span class="peran-pill" data-r="admin2">Admin 2</span>', 'Semua branch', status(o.admin2), o.admin2) +
+      o.branch.map(function (b) {
+        return baris('branch', b.nama, '<span class="peran-pill" data-r="admin1">Admin 1</span> ' + esc(labelB(b.nama)), 'Hanya branch ' + esc(labelB(b.nama)) + (kotaB(b.nama) ? ' (' + esc(kotaB(b.nama)) + ')' : '') + (b.diSite ? '' : ' <small class="t-bad">tidak ada di sheet SITE</small>'), status(b.diatur), b.diatur,
+          '<span class="ak__ic">' + (A.ikonBranch ? A.ikonBranch(b.nama) : '') + '</span>');
+      }).join('');
+  }
+  function acak() {
+    var hrf = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789', a = new Uint32Array(12), t = '';
+    crypto.getRandomValues(a);
+    for (var i = 0; i < 12; i++) { t += hrf[a[i] % hrf.length]; if (i === 3 || i === 7) t += '-'; }
+    return t;
+  }
+  function namaAkses(jenis, b) { return jenis === 'super' ? 'Super Admin' : jenis === 'admin2' ? 'Admin 2 (semua branch)' : 'Admin 1 · ' + labelB(b); }
+  $('akBody').addEventListener('click', async function (e) {
+    var t = e.target.closest('[data-ak]');
+    if (t) {
+      ak.target = { jenis: t.dataset.ak, branch: t.dataset.akb };
+      $('akTitle').textContent = 'Sandi ' + namaAkses(ak.target.jenis, ak.target.branch);
+      $('akSub').textContent = ak.target.jenis === 'super' ? 'Setelah disimpan, Anda perlu masuk lagi dengan sandi baru.' : 'Siapa pun yang masuk dengan sandi ini mendapat akses ' + namaAkses(ak.target.jenis, ak.target.branch) + '.';
+      $('akSandi').value = acak(); $('akErr').hidden = true;
+      $('dlgAkses').showModal(); $('akSandi').select();
+      return;
+    }
+    var h = e.target.closest('[data-akhapus]');
+    if (h) {
+      var jenis = h.dataset.akhapus, b = h.dataset.akb;
+      var ok = await A.konfirmasi({ judul: 'Hapus sandi ' + namaAkses(jenis, b) + '?', ok: 'Ya, hapus',
+        isi: 'Orang yang masuk dengan sandi ini langsung keluar dan tidak bisa masuk lagi sampai sandi baru dibuat.',
+        jalankan: async function () { var o = await A.post({ action: 'aksesAtur', jenis: jenis, branch: b, hapus: true }); if (!o.ok) throw new Error(o.error); ak.info = o; } });
+      if (ok) { renderAkses(); A.toast('Sandi ' + namaAkses(jenis, b) + ' dihapus.', true); }
+    }
+  });
+  $('akAcak').addEventListener('click', function () { $('akSandi').value = acak(); $('akSandi').select(); });
+  $('akBatal').addEventListener('click', function (e) { e.preventDefault(); $('dlgAkses').close(); });
+  $('akForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var btn = $('akOk'), err = $('akErr'), sandi = $('akSandi').value, tg = ak.target;
+    if (!tg) return;
+    err.hidden = true; btn.disabled = true; btn.textContent = 'Menyimpan…';
+    try {
+      var o = await A.post({ action: 'aksesAtur', jenis: tg.jenis, branch: tg.branch, sandi: sandi });
+      if (!o.ok) throw new Error(o.error);
+      ak.info = o; renderAkses(); $('dlgAkses').close();
+      try { await navigator.clipboard.writeText(sandi); } catch (x) { /* abaikan */ }
+      A.toast('Sandi ' + namaAkses(tg.jenis, tg.branch) + ' disimpan dan disalin. Berikan ke orang yang berhak.', true);
+      if (o.keluar) setTimeout(function () { A.post({ action: 'ping' }).catch(function () { }); }, 1200);   // sesi lama tidak berlaku: diarahkan masuk lagi
+    } catch (x) { err.textContent = x.message; err.hidden = false; }
+    finally { btn.disabled = false; btn.textContent = 'Simpan sandi'; }
+  });
 })();
 
 </script>
