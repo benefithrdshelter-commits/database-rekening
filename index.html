@@ -2753,6 +2753,9 @@ body.peran-admin .side__lock + .side__chev { display: none; }
 .hh--all { width: auto; padding: 6px 12px 7px; justify-content: center; }
 .hh--all b { font-size: 13px; }
 .rp__lap .when { white-space: nowrap; } .rp__lap .when small { display: block; color: var(--ink-3); font-size: 12px; }
+.panel--list:has(.hist__tgl.is-muat) #hWrap { opacity: .4; pointer-events: none; transition: opacity .15s; }
+.hist__tgl.is-muat .hist__per { opacity: .7; }
+#hClear { display: none !important; }   /* tombol hapus massal dihilangkan (v35): hapus riwayat satu per satu saja */
 
 </style>
 </head>
@@ -7711,7 +7714,7 @@ function cekKaryawanMurni_(rows, db) {
   });
 
   /* ---------- riwayat: upload PDF + crosscheck + log aktivitas ---------- */
-  var histBusy = false, hist = [], histFilter = 'semua', logAkt = [], logSemua = [];
+  var histBusy = false, histNomor = 0, hist = [], histFilter = 'semua', logAkt = [], logSemua = [];
   // periode riwayat (v35): bulan 'yyyy-MM' + tanggal 'yyyy-MM-dd' (kosong = sebulan penuh)
   var per = { bulan: '', tanggal: '', hari: {}, hariPdf: {}, ulang: false };
   var NAMA_BLN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -7727,6 +7730,12 @@ function cekKaryawanMurni_(rows, db) {
         return '<option value="' + b.k + '"' + (b.k === per.bulan ? ' selected' : '') + '>' + esc(labelBln(b.k)) + (b.n != null ? ' (' + num(b.n) + ')' : '') + '</option>';
       }).join('');
     }
+    var sel = $('hBulan');
+    if (![].some.call(sel.options, function (o) { return o.value === per.bulan; })) {
+      if (sel.options.length === 1 && !sel.options[0].value) sel.innerHTML = '';
+      sel.insertAdjacentHTML('afterbegin', '<option value="' + per.bulan + '">' + esc(labelBln(per.bulan)) + '</option>');
+    }
+    sel.value = per.bulan;
     $('hTanggal').value = per.tanggal || '';
     var p = per.bulan.split('-'), akhir = new Date(Number(p[0]), Number(p[1]), 0).getDate(), maks = 0, h, html = '';
     for (h = 1; h <= akhir; h++) maks = Math.max(maks, (per.hari[h] || 0) + (per.hariPdf[h] || 0));
@@ -7745,7 +7754,9 @@ function cekKaryawanMurni_(rows, db) {
   function pilihPeriode(bulan, tanggal) {
     per.bulan = bulan || per.bulan || bulanKini(); per.tanggal = tanggal || '';
     if (per.tanggal) per.bulan = per.tanggal.slice(0, 7);
-    loadHistory();
+    if (!A.connected()) return;
+    if (bulanCache[per.bulan]) { tampilkanPeriode(); bukaPeriode(false); }   // tanggal di bulan yang sama: langsung
+    else { per.hari = {}; per.hariPdf = {}; renderPeriode(); bukaPeriode(false); }
   }
   $('hBulan').addEventListener('change', function () { per.hari = {}; per.hariPdf = {}; pilihPeriode(this.value, ''); });
   $('hTanggal').addEventListener('change', function () { var v = this.value; if (/^\d{4}-\d{2}-\d{2}$/.test(v)) { if (v.slice(0, 7) !== per.bulan) { per.hari = {}; per.hariPdf = {}; } pilihPeriode(v.slice(0, 7), v); } else pilihPeriode(per.bulan, ''); });
@@ -7828,37 +7839,73 @@ function cekKaryawanMurni_(rows, db) {
     if (h.dataTercatat) return '<p class="confirm__note"><b>' + num(h.dataTercatat) + ' rekening</b> yang masuk dari upload ini <b>ikut dihapus</b> dari sheet Data Upah (nama sampai site penempatan). Rekening yang sudah ada sebelumnya dari PDF lain tidak disentuh. PDF yang sama bisa diupload ulang.</p>';
     return '<p class="confirm__note">Upload ini terjadi sebelum fitur jejak data ada, jadi barisnya di Data Upah <b>tidak bisa ikut terhapus otomatis</b>. Riwayatnya saja yang dihapus; PDF yang sama bisa diupload ulang (rekening yang sudah ada tetap dilewati).</p>';
   }
+  /* Riwayat per bulan: SATU permintaan per bulan, disimpan di browser (memori + perangkat).
+   * Pindah tanggal = disaring langsung di browser, tanpa menunggu server. */
+  var bulanCache = {}, ambilNomor = {};
+  function hitungHari(list) { var o = {}; list.forEach(function (h) { var t = tglWIB(h.waktu); if (t) { var d = Number(t.slice(8, 10)); o[d] = (o[d] || 0) + 1; } }); return o; }
+  function tampilkanPeriode() {
+    var c = bulanCache[per.bulan], sup = A.peran && A.peran().super;
+    if (!c) return false;
+    var cocokTgl = function (h) { var t = tglWIB(h.waktu); return !t || (per.tanggal ? t === per.tanggal : t.slice(0, 7) === per.bulan); };
+    var cc = c.cc.filter(cocokTgl), pdf = c.pdf.filter(cocokTgl);
+    hist = cc.map(function (x) { x.jenis = 'cc'; return x; }).concat(pdf.map(function (x) { x.jenis = 'pdf'; return x; }))
+      .sort(function (a, b) { return String(b.waktu).localeCompare(String(a.waktu)); });
+    logAkt = logSemua.filter(cocokTgl);
+    per.hari = hitungHari(c.cc); per.hariPdf = hitungHari(c.pdf);
+    renderPeriode(c.bulanAda);
+    $('hPer').innerHTML = '<b>' + esc(teksPeriode()) + '</b> · ' + num(cc.length) + ' crosscheck' + (sup ? ', ' + num(pdf.length) + ' upload' : '');
+    hitungKpiRiwayat();
+    renderHistory();
+    return true;
+  }
+  function kunciLokal(bulan) { var p = A.peran ? A.peran() : {}; return 'riw:' + (p.role || '') + ':' + (p.branch || '') + ':' + bulan; }
+  // ambil satu bulan dari server; diam = tanpa meredupkan tabel (data lama sudah tampil)
+  async function ambilBulan(bulan, diam) {
+    var empty = $('hEmpty'), wrap = $('hWrap'), nomor = (ambilNomor[bulan] || 0) + 1;
+    ambilNomor[bulan] = nomor;
+    if (!diam) { $('hTgl').classList.add('is-muat'); $('hPer').textContent = 'Memuat ' + labelBln(bulan) + '…'; if (!hist.length) { empty.hidden = false; empty.textContent = 'Memuat riwayat…'; } }
+    try {
+      var sup = A.peran && A.peran().super;
+      var res = await Promise.all([A.post({ action: 'riwayat', bulan: bulan }), sup ? A.post({ action: 'riwayatUpload', bulan: bulan }) : Promise.resolve({ ok: true, riwayat: [] }), A.post({ action: 'aktivitas', limit: 200 })]);
+      if (ambilNomor[bulan] !== nomor) return;   // ada permintaan bulan yang sama yang lebih baru
+      if (!res[0].ok) throw new Error(res[0].error || 'Gagal memuat.');
+      if (!res[1].ok) throw new Error(res[1].error || 'Gagal memuat.');
+      var c = { cc: res[0].riwayat || [], pdf: res[1].riwayat || [], bulanAda: res[0].bulanAda || (bulanCache[bulan] || {}).bulanAda, t: Date.now() };
+      bulanCache[bulan] = c;
+      logSemua = (res[2] && res[2].aktivitas) || logSemua;
+      try { A.simpanLokal && A.simpanLokal(kunciLokal(bulan), c); } catch (e) { /* abaikan */ }
+      if (per.bulan === bulan) tampilkanPeriode();
+    } catch (err) {
+      if (per.bulan === bulan && !bulanCache[bulan]) { wrap.hidden = true; empty.hidden = false; empty.textContent = 'Riwayat belum bisa dimuat: ' + err.message; }
+      else if (per.bulan === bulan) A.toast('Riwayat belum bisa diperbarui: ' + err.message);
+    } finally { if (per.bulan === bulan) $('hTgl').classList.remove('is-muat'); }
+  }
+  // tampilkan periode terpilih secepat mungkin: memori -> salinan di perangkat -> server
+  async function bukaPeriode(segar) {
+    var bulan = per.bulan, c = bulanCache[bulan];
+    if (c && !segar) {
+      tampilkanPeriode();
+      if (Date.now() - c.t > 60 * 1000) ambilBulan(bulan, true);   // perbarui diam-diam di belakang
+      return;
+    }
+    if (!c && A.ambilLokal) {
+      try {
+        var lok = await A.ambilLokal(kunciLokal(bulan));
+        if (lok && lok.cc && per.bulan === bulan && !bulanCache[bulan]) { lok.t = 0; bulanCache[bulan] = lok; tampilkanPeriode(); }
+      } catch (e) { /* abaikan */ }
+    }
+    await ambilBulan(bulan, !!bulanCache[bulan]);
+    // bulan sebelumnya disiapkan diam-diam, supaya saat dipilih langsung tampil
+    var p = bulan.split('-'), d = new Date(Number(p[0]), Number(p[1]) - 2, 15), lalu = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2);
+    if (!bulanCache[lalu]) setTimeout(function () { if (!bulanCache[lalu] && A.connected()) ambilBulan(lalu, true); }, 1500);
+  }
   async function loadHistory() {
     var empty = $('hEmpty'), wrap = $('hWrap');
     if (!A.connected()) { wrap.hidden = true; empty.hidden = false; empty.textContent = 'Masuk terlebih dahulu untuk melihat riwayat.'; return; }
-    if (histBusy) return;
+    if (!per.bulan) per.bulan = bulanKini();
     histBusy = true;
-    if (!hist.length) { empty.hidden = false; empty.textContent = 'Memuat riwayat…'; }
-    try {
-      var sup = A.peran && A.peran().super;
-      if (!per.bulan) per.bulan = bulanKini();
-      var q = { bulan: per.bulan, tanggal: per.tanggal || undefined };
-      $('hPer').textContent = 'Memuat ' + teksPeriode() + '…';
-      var res = await Promise.all([A.post({ action: 'riwayat', bulan: q.bulan, tanggal: q.tanggal }), sup ? A.post({ action: 'riwayatUpload', bulan: q.bulan, tanggal: q.tanggal }) : Promise.resolve({ ok: true, riwayat: [] }), A.post({ action: 'aktivitas', limit: 200 })]);
-      if (!res[0].ok) throw new Error(res[0].error || 'Gagal memuat.');
-      if (!res[1].ok) throw new Error(res[1].error || 'Gagal memuat.');
-      hist = (res[0].riwayat || []).map(function (x) { x.jenis = 'cc'; return x; })
-        .concat((res[1].riwayat || []).map(function (x) { x.jenis = 'pdf'; return x; }))
-        .sort(function (a, b) { return String(b.waktu).localeCompare(String(a.waktu)); });
-      logSemua = (res[2] && res[2].aktivitas) || [];
-      logAkt = logSemua.filter(function (a) { var t = tglWIB(a.waktu); return per.tanggal ? t === per.tanggal : t.slice(0, 7) === per.bulan; });
-      if (res[0].hari) per.hari = res[0].hari;
-      if (res[1].hari) per.hariPdf = res[1].hari; else if (!sup) per.hariPdf = {};
-      renderPeriode(res[0].bulanAda);
-      var nCc = (res[0].riwayat || []).length, nPdf = (res[1].riwayat || []).length;
-      $('hPer').innerHTML = '<b>' + esc(teksPeriode()) + '</b> · ' + num(nCc) + ' crosscheck' + (sup ? ', ' + num(nPdf) + ' upload' : '');
-      hitungKpiRiwayat();
-      renderHistory();
-    } catch (err) {
-      wrap.hidden = true; empty.hidden = false; empty.textContent = 'Riwayat belum bisa dimuat: ' + err.message;
-    } finally { histBusy = false; }
+    try { await bukaPeriode(true); } finally { histBusy = false; }
   }
-  A.refreshHistory = function () { loadHistory(); if (A.refreshDashboard) A.refreshDashboard(); };
   function setFilter(f) {
     histFilter = f;
     document.querySelectorAll('#hFilters button').forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.f === f ? 'true' : 'false'); });
