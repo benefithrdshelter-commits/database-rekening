@@ -2765,6 +2765,9 @@ body.peran-admin .side__lock + .side__chev { display: none; }
 .akses__hasil.is-no { color: #C42B36; font-weight: 600; }
 @media (max-width: 700px) { .akses__cek { grid-template-columns: 1fr; } .akses__hasil { grid-column: 1; } }
 .ak__kapan { display: block; margin-top: 3px; font-size: 11.5px; color: var(--ink-3); }
+/* v35.4: Admin 1 & 2 hanya melihat menu yang bisa mereka buka (menu khusus Super Admin disembunyikan, bukan dikunci) */
+body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[data-nav="karyawan"], body.peran-admin .side__nav a[data-nav="database"] { display: none !important; }
+.ikset { margin-top: 18px; } .ik__pv { vertical-align: -4px; margin-right: 6px; border-radius: 4px; }
 
 </style>
 </head>
@@ -3849,6 +3852,20 @@ body.peran-admin .side__lock + .side__chev { display: none; }
               </form>
               <p class="err" id="vsetErr" hidden></p>
               <p class="vset__st" id="vsetSt"></p>
+            </article>
+            <article class="card ikset hanya-super">
+              <div class="card__head"><div><h2>Ikon tab browser</h2><p>Logo Moneywise di tab browser untuk link Apps Script. Google hanya menerima gambar <b>.png</b> dari alamat publik. Link Google Drive tidak bisa dipakai.</p></div></div>
+              <form class="vset__form" id="ikForm" novalidate>
+                <input id="ikUrl" type="url" placeholder="https://nama-anda.github.io/moneywise/logo.png" autocomplete="off">
+                <button class="btn btn--primary" type="submit" id="ikBtn">Simpan</button>
+                <button class="btn btn--ghost" type="button" id="ikLepas" hidden>Lepas</button>
+              </form>
+              <p class="err" id="ikErr" hidden></p>
+              <p class="vset__st" id="ikSt"></p>
+              <ul class="cset__note">
+                <li>Paling mudah: buka web Moneywise versi GitHub sekali sebagai Super Admin, maka logo Moneywise di repo GitHub Anda otomatis dipakai.</li>
+                <li>Setelah diatur, buka ulang link Apps Script (refresh) supaya ikonnya muncul.</li>
+              </ul>
             </article>
             <article class="card card--about">
               <div class="card__head"><div><h2>Cara aplikasi ini bekerja</h2><p>Semua pembacaan dan pencocokan memakai aturan tetap, bukan AI, supaya tidak ada nama atau angka yang ditebak.</p></div></div>
@@ -8666,7 +8683,7 @@ function cekKaryawanMurni_(rows, db) {
     if (pTab === 'ro') muatRO();
     if (pTab === 'sk') muatSK();
     if (pTab === 'user') muatUser();
-    if (pTab === 'about' && A.peran && A.peran().super) muatVideoSet();
+    if (pTab === 'about' && A.peran && A.peran().super) { muatVideoSet(); if (A.muatIkonTab) A.muatIkonTab(); }
     if (pTab === 'chat' && A.muatChatSet) A.muatChatSet();
     if (pTab === 'akses' && A.muatAkses) A.muatAkses();
   }
@@ -10221,6 +10238,38 @@ function cekKaryawanMurni_(rows, db) {
       if (o.keluar) setTimeout(function () { A.post({ action: 'ping' }).catch(function () { }); }, 1200);   // sesi lama tidak berlaku: diarahkan masuk lagi
     } catch (x) { err.textContent = x.message; err.hidden = false; }
     finally { btn.disabled = false; btn.textContent = 'Simpan sandi'; }
+  });
+
+  /* ======================= IKON TAB BROWSER ======================= */
+  function tampilIkon(url) {
+    $('ikUrl').value = url || ''; $('ikLepas').hidden = !url;
+    $('ikSt').innerHTML = url ? '<img src="' + esc(url) + '" alt="" width="20" height="20" class="ik__pv"> Ikon aktif. Refresh link Apps Script untuk melihatnya.' : 'Belum ada ikon. Tab masih memakai ikon bawaan Apps Script.';
+  }
+  A.muatIkonTab = async function () {
+    if (!(A.peran && A.peran().super)) return;
+    try { var o = await A.post({ action: 'ikonTabInfo' }); if (o.ok) tampilIkon(o.url); } catch (e) { /* abaikan */ }
+  };
+  $('ikForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var err = $('ikErr'), btn = $('ikBtn'); err.hidden = true; btn.disabled = true; btn.textContent = 'Mengecek…';
+    try { var o = await A.post({ action: 'ikonTab', url: $('ikUrl').value }); if (!o.ok) throw new Error(o.error); tampilIkon(o.url); A.toast('Ikon tab disimpan. Refresh link Apps Script untuk melihatnya.', true); }
+    catch (x) { err.textContent = x.message; err.hidden = false; }
+    finally { btn.disabled = false; btn.textContent = 'Simpan'; }
+  });
+  $('ikLepas').addEventListener('click', async function () {
+    try { var o = await A.post({ action: 'ikonTab', hapus: true }); if (!o.ok) throw new Error(o.error); tampilIkon(''); A.toast('Ikon tab dilepas.', true); } catch (x) { A.toast(x.message); }
+  });
+  // versi GitHub Pages: logo di repo yang sama dilaporkan otomatis ke server (sekali, oleh Super Admin)
+  A.onConn(function (on) {
+    if (!on || A.gas || !(A.peran && A.peran().super) || !/^https:$/.test(location.protocol) || /script\.google/.test(location.hostname)) return;
+    setTimeout(async function () {
+      try {
+        var u = new URL('icon-192.png', location.href).href, r = await fetch(u, { method: 'HEAD', cache: 'no-store' });
+        if (!r.ok || !/^image\//.test(r.headers.get('content-type') || '')) return;
+        var info = await A.post({ action: 'ikonTabInfo' });
+        if (info.ok && !info.url) await A.post({ action: 'ikonTab', url: u, otomatis: true });
+      } catch (e) { /* abaikan */ }
+    }, 4000);
   });
 })();
 
