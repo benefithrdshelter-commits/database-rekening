@@ -2756,6 +2756,15 @@ body.peran-admin .side__lock + .side__chev { display: none; }
 .panel--list:has(.hist__tgl.is-muat) #hWrap { opacity: .4; pointer-events: none; transition: opacity .15s; }
 .hist__tgl.is-muat .hist__per { opacity: .7; }
 #hClear { display: none !important; }   /* tombol hapus massal dihilangkan (v35): hapus riwayat satu per satu saja */
+.akses__cek { display: grid; grid-template-columns: minmax(180px, 260px) minmax(0, 1fr); gap: 8px 16px; align-items: center; margin: 0 0 14px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: #FAFCFF; }
+.akses__cek label b { display: block; font-size: 14px; }
+.akses__cek label span { font-size: 12.5px; color: var(--ink-3); }
+.akses__cek .akses__in input { height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: #fff; }
+.akses__hasil { grid-column: 2; margin: 0; font-size: 13.5px; min-height: 1em; color: var(--ink-2); }
+.akses__hasil.is-ok { color: #0B8A5A; font-weight: 600; }
+.akses__hasil.is-no { color: #C42B36; font-weight: 600; }
+@media (max-width: 700px) { .akses__cek { grid-template-columns: 1fr; } .akses__hasil { grid-column: 1; } }
+.ak__kapan { display: block; margin-top: 3px; font-size: 11.5px; color: var(--ink-3); }
 
 </style>
 </head>
@@ -3770,6 +3779,11 @@ body.peran-admin .side__lock + .side__chev { display: none; }
                 <div class="akses__p" data-r="admin2"><b>Admin 2</b><span>Semua branch: dashboard, crosscheck, riwayat, surat kuasa. Database &amp; spreadsheet terkunci.</span></div>
                 <div class="akses__p" data-r="admin1"><b>Admin 1</b><span>Satu branch saja (sandi per branch). Branch lain di dashboard terkunci, lonceng hanya branch itu.</span></div>
               </div>
+              <form class="akses__cek" id="akCekForm" novalidate>
+                <label for="akCek"><b>Cek sandi</b><span>Ketik sandi untuk melihat akses yang dibukanya.</span></label>
+                <div class="akses__in"><input id="akCek" type="text" autocomplete="off" spellcheck="false" placeholder="mis. sandi yang dibagikan ke branch"><button class="btn btn--white btn--sm" type="submit">Cek</button></div>
+                <p class="akses__hasil" id="akCekHasil" aria-live="polite"></p>
+              </form>
               <div class="akses__awal" id="akAwal" hidden>Super Admin masih memakai <b>sandi awal</b>. Ganti sandi Super Admin supaya sandi lama tidak berlaku lagi.</div>
               <div class="tbl-wrap tbl-wrap--flat">
                 <table class="tbl akses__tbl"><thead><tr><th scope="col">Akses</th><th scope="col">Cakupan</th><th scope="col">Status sandi</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
@@ -10133,8 +10147,9 @@ function cekKaryawanMurni_(rows, db) {
       ak.info = out; renderAkses();
     } catch (e) { $('akBody').innerHTML = '<tr><td class="empty" colspan="4">' + esc(e.message || 'Gagal memuat.') + '</td></tr>'; }
   };
-  function status(diatur, awal) {
-    return awal ? '<span class="st st--warn">Sandi awal</span>' : diatur ? '<span class="st st--on">Sudah diatur</span>' : '<span class="st st--off">Belum diatur</span>';
+  function status(diatur, awal, kapan) {
+    return (awal ? '<span class="st st--warn">Sandi awal</span>' : diatur ? '<span class="st st--on">Sudah diatur</span>' : '<span class="st st--off">Belum diatur</span>') +
+      (diatur && kapan ? '<small class="ak__kapan">' + esc(kapan) + '</small>' : '');
   }
   function renderAkses() {
     var o = ak.info;
@@ -10145,10 +10160,10 @@ function cekKaryawanMurni_(rows, db) {
         (bolehHapus ? '<button class="btn btn--ghost btn--xs btn--danger-ghost" type="button" data-akhapus="' + jenis + '" data-akb="' + esc(b || '') + '">Hapus</button>' : '') + '</td></tr>';
     };
     $('akBody').innerHTML =
-      baris('super', '', '<span class="peran-pill" data-r="super">Super Admin</span>', 'Semua menu + database', status(o.superDiatur, !o.superDiatur), false) +
-      baris('admin2', '', '<span class="peran-pill" data-r="admin2">Admin 2</span>', 'Semua branch', status(o.admin2), o.admin2) +
+      baris('super', '', '<span class="peran-pill" data-r="super">Super Admin</span>', 'Semua menu + database', status(o.superDiatur, !o.superDiatur, o.superKapan), false) +
+      baris('admin2', '', '<span class="peran-pill" data-r="admin2">Admin 2</span>', 'Semua branch', status(o.admin2, false, o.admin2Kapan), o.admin2) +
       o.branch.map(function (b) {
-        return baris('branch', b.nama, '<span class="peran-pill" data-r="admin1">Admin 1</span> ' + esc(labelB(b.nama)), 'Hanya branch ' + esc(labelB(b.nama)) + (kotaB(b.nama) ? ' (' + esc(kotaB(b.nama)) + ')' : '') + (b.diSite ? '' : ' <small class="t-bad">tidak ada di sheet SITE</small>'), status(b.diatur), b.diatur,
+        return baris('branch', b.nama, '<span class="peran-pill" data-r="admin1">Admin 1</span> ' + esc(labelB(b.nama)), 'Hanya branch ' + esc(labelB(b.nama)) + (kotaB(b.nama) ? ' (' + esc(kotaB(b.nama)) + ')' : '') + (b.diSite ? '' : ' <small class="t-bad">tidak ada di sheet SITE</small>'), status(b.diatur, false, b.kapan), b.diatur,
           '<span class="ak__ic">' + (A.ikonBranch ? A.ikonBranch(b.nama) : '') + '</span>');
       }).join('');
   }
@@ -10177,6 +10192,18 @@ function cekKaryawanMurni_(rows, db) {
         jalankan: async function () { var o = await A.post({ action: 'aksesAtur', jenis: jenis, branch: b, hapus: true }); if (!o.ok) throw new Error(o.error); ak.info = o; } });
       if (ok) { renderAkses(); A.toast('Sandi ' + namaAkses(jenis, b) + ' dihapus.', true); }
     }
+  });
+  $('akCekForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var out = $('akCekHasil'), v = $('akCek').value;
+    if (!v) { out.textContent = ''; return; }
+    out.className = 'akses__hasil'; out.textContent = 'Mengecek…';
+    try {
+      var o = await A.post({ action: 'aksesCek', sandi: v });
+      if (!o.ok) throw new Error(o.error);
+      out.className = 'akses__hasil ' + (o.cocok ? 'is-ok' : 'is-no');
+      out.textContent = o.cocok ? '✓ Sandi ini membuka: ' + o.label : '✗ Sandi ini tidak cocok dengan akses mana pun. Buat ulang sandinya di tabel di bawah.';
+    } catch (x) { out.className = 'akses__hasil is-no'; out.textContent = x.message; }
   });
   $('akAcak').addEventListener('click', function () { $('akSandi').value = acak(); $('akSandi').select(); });
   $('akBatal').addEventListener('click', function (e) { e.preventDefault(); $('dlgAkses').close(); });
