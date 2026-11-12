@@ -4315,11 +4315,12 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
     if (iP > -1) {
       format = 'MCM';
       b.sourceAcct = rek(aoa[iP][2]);
-      for (var r = iP + 1; r < aoa.length; r++) {
-        var x = root.MCMParser && root.MCMParser.rapikanBarisMcm ? root.MCMParser.rapikanBarisMcm(aoa[r]).row : aoa[r], a = rek(x[0]), n = str(x[1]);
-        if (!/^\d{5,20}$/.test(a) || !n) continue;
-        data.push({ line: r + 1, rek: a, nama: n, bank: str(x[11]) || str(x[10]), sitePen: str(x[7]), siteBis: '', status: '', sen: sen(x[6]) });
-      }
+      var pm = root.MCMParser.parseTable(aoa);   // Mandiri & BNI, termasuk nama berkoma
+      if (pm.bankMcm) format = 'MCM ' + pm.bankMcm;
+      pm.rows.forEach(function (x) {
+        if (!/^\d{5,20}$/.test(x.acct)) return;
+        data.push({ line: x.line, rek: x.acct, nama: x.name, bank: x.bank || '', sitePen: x.remark || '', siteBis: '', status: '', sen: x.amountCents || 0 });
+      });
       warnings.push('File MCM berisi nama dari pengajuan transfer, BUKAN nama pemilik rekening dari bank. Pastikan transfernya sudah berhasil dan namanya benar sebelum dikirim ke database.');
     } else {
       // --- tabel berjudul kolom: cari baris judul di 15 baris pertama
@@ -4391,7 +4392,8 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
 /*
  * Pembaca file MCM (Batch Upload MCM Mandiri) — Excel (.xls/.xlsx) dan CSV.
  * Format: baris "P" = ringkasan (tanggal, rekening sumber, jumlah transaksi, total),
- *         baris data: A = no rekening, B = nama, G = nominal, H = keterangan/site.
+ *         baris data Mandiri: A = no rekening, B = nama, G = nominal, H = keterangan/site.
+ *         baris data BNI    : A = no rekening, B = nama, C = nominal, D = keterangan/site (baris 1 = cap waktu + jumlah baris).
  * Bisa juga membaca tabel biasa yang punya judul kolom "No Rekening" dan "Nama".
  * Dipakai di browser (window.MCMParser) dan di Node untuk pengujian.
  */
@@ -4463,10 +4465,35 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
     return { row: row, geser: 0 };
   }
 
+  // MCM BNI (mis. bni_xxx_tgl.csv): baris 1 "yyyy/mm/dd_hh.mm.ss,jumlah baris file", baris "P", lalu
+  // A = no rekening, B = nama, C = nominal, D = keterangan/site, ... (tanpa kolom IDR & kode bank; semua ke BNI).
+  // Nama berkoma tanpa kutip: nominal = sel angka murni pertama setelah kolom B.
+  function rapikanBarisBni(row) {
+    if (!row || /^\d+(\.\d+)?$/.test(str(row[2]))) return { row: row, geser: 0 };
+    for (var k = 3; k < Math.min(row.length, 9); k++) {
+      if (/^\d+(\.\d+)?$/.test(str(row[k]))) {
+        var g = k - 2, nama = row.slice(1, 2 + g).map(function (v) { return v === null || v === undefined ? '' : String(v); }).join(',').replace(/\s+/g, ' ').trim();
+        return { row: [row[0], nama].concat(row.slice(2 + g)), geser: g };
+      }
+    }
+    return { row: row, geser: 0 };
+  }
+  // susunan kolom MCM setelah baris "P": 'mandiri' (ada kolom IDR) atau 'bni' (nominal di kolom C)
+  function tataMcm(aoa, iP) {
+    var idr = 0, bni = 0;
+    for (var r = iP + 1; r < Math.min(aoa.length, iP + 60); r++) {
+      var row = aoa[r] || [];
+      if (!toAcct(row[0])) continue;
+      if (row.slice(5, 12).some(function (v) { return str(v).toUpperCase() === 'IDR'; })) idr++;
+      else if (row.slice(2, 9).some(function (v) { return /^\d+(\.\d+)?$/.test(str(v)); })) bni++;
+    }
+    return bni > idr ? 'bni' : 'mandiri';
+  }
+
   // ---------- ambil baris data dari tabel (array of arrays) ----------
   function parseTable(aoa) {
-    var out = { meta: null, rows: [], errors: [], warnings: [], format: '' };
-    var header = null;
+    var out = { meta: null, rows: [], errors: [], warnings: [], format: '', bankMcm: '' };
+    var header = null, tata = 'mandiri';
     for (var r = 0; r < aoa.length; r++) {
       var row = aoa[r] || [];
       var c0 = str(row[0]).toUpperCase();
@@ -4474,6 +4501,8 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
         var srcA = toAcct(row[2]);
         out.meta = { line: r + 1, date: str(row[1]), source: srcA ? srcA.acct : str(row[2]),
           count: parseInt(str(row[3]).replace(/\D/g, ''), 10), totalCents: toCents(row[4]) };
+        tata = tataMcm(aoa, r);
+        if (tata === 'bni') { out.bankMcm = 'BNI'; if (r > 0 && /^\d{4}\/\d{2}\/\d{2}/.test(str((aoa[r - 1] || [])[0]))) out.meta.baris1 = r; }
         continue;
       }
       if (!header) {
@@ -4488,15 +4517,16 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
           continue;
         }
       }
-      var ci = header ? header : { acct: 0, name: 1, amount: 6, remark: 7 }, geser = 0;
-      if (!header && out.meta) { var rp = rapikanBarisMcm(row); row = rp.row; geser = rp.geser; }
+      var ci = header ? header : tata === 'bni' ? { acct: 0, name: 1, amount: 2, remark: 3 } : { acct: 0, name: 1, amount: 6, remark: 7 }, geser = 0;
+      if (!header && out.meta) { var rp = tata === 'bni' ? rapikanBarisBni(row) : rapikanBarisMcm(row); row = rp.row; geser = rp.geser; }
       var a = toAcct(row[ci.acct]);
       var name = str(row[ci.name]);
       if (!a || !name || a.acct.length < 5 || a.acct.length > 20) continue;
       if (/^\d+$/.test(name)) continue;
       out.rows.push({ line: r + 1, nameCol: ci.name, acctCol: ci.acct, acct: a.acct, acctFromNumber: a.fromNumber, name: name, geser: geser,
         amountCents: ci.amount > -1 ? (toCents(row[ci.amount]) || 0) : 0,
-        remark: ci.remark > -1 ? str(row[ci.remark]) : '' });
+        remark: ci.remark > -1 ? str(row[ci.remark]) : '',
+        bank: header ? '' : tata === 'bni' ? 'BNI' : (str(row[11]) || str(row[10])) });
     }
     out.format = out.meta ? 'MCM' : (header ? 'Tabel' : 'Tidak dikenal');
     if (!out.rows.length) out.errors.push('Tidak ditemukan baris data (no rekening + nama). Pastikan ini file MCM atau tabel dengan kolom No Rekening dan Nama.');
@@ -4564,7 +4594,7 @@ label.btn.is-locked { opacity: .55; cursor: not-allowed; box-shadow: none; }
     }).join('\r\n') + '\r\n';
   }
 
-  var api = { rapikanBarisMcm: rapikanBarisMcm, toCSV: toCSV, parseCSV: parseCSV, parseTable: parseTable, readFile: readFile, pickBest: pickBest, toCents: toCents, toAcct: toAcct };
+  var api = { rapikanBarisMcm: rapikanBarisMcm, rapikanBarisBni: rapikanBarisBni, toCSV: toCSV, parseCSV: parseCSV, parseTable: parseTable, readFile: readFile, pickBest: pickBest, toCents: toCents, toAcct: toAcct };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.MCMParser = api;
 })(typeof window !== 'undefined' ? window : this);
@@ -6234,7 +6264,7 @@ function cekKaryawanMurni_(rows, db) {
     var r = st.parsed, m = r.meta;
     show('xCheck'); setStep(2);
     $('xName').textContent = st.file.name;
-    $('xMeta').textContent = [r.format === 'MCM' ? 'Format MCM' : r.format === 'Tabel' ? 'Tabel dengan judul kolom' : 'Format tidak dikenal',
+    $('xMeta').textContent = [r.format === 'MCM' ? 'Format MCM' + (r.bankMcm ? ' ' + r.bankMcm : '') : r.format === 'Tabel' ? 'Tabel dengan judul kolom' : 'Format tidak dikenal',
       r.sheet && r.sheet !== 'CSV' ? 'sheet "' + r.sheet + '"' : (r.sheet === 'CSV' ? 'CSV' : ''),
       m && m.date ? 'tanggal ' + m.date.replace(/^(\d{4})(\d{2})(\d{2})$/, '$3-$2-$1') : ''].filter(Boolean).join(', ');
     $('xRows').textContent = num(r.rows.length);
@@ -6847,6 +6877,9 @@ function cekKaryawanMurni_(rows, db) {
     var out = [], total = 0;
     pilih.forEach(function (r) { total += r.amountCents || 0; });
     if (P.meta && aoa[P.meta.line - 1]) {
+      // MCM BNI: baris 1 (cap waktu, jumlah baris file) ikut, jumlahnya dihitung ulang
+      if (P.meta.baris1) for (var b1 = 0; b1 < P.meta.baris1; b1++) out.push((aoa[b1] || []).slice());
+      if (P.meta.baris1 && out.length) out[P.meta.baris1 - 1][1] = String(pilih.length + P.meta.line);
       var hdr = aoa[P.meta.line - 1].slice();
       hdr[3] = String(pilih.length);
       hdr[4] = total % 100 === 0 ? String(total / 100) : (total / 100).toFixed(2);
