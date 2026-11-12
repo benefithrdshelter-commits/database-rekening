@@ -5356,10 +5356,18 @@ function cekKaryawanMurni_(rows, db) {
     try { idbSimpan(kunciIdb(), null); } catch (e) { /* abaikan */ }   // data rekening tidak ditinggal di komputer setelah keluar
     setSesi(null);
     dbs.isi = null; dbs.gen++; idbMuat = null;
-    if (t && !msg) post({ action: 'logout', sesi: t }).catch(function () { });
+    var kirim = t && !msg ? post({ action: 'logout', sesi: t }).catch(function () { }) : Promise.resolve();
     showLogin(msg);
     window.scrollTo(0, 0);
+    // halaman dimuat ulang bersih: tidak ada tampilan/data sesi sebelumnya (mis. Super Admin) yang tertinggal untuk akun berikutnya
+    if (t) {
+      try { sessionStorage.setItem('mw_pesan_keluar', msg || ''); } catch (e) { /* abaikan */ }
+      Promise.race([kirim, new Promise(function (ok) { setTimeout(ok, 1500); })]).then(function () { try { location.reload(); } catch (e) { /* abaikan */ } });
+    }
   }
+  (function () {   // pesan "sesi berakhir" dari sebelum muat ulang
+    try { var m = sessionStorage.getItem('mw_pesan_keluar'); if (m !== null) { sessionStorage.removeItem('mw_pesan_keluar'); if (m) setTimeout(function () { showLogin(m); }, 0); } } catch (e) { /* abaikan */ }
+  })();
   var openSettings = function () { showLogin(''); };
 
   /* ---------- kompres foto (JPG/PNG/WebP) sebelum diupload, supaya Drive tidak cepat penuh ----------
@@ -8375,13 +8383,15 @@ function cekKaryawanMurni_(rows, db) {
   }
 
   /* ---------- dashboard ---------- */
-  var dashBusy = false, dashTampil = false, KUNCI_DASH = 'mw_dash_v10';
+  var dashBusy = false, dashTampil = false;
+  // salinan dashboard dipisah per peran & branch: tampilan Super Admin tidak pernah muncul untuk Admin 1/2
+  function kunciDash() { var p = A.peran ? A.peran() : {}; return 'dash:' + (p.role || '-') + ':' + (p.branch || ''); }
+  try { localStorage.removeItem('mw_dash_v10'); } catch (e) { /* salinan lama (sama untuk semua akun) dibuang */ }
   // angka terakhir disimpan di perangkat (IndexedDB: muat data besar), jadi dashboard langsung tampil tanpa menunggu server
   async function dashLokal() {
     if (dashTampil) return;
     var c = null;
-    try { c = A.ambilLokal ? await A.ambilLokal('dash') : null; } catch (e) { c = null; }
-    if (!c) { try { c = JSON.parse(lsGet(KUNCI_DASH) || 'null'); } catch (e2) { c = null; } }
+    try { c = A.ambilLokal ? await A.ambilLokal(kunciDash()) : null; } catch (e) { c = null; }
     if (!dashTampil && c && c.ok && c.hariIni) { renderDashboard(c, true); dashTampil = true; }
   }
   async function muatDashboard(segar) {
@@ -8393,7 +8403,7 @@ function cekKaryawanMurni_(rows, db) {
       if (!d.ok) throw new Error(d.error || 'Gagal memuat dashboard.');
       renderDashboard(d);
       dashTampil = true;
-      if (A.simpanLokal) A.simpanLokal('dash', d); else lsSet(KUNCI_DASH, JSON.stringify(d));
+      if (A.simpanLokal) A.simpanLokal(kunciDash(), d);
     } catch (e) {
       if (dashTampil) return;
       $('dAct').innerHTML = '<li class="act__empty">' + esc(e.message) + '</li>';
