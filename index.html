@@ -2769,6 +2769,80 @@ body.peran-admin .side__lock + .side__chev { display: none; }
 body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[data-nav="karyawan"], body.peran-admin .side__nav a[data-nav="database"] { display: none !important; }
 .ikset { margin-top: 18px; } .ik__pv { vertical-align: -4px; margin-right: 6px; border-radius: 4px; }
 
+/* Crosscheck Rekening (v36) */
+.cr__figs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0; }
+@media (max-width: 640px) { .cr__figs { grid-template-columns: 1fr; } }
+.cr__warn { margin: 0 0 14px; padding: 12px 16px 12px 34px; border-radius: 12px; background: #FFF7E6; border: 1px solid #F6DFAE; color: #6B4500; font-size: 13.5px; line-height: 1.55; }
+.cr__prev { margin-bottom: 14px; }
+.cr__aksi { display: flex; gap: 8px; flex-wrap: wrap; }
+.cr__tiles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin: 14px 0 16px; }
+@media (max-width: 1100px) { .cr__tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .cr__tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cr__tile { --cw: #1565F5; position: relative; text-align: left; font: inherit; color: var(--ink); padding: 12px 14px 12px 16px; border-radius: 14px; border: 1px solid var(--line); background: #fff; cursor: pointer; overflow: hidden; transition: border-color .15s, box-shadow .15s, transform .15s; }
+.cr__tile::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--cw); }
+.cr__tile span { display: block; font-size: 12.5px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cr__tile b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; margin-top: 2px; color: color-mix(in srgb, var(--cw) 80%, #0F2348); }
+.cr__tile small { font-size: 12px; color: var(--ink-3); }
+.cr__tile:hover { transform: translateY(-1px); border-color: color-mix(in srgb, var(--cw) 45%, #fff); }
+.cr__tile.is-on { border-color: var(--cw); box-shadow: 0 0 0 1px var(--cw); }
+.cr__tile.is-nol { opacity: .55; }
+.cr__st { --cw: #1565F5; display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap; color: color-mix(in srgb, var(--cw) 78%, #0F2348); background: color-mix(in srgb, var(--cw) 13%, #fff); }
+.cr__st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--cw); }
+.cr__bb { display: block; font-size: 11.5px; font-weight: 600; color: #C42B36; }
+.cr__tl { display: block; margin-top: 3px; font-size: 12px; color: #9A5B00; }
+.cr__tbl .acct { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cr__more { display: flex; justify-content: center; margin-top: 12px; }
+.crd__fmt { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 14px 0 6px; }
+@media (max-width: 560px) { .crd__fmt { grid-template-columns: 1fr; } }
+.crd__fmt label { display: flex; gap: 10px; align-items: flex-start; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+.crd__fmt label:has(input:checked) { border-color: #1565F5; box-shadow: 0 0 0 1px #1565F5; background: #F5F9FF; }
+.crd__fmt input { margin-top: 3px; accent-color: #1565F5; }
+.crd__fmt b { display: block; font-size: 14px; }
+.crd__fmt small { display: block; font-size: 12px; color: var(--ink-3); line-height: 1.4; }
+.crd__mcm { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; margin: 10px 0 4px; padding: 14px; border-radius: 14px; background: #F6F9FE; border: 1px solid #E3ECF8; }
+@media (max-width: 560px) { .crd__mcm { grid-template-columns: 1fr; } }
+.crd__mcm .field { margin: 0; }
+.crd__note { grid-column: 1 / -1; margin: 2px 0 0; font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+.dlg--cr { width: min(640px, calc(100vw - 32px)); }
+
+/* v37: Waiting List, cek ulang, file dobel */
+.side__badge { flex: none; margin-left: 8px; min-width: 22px; height: 20px; padding: 0 6px; border-radius: 999px; display: inline-grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 700; background: #F2B33D; color: #3D2600; }
+.side__nav a.is-on .side__badge { background: #fff; color: #0B4FD1; }
+.side__badge + .side__chev { margin-left: 6px; }
+.wl__alur { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) { .wl__alur { grid-template-columns: 1fr; } }
+.wl__alur li { padding: 14px 16px; border-radius: 14px; background: rgba(255, 255, 255, .8); border: 1px solid var(--line); }
+.wl__alur b { display: block; font-size: 14px; margin-bottom: 3px; }
+.wl__alur span { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.wl .panel { margin-top: 18px; }
+.wl .kpi__ic svg.wl__ki { fill: none !important; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.wl .kpi--orange .wl__ki { stroke: #E07A12; } .wl .kpi--blue .wl__ki { stroke: #2A6CEB; } .wl .kpi--green .wl__ki { stroke: #10A37C; } .wl .kpi--purple .wl__ki { stroke: #7B4DF5; }
+.wl__tools { flex-wrap: wrap; gap: 10px; }
+.wl__br select { height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font: inherit; font-size: 14px; color: var(--ink); }
+.wl__aksi { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+.wl__cb { width: 38px; text-align: center; }
+.wl__cb input { width: 17px; height: 17px; accent-color: #1565F5; cursor: pointer; }
+.wl__tbl tr.is-pilih td { background: #F2F7FF; }
+.wl__tbl td small { display: block; margin-top: 3px; font-size: 11.5px; color: var(--ink-3); }
+.wl__tbl .acct { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.wld__br { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }
+.cr__wl { display: flex; align-items: center; gap: 14px; margin: 14px 0 0; padding: 14px 16px; border-radius: 14px; background: #EEF5FF; border: 1px solid #CFE0FB; }
+.cr__wl > svg { width: 26px; height: 26px; flex: none; fill: none; stroke: #1565F5; stroke-width: 1.9; stroke-linecap: round; }
+.cr__wl div { flex: 1; min-width: 0; }
+.cr__wl b { display: block; font-size: 14px; color: var(--ink); }
+.cr__wl span { display: block; font-size: 13px; color: var(--ink-2); line-height: 1.5; margin-top: 2px; }
+@media (max-width: 640px) { .cr__wl { flex-wrap: wrap; } }
+.hist__ulang { display: inline-grid; place-items: center; width: 34px; height: 34px; margin-left: 4px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: #1565F5; cursor: pointer; vertical-align: middle; }
+.hist__ulang svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hist__ulang:hover { border-color: #8DB4F5; background: #F2F7FF; }
+.hist__ulang:disabled { opacity: .55; cursor: progress; width: auto; padding: 0 10px; font-size: 12px; }
+.dlg--dobel { width: min(560px, calc(100vw - 32px)); }
+.db__txt { margin: 8px 0 16px; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+.db__rk { display: block; margin: 8px 0; padding: 10px 12px; border-radius: 10px; background: #F6F9FE; color: var(--ink); font-size: 13.5px; }
+.db__pil { display: grid; gap: 8px; }
+.db__pil .btn { justify-content: center; }
+.db__note { margin: 12px 0 0; font-size: 12.5px; color: var(--ink-3); }
+
 </style>
 </head>
 <body class="is-auth">
@@ -2911,6 +2985,8 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
       <nav class="side__nav">
         <a href="#/dashboard" data-nav="dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4.5v-6h-5v6H5a1 1 0 01-1-1z"/></svg><span>Dashboard</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/crosscheck" data-nav="crosscheck"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="12" height="17" rx="2"/><path d="M8.5 8h5M8.5 11.5h3"/><circle cx="16" cy="16" r="3.2"/><path d="M18.4 18.4L21 21"/></svg><span>Crosscheck MCM</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
+        <a href="#/cekrek" data-nav="cekrek"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 9.5h18M6.5 14h4"/><circle cx="16.5" cy="14.5" r="2.6"/><path d="M18.4 16.4l2.1 2.1"/></svg><span>Crosscheck Rekening</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
+        <a href="#/antrean" data-nav="antrean"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h12M6 20.5h12M8 3.5c0 5 4 5.5 4 8.5s-4 3.5-4 8.5M16 3.5c0 5-4 5.5-4 8.5s4 3.5 4 8.5"/></svg><span>Waiting List</span><i class="side__badge" id="wlBadge" hidden>0</i><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/riwayat" data-nav="riwayat"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span>Riwayat</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/pengguna" data-nav="pengguna" class="hanya-super"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M3 19.5c.5-3.6 3-5.6 6-5.6 1.5 0 2.9.5 4 1.4"/><path d="M14.5 20v-4.5M17.5 20v-7M20.5 20v-3"/></svg><span>Riwayat Pengguna</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/update" data-nav="update"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7.5" ry="2.8"/><path d="M4.5 6v6c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8V6M4.5 12v6c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8v-6"/></svg><span>Update Database</span><svg class="side__lock" viewBox="0 0 24 24" aria-label="Terkunci" role="img"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.2 10.5V8a3.8 3.8 0 017.6 0v2.5"/></svg><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
@@ -3299,6 +3375,7 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
                 </button>
                 <button class="btn btn--ghost btn--sm" type="button" id="rDlCsv" title="Unduh baris kategori ini sebagai CSV">CSV</button>
                 <button class="btn btn--primary btn--sm" type="button" id="rDlCustom" title="Pilih beberapa keterangan sekaligus, jadi satu file CSV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Unduh custom</button>
+                <button class="btn btn--white btn--sm" type="button" id="rCekUlang" title="Cocokkan ulang laporan ini dengan database terbaru, tanpa upload file lagi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 00-14.5-4.2M4 4v4h4M4 13a8 8 0 0014.5 4.2M20 20v-4h-4"/></svg>Cek ulang</button>
               </div>
             </div>
             <div class="tbl-wrap">
@@ -3894,6 +3971,109 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
             </article>
           </div>
         </section>
+        <section class="view wl" data-view="antrean" aria-labelledby="wlTitle">
+          <header class="phead">
+            <div class="phead__main">
+              <div class="phead__eyebrow"><button class="phead__back" type="button" data-back hidden aria-label="Kembali ke halaman sebelumnya" title="Kembali"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg><span>Kembali</span></button><span class="phead__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h12M6 20.5h12M8 3.5c0 5 4 5.5 4 8.5s-4 3.5-4 8.5M16 3.5c0 5-4 5.5-4 8.5s4 3.5 4 8.5"/></svg></span><span class="phead__eyetxt">Antrean pengecekan rekening baru ke finance</span></div>
+              <h1 id="wlTitle">Waiting <span>List</span></h1>
+              <p class="phead__lead" id="wlLead">Rekening yang belum ada di database, dikumpulkan dulu supaya diajukan ke finance sekaligus.</p>
+              <div class="phead__actions">
+                <a class="btn btn--primary" href="#/cekrek"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Tambah lewat Crosscheck Rekening</a>
+                <button class="btn btn--white" type="button" id="wlMuat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 00-14.5-4.2M4 4v4h4M4 13a8 8 0 0014.5 4.2M20 20v-4h-4"/></svg>Muat ulang</button>
+              </div>
+            </div>
+            <div class="phead__art" aria-hidden="true"></div>
+          </header>
+          <div class="kpis kpis--4" id="wlKpi"></div>
+          <ol class="wl__alur" aria-label="Alur waiting list">
+            <li><b>1. Masuk antrean</b><span>Rekening "tidak ada di database" dari Crosscheck Rekening otomatis masuk, dari semua branch dan admin.</span></li>
+            <li><b>2. Diajukan ke finance</b><span>Super Admin mengunduh satu file MCM berisi banyak rekening sekaligus, lalu statusnya menjadi Diajukan.</span></li>
+            <li><b>3. Selesai otomatis</b><span>Setelah PDF transfer finance diupload di Update Database, rekening yang sudah masuk database otomatis Selesai.</span></li>
+          </ol>
+          <div class="panel">
+            <div class="tabs" role="tablist" aria-label="Status" id="wlTabs"></div>
+            <div class="tools wl__tools">
+              <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><span class="sr-only">Cari</span>
+                <input type="search" id="wlQ" placeholder="Cari nama, no rekening, atau batch" autocomplete="off"></label>
+              <label class="wl__br" id="wlBrWrap"><span class="sr-only">Branch</span><select id="wlBr"><option value="">Semua branch</option></select></label>
+              <span class="tools__meta" id="wlMeta"></span>
+              <div class="wl__aksi">
+                <button class="btn btn--primary btn--sm hanya-super" type="button" id="wlAjukan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></svg>Ajukan ke finance (MCM)</button>
+                <button class="btn btn--white btn--sm hanya-super" type="button" id="wlMcmLagi" hidden>Unduh ulang MCM</button>
+                <button class="btn btn--white btn--sm hanya-super" type="button" id="wlKembali" hidden>Kembalikan ke Menunggu</button>
+                <button class="btn btn--ghost btn--sm" type="button" id="wlXls">Unduh Excel</button>
+                <button class="btn btn--ghost btn--sm btn--danger-ghost" type="button" id="wlBatal" disabled>Batalkan</button>
+              </div>
+            </div>
+            <div class="tbl-wrap"><table class="tbl wl__tbl"><thead><tr><th scope="col" class="wl__cb"><input type="checkbox" id="wlAll" aria-label="Pilih semua yang tampil"></th><th scope="col">Masuk</th><th scope="col">Nama</th><th scope="col">No rekening</th><th scope="col">Bank</th><th scope="col">Branch</th><th scope="col">Diajukan oleh</th><th scope="col">Status</th></tr></thead><tbody id="wlBody"><tr><td class="empty" colspan="8">Memuat…</td></tr></tbody></table></div>
+          </div>
+        </section>
+
+        <section class="view cr" data-view="cekrek" aria-labelledby="crTitle">
+          <header class="phead">
+            <div class="phead__main">
+              <div class="phead__eyebrow"><button class="phead__back" type="button" data-back hidden aria-label="Kembali ke halaman sebelumnya" title="Kembali"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg><span>Kembali</span></button><span class="phead__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 9.5h18M6.5 14h4"/><circle cx="16.5" cy="14.5" r="2.6"/><path d="M18.4 16.4l2.1 2.1"/></svg></span><span class="phead__eyetxt">Cek nama pemilik dari daftar rekening</span></div>
+              <h1 id="crTitle">Crosscheck <span>Rekening</span></h1>
+              <p class="phead__lead">Cocokkan daftar Nama, No Rekening, dan Bank dengan database rekening, RO, dan surat kuasa.</p>
+              <div class="phead__actions">
+                <button class="btn btn--primary" type="button" id="crTplXls"><span class="ico-xls" aria-hidden="true">X</span>Unduh template Excel</button>
+                <button class="btn btn--white" type="button" id="crTplCsv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M12 11v6M9.5 14.5L12 17l2.5-2.5"/></svg>Template CSV</button>
+              </div>
+            </div>
+            <div class="phead__art" aria-hidden="true"></div>
+          </header>
+          <ol class="steps" aria-label="Langkah crosscheck rekening" id="crSteps">
+            <li class="step is-active" data-step="1"><span class="step__n">1</span><span class="step__t">Pilih file</span></li>
+            <li class="step" data-step="2"><span class="step__n">2</span><span class="step__t">Periksa daftar</span></li>
+            <li class="step" data-step="3"><span class="step__n">3</span><span class="step__t">Hasil</span></li>
+          </ol>
+          <div class="panel">
+            <div class="state" id="crPick">
+              <label class="drop" id="crDrop" for="crFile">
+                <input type="file" id="crFile" accept=".xls,.xlsx,.csv,.txt,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" class="sr-only">
+                <span class="drop__icon drop__icon--sheet" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="9" y="7" width="30" height="34" rx="4"/><path d="M9 17h30M9 27h30M21 17v24"/></svg></span>
+                <span class="drop__title">Seret file daftar rekening ke sini, atau <u>pilih dari perangkat</u></span>
+                <span class="drop__hint">Excel atau CSV dengan kolom <b>Nama</b>, <b>No Rekening</b>, dan <b>Bank</b>. Pakai template di atas supaya pasti terbaca.</span>
+              </label>
+              <p class="err" id="crPickErr" role="alert" hidden></p>
+            </div>
+            <div class="state" id="crCheck" hidden>
+              <div class="file-bar">
+                <div class="file-bar__name"><b id="crName"></b><small id="crMeta"></small></div>
+                <button class="btn btn--ghost btn--sm" type="button" id="crGanti">Ganti file</button>
+              </div>
+              <div class="cr__figs">
+                <div class="fig fig--main"><dt>Rekening dibaca</dt><dd id="crRows">0</dd></div>
+                <div class="fig"><dt>Bank berbeda-beda</dt><dd id="crBanks">0</dd></div>
+                <div class="fig"><dt>Baris dilewati</dt><dd id="crSkip">0</dd></div>
+              </div>
+              <ul class="cr__warn" id="crWarn" hidden></ul>
+              <div class="tbl-wrap tbl-wrap--flat cr__prev"><table class="tbl"><thead><tr><th scope="col">Baris</th><th scope="col">Nama</th><th scope="col">No rekening</th><th scope="col">Bank</th></tr></thead><tbody id="crPrev"></tbody></table></div>
+              <div class="actionbar"><p class="actionbar__txt" id="crRunTxt">Siap dicek ke database rekening.</p><button class="btn btn--primary" type="button" id="crRun">Cek rekening</button></div>
+              <div id="crProg" hidden></div>
+            </div>
+            <div class="state" id="crHasil" hidden>
+              <div class="file-bar">
+                <div class="file-bar__name"><b id="crHName"></b><small id="crHMeta"></small></div>
+                <div class="cr__aksi">
+                  <button class="btn btn--primary btn--sm" type="button" id="crDl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></svg>Unduh custom</button>
+                  <button class="btn btn--ghost btn--sm" type="button" id="crBaru">Cek file lain</button>
+                </div>
+              </div>
+              <div class="cr__wl" id="crWl" hidden></div>
+              <div class="cr__tiles" id="crTiles"></div>
+              <div class="tabs" role="tablist" aria-label="Kategori hasil" id="crTabs"></div>
+              <div class="tools">
+                <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><span class="sr-only">Cari</span>
+                  <input type="search" id="crQ" placeholder="Cari nama atau no rekening" autocomplete="off"></label>
+                <span class="tools__meta" id="crQMeta"></span>
+              </div>
+              <div class="tbl-wrap"><table class="tbl cr__tbl"><thead><tr><th scope="col">Baris</th><th scope="col">Nama di file</th><th scope="col">No rekening</th><th scope="col">Bank</th><th scope="col">Pemilik di database</th><th scope="col">Hasil</th><th scope="col">Keterangan</th></tr></thead><tbody id="crBody"></tbody></table></div>
+              <div class="cr__more" id="crMore"></div>
+            </div>
+          </div>
+        </section>
+
         <section class="view rp" data-view="pengguna" aria-labelledby="rpTitle">
           <header class="phead">
             <div class="phead__main">
@@ -4170,6 +4350,63 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
   <div class="print-area" id="printArea" aria-hidden="true"></div>
 
   <!-- Dialog konfirmasi kirim -->
+  <dialog class="dlg dlg--cu dlg--cr" id="dlgWl" aria-labelledby="wldTitle">
+    <form method="dialog" novalidate>
+      <h3 id="wldTitle">Ajukan ke finance</h3>
+      <p class="cu__lead" id="wldLead"></p>
+      <div class="wld__br" id="wldBr"></div>
+      <div class="crd__mcm">
+        <label class="field"><span>Rekening sumber (debet)</span><input id="wldSumber" inputmode="numeric" autocomplete="off"></label>
+        <label class="field"><span>Tanggal transfer</span><input id="wldTgl" type="date"></label>
+        <label class="field"><span>Nominal per rekening (Rp)</span><input id="wldNom" inputmode="numeric" autocomplete="off"></label>
+        <label class="field"><span>Keterangan transfer</span><input id="wldKet" maxlength="40" autocomplete="off"></label>
+        <p class="crd__note" id="wldNote"></p>
+      </div>
+      <div class="dlg__cta">
+        <button class="btn btn--ghost" value="cancel">Batal</button>
+        <button class="btn btn--primary" type="button" id="wldGo">Unduh MCM &amp; tandai Diajukan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dlg dlg--dobel" id="dlgDobel" aria-labelledby="dbTitle">
+    <form method="dialog">
+      <h3 id="dbTitle">File ini sudah pernah dicek</h3>
+      <p class="db__txt" id="dbText"></p>
+      <div class="db__pil">
+        <button class="btn btn--primary" type="button" data-db="ulang"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 00-14.5-4.2M4 4v4h4M4 13a8 8 0 0014.5 4.2M20 20v-4h-4"/></svg>Cek ulang laporan lama</button>
+        <button class="btn btn--white" type="button" data-db="baru">Tetap simpan sebagai crosscheck baru</button>
+        <button class="btn btn--ghost" type="button" data-db="batal">Batal</button>
+      </div>
+      <p class="db__note">"Simpan sebagai baru" membuat riwayat kedua, sehingga beda nama dari file yang sama ikut terhitung dua kali di dashboard.</p>
+    </form>
+  </dialog>
+
+  <dialog class="dlg dlg--cu dlg--cr" id="dlgCr" aria-labelledby="crdTitle">
+    <form method="dialog" novalidate>
+      <h3 id="crdTitle">Unduh hasil crosscheck rekening</h3>
+      <p class="cu__lead">Centang hasil yang mau diunduh, lalu pilih formatnya. Baris diurutkan sesuai urutan hasil di bawah.</p>
+      <div class="cu__list" id="crdList"></div>
+      <div class="crd__fmt" role="radiogroup" aria-label="Format file">
+        <label><input type="radio" name="crdFmt" value="xlsx" checked><span><b>Excel</b><small>untuk dibaca / diteruskan ke tim operasional</small></span></label>
+        <label><input type="radio" name="crdFmt" value="csv"><span><b>CSV</b><small>kolom sama dengan Excel</small></span></label>
+        <label><input type="radio" name="crdFmt" value="mcm"><span><b>MCM Mandiri</b><small>untuk coba transfer massal</small></span></label>
+      </div>
+      <div class="crd__mcm" id="crdMcm" hidden>
+        <label class="field"><span>Rekening sumber (debet)</span><input id="crdSumber" inputmode="numeric" autocomplete="off"></label>
+        <label class="field"><span>Tanggal transfer</span><input id="crdTgl" type="date"></label>
+        <label class="field"><span>Nominal per rekening (Rp)</span><input id="crdNom" inputmode="numeric" autocomplete="off"></label>
+        <label class="field"><span>Keterangan transfer</span><input id="crdKet" maxlength="40" autocomplete="off"></label>
+        <p class="crd__note" id="crdNote"></p>
+      </div>
+      <p class="cu__sum" id="crdSum"></p>
+      <div class="dlg__cta">
+        <button class="btn btn--ghost" value="cancel">Batal</button>
+        <button class="btn btn--primary" type="button" id="crdGo">Unduh</button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog class="dlg dlg--cu" id="dlgCustom" aria-labelledby="cuTitle">
     <form method="dialog">
       <h3 id="cuTitle">Unduh custom</h3>
@@ -6711,9 +6948,36 @@ function cekKaryawanMurni_(rows, db) {
   var run = null, menyimpan = 0;
   function cegahTutup(e) { if (menyimpan > 0) { e.preventDefault(); e.returnValue = ''; } }
   window.addEventListener('beforeunload', cegahTutup);
+  // file MCM yang sama sudah pernah dicek? tawarkan "cek ulang" supaya rekap tidak terhitung dua kali
+  function pilihDobel(sama) {
+    var d = $('dlgDobel'), x = sama[0], g = x.ringkas || {};
+    $('dbText').innerHTML = 'File <b>' + esc(st.file.name) + '</b> (' + num(x.jumlah) + ' baris) sudah pernah dicek pada <b>' + esc(x.waktuTeks) + ' WIB</b>' + (x.oleh ? ' oleh ' + esc(x.oleh) : '') + '.' +
+      '<span class="db__rk">Hasil saat itu: ' + num(g.COCOK || 0) + ' cocok, ' + num(g.MIRIP || 0) + ' mirip, ' + num(g.BEDA_NOSK != null ? g.BEDA_NOSK : g.BEDA || 0) + ' beda nama, ' + num(g.TIDAK_ADA || 0) + ' tidak ada.</span>' +
+      'Kalau rekening barunya sudah ditambahkan ke database, pilih <b>Cek ulang laporan lama</b>: hasilnya diperbarui tanpa menambah rekap beda nama.';
+    return new Promise(function (ok) {
+      function selesai(v) { d.removeEventListener('close', tutup); d.querySelectorAll('[data-db]').forEach(function (b) { b.onclick = null; }); if (d.open) d.close(); ok(v); }
+      function tutup() { selesai('batal'); }
+      d.querySelectorAll('[data-db]').forEach(function (b) { b.onclick = function (e) { e.preventDefault(); selesai(b.dataset.db); }; });
+      d.addEventListener('close', tutup);
+      d.showModal();
+    });
+  }
   $('xRunBtn').addEventListener('click', async function () {
-    var btn = this, r = st.parsed, file = st.file, me = run = { batal: false };
+    var btn = this, r = st.parsed, file = st.file;
     if (!siapUpload()) { updateRun(); senggolTujuan(); return; }
+    if (!st.lewatiDobel) {
+      var labelAwal = btn.textContent; btn.disabled = true; btn.textContent = 'Memeriksa riwayat…';
+      var dob = null;
+      try { dob = await A.post({ action: 'cariDobelCC', fileName: file.name, jumlah: r.rows.length, totalCents: r.totalCents || 0 }); } catch (eD) { dob = null; }
+      btn.disabled = false; btn.textContent = labelAwal;
+      if (dob && dob.ok && dob.sama && dob.sama.length) {
+        var pil = await pilihDobel(dob.sama);
+        if (pil === 'batal') return;
+        if (pil === 'ulang') { await A.cekUlangLaporan(dob.sama[0].id); return; }
+        st.lewatiDobel = true;   // tetap simpan sebagai crosscheck baru
+      }
+    }
+    var me = run = { batal: false };
     var tujuan = tj.mode === 'semua' ? { mode: 'semua', site: '', branch: tj.branch } : { mode: 'site', site: tj.site.nama, branch: tj.site.branch || tj.branch };
     btn.disabled = true; btn.textContent = 'Mencocokkan…';
     $('xCancelRun').hidden = false; $('xCancelRun').disabled = false; $('xCancelRun').textContent = 'Batalkan';
@@ -6904,6 +7168,28 @@ function cekKaryawanMurni_(rows, db) {
   // lalu dicek ulang ke server di belakang (kalau ada perubahan, misalnya surat kuasa, tampilan diperbarui)
   var simpananLap = {};
   function ingatLaporan(rep) { if (rep && rep.id) simpananLap[rep.id] = rep; }
+  // cek ulang laporan lama dengan database TERBARU: hasil & riwayat diperbarui di tempat (tidak membuat riwayat baru)
+  A.cekUlangLaporan = async function (id, tombol) {
+    if (!id) return;
+    var label = tombol ? tombol.innerHTML : '';
+    if (tombol) { tombol.disabled = true; tombol.textContent = 'Mengecek ulang…'; }
+    A.toast('Mengecek ulang dengan database terbaru…', true);
+    try {
+      var out = await A.post({ action: 'cekUlangCC', id: id });
+      if (!out.ok) throw new Error(out.error || 'Gagal mengecek ulang.');
+      delete simpananLap[id];
+      ingatLaporan(out);
+      openReport(out);
+      var p = out.perubahan || {}, teks = Object.keys(p).map(function (k) { return num(p[k]) + ' ' + k; }).join(', ');
+      A.toast(out.diubah ? 'Cek ulang selesai: ' + num(out.diubah) + ' baris berubah (' + teks + '). Rekap diperbarui, tidak dihitung dua kali.' : 'Cek ulang selesai: tidak ada perubahan hasil.', true);
+      if (A.refreshHistory) A.refreshHistory();
+    } catch (e) { A.toast('Cek ulang gagal: ' + e.message); }
+    finally { if (tombol) { tombol.disabled = false; tombol.innerHTML = label; } }
+  };
+  $('rCekUlang').addEventListener('click', function () {
+    if (!st.report || !st.report.id) { A.toast('Laporan ini belum selesai tersimpan. Tunggu sebentar lalu coba lagi.'); return; }
+    A.cekUlangLaporan(st.report.id, this);
+  });
   A.bukaLaporan = async function (id) {
     var lama = simpananLap[id];
     if (lama) {
@@ -7853,7 +8139,8 @@ function cekKaryawanMurni_(rows, db) {
       var sum, act = '';
       if (h.jenis === 'cc') {
         sum = ringkasCC(h.ringkas || {}, h.jumlah);
-        act = '<button class="btn btn--ghost btn--sm" type="button" data-hid="' + esc(h.id) + '">Lihat laporan</button>';
+        act = '<button class="btn btn--ghost btn--sm" type="button" data-hid="' + esc(h.id) + '">Lihat laporan</button>' +
+          '<button class="hist__ulang" type="button" data-cekulang="' + esc(h.id) + '" title="Cek ulang dengan database terbaru (tanpa upload lagi)" aria-label="Cek ulang ' + esc(h.fileName || '') + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 00-14.5-4.2M4 4v4h4M4 13a8 8 0 0014.5 4.2M20 20v-4h-4"/></svg></button>';
       } else {
         sum = h.karyawan ? num(h.transaksi) + ' baris, <b>' + num(h.barisMasuk) + ' karyawan baru</b>' : h.dataAwal ? num(h.batch) + ' batch data awal'
           : num(h.batch) + ' batch, ' + num(h.transaksi) + ' transaksi di PDF, <b>' + num(h.barisMasuk) + ' rekening baru</b>' + (h.batchDilewati ? ', ' + num(h.batchDilewati) + ' batch sudah pernah diupload' : '');
@@ -8049,6 +8336,8 @@ function cekKaryawanMurni_(rows, db) {
       }
       return;
     }
+    var cu = e.target.closest('[data-cekulang]');
+    if (cu) { A.cekUlangLaporan(cu.dataset.cekulang, cu); return; }
     var b = e.target.closest('[data-hid]');
     if (!b) return;
     var label = b.textContent; b.disabled = true; b.textContent = 'Membuka…';
@@ -8209,8 +8498,8 @@ function cekKaryawanMurni_(rows, db) {
   'use strict';
   var A = window.APP, $ = function (id) { return document.getElementById(id); };
   var esc = A.esc, num = A.num;
-  var VIEWS = ['dashboard', 'crosscheck', 'riwayat', 'update', 'karyawan', 'database', 'pengaturan', 'pengguna', 'dokumen'];
-  var JUDUL = { dashboard: 'Dashboard', crosscheck: 'Crosscheck MCM', riwayat: 'Riwayat', update: 'Update Database', karyawan: 'Tambah Karyawan', database: 'Database Bank', pengaturan: 'Pengaturan', pengguna: 'Riwayat Pengguna', dokumen: 'Dokumen Karyawan Baru' };
+  var VIEWS = ['dashboard', 'crosscheck', 'cekrek', 'antrean', 'riwayat', 'update', 'karyawan', 'database', 'pengaturan', 'pengguna', 'dokumen'];
+  var JUDUL = { dashboard: 'Dashboard', crosscheck: 'Crosscheck MCM', cekrek: 'Crosscheck Rekening', antrean: 'Waiting List', riwayat: 'Riwayat', update: 'Update Database', karyawan: 'Tambah Karyawan', database: 'Database Bank', pengaturan: 'Pengaturan', pengguna: 'Riwayat Pengguna', dokumen: 'Dokumen Karyawan Baru' };
   // halaman yang hanya bisa dibuka Super Admin (Admin 1 & 2 melihat menunya terkunci)
   var HANYA_SUPER = { update: 1, karyawan: 1, database: 1, pengguna: 1 };
   function terkunci(v) { return HANYA_SUPER[v] && !(A.peran && A.peran().super); }
@@ -8264,6 +8553,7 @@ function cekKaryawanMurni_(rows, db) {
     if (v === 'karyawan' && A.karyawanTampil) A.karyawanTampil();
     if (v === 'riwayat' && ganti && A.refreshHistory) A.refreshHistory();
     if (v === 'pengguna' && A.muatRiwayatPengguna) A.muatRiwayatPengguna();
+    if (v === 'antrean' && A.muatWaitingList) A.muatWaitingList();
   }
   A.go = go;
   function dariHash() { var m = /^#\/(\w+)/.exec(location.hash); return m ? m[1] : 'dashboard'; }
@@ -10281,6 +10571,537 @@ function cekKaryawanMurni_(rows, db) {
       } catch (e) { /* abaikan */ }
     }, 4000);
   });
+})();
+
+</script>
+  <script>
+/* Moneywise — Crosscheck Rekening (v36)
+ * Daftar Nama, No Rekening, Bank (Excel/CSV) dicocokkan ke database rekening, RO, surat kuasa, dan data personalia
+ * di server, memakai mesin yang SAMA dengan Crosscheck MCM. Hasil bisa diunduh custom: Excel, CSV, atau MCM Mandiri
+ * (format 44 kolom persis seperti file MCM asli, untuk coba transfer massal). Hasil tidak masuk riwayat/dashboard MCM. */
+(function () {
+  'use strict';
+  var A = window.APP, $ = function (id) { return document.getElementById(id); };
+  var esc = A.esc, num = A.num;
+  if (!$('crFile')) return;
+
+  var URUT = ['COCOK', 'SK', 'MIRIP', 'RO', 'BEDA', 'TIDAK_ADA'];
+  var LABEL = { COCOK: 'Cocok', SK: 'Surat kuasa', MIRIP: 'Mirip', RO: 'Via RO', BEDA: 'Beda nama', TIDAK_ADA: 'Tidak ada di database' };
+  var WARNA = { COCOK: '#1FBF86', SK: '#0EA5C6', MIRIP: '#F2B33D', RO: '#7C4DFF', BEDA: '#E5484D', TIDAK_ADA: '#8A97AE' };
+  var TINDAK = {
+    COCOK: 'Aman: nama sesuai database.',
+    SK: 'Aman: sudah ada surat kuasa.',
+    MIRIP: 'Cek ejaan nama di buku tabungan, lalu samakan.',
+    RO: 'Rekening RO: minta surat kuasa dari karyawan.',
+    BEDA: 'Minta surat kuasa, ATAU minta nomor rekening baru atas nama karyawan sendiri.',
+    TIDAK_ADA: 'Belum pernah ditransfer: coba transfer (MCM) untuk memastikan nama pemilik.'
+  };
+  function kat(h) { return h.sk && (h.status === 'BEDA' || h.status === 'RO') ? 'SK' : h.status; }
+
+  /* ---------- kode bank untuk MCM Mandiri (diambil dari file MCM asli) ---------- */
+  var BANK = [
+    { k: 'BSI', kode: '4510017', nama: 'BSI', re: /\bbsi\b|syariah indonesia|mandiri syariah|bni syariah|bri ?syariah|\bbris\b/ },
+    { k: 'MANDIRI', kode: '', nama: 'MANDIRI', re: /mandiri/ },
+    { k: 'BCA', kode: '0140397', nama: 'BCA', re: /\bbca\b|central asia/ },
+    { k: 'BRI', kode: '0020307', nama: 'BRI', re: /\bbri\b|rakyat indonesia/ },
+    { k: 'BNI', kode: '0090010', nama: 'BNI', re: /\bbni\b|negara indonesia/ },
+    { k: 'SEABANK', kode: '5350014', nama: 'SEABANK', re: /sea ?bank/ },
+    { k: 'JATIM', kode: '1140383', nama: 'BANK JATIM', re: /jatim|jawa timur/ },
+    { k: 'JAGO', kode: '5420012', nama: 'BANK JAGO', re: /\bjago\b/ },
+    { k: 'BTN', kode: '2000150', nama: 'BTN', re: /\bbtn\b|tabungan negara/ },
+    { k: 'CIMB', kode: '0220026', nama: 'CIMB NIAGA', re: /cimb|niaga/ },
+    { k: 'PANIN', kode: '0190017', nama: 'BANK PANIN', re: /panin/ },
+    { k: 'MUAMALAT', kode: '1470011', nama: 'MUAMALAT', re: /muamalat/ },
+    { k: 'DANAMON', kode: '0110042', nama: 'DANAMON', re: /danamon/ },
+    { k: 'MAYBANK', kode: '0160131', nama: 'BANK MAYBANK', re: /maybank/ }
+  ];
+  function infoBank(nama) {
+    var t = String(nama || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!t) return null;
+    for (var i = 0; i < BANK.length; i++) if (BANK[i].re.test(t)) return BANK[i];
+    return null;
+  }
+  // bank di file berbeda dengan bank di database (hanya bila keduanya dikenali)
+  function bankBeda(h) { var a = infoBank(h.bank), b = infoBank(h.bankDb); return !!(a && b && a.k !== b.k); }
+
+  var st = { file: null, rows: [], hasil: null, filter: 'TINDAK', q: '', tampil: 200, waktu: '' };
+  function show(id) { ['crPick', 'crCheck', 'crHasil'].forEach(function (s) { $(s).hidden = s !== id; }); }
+  function setStep(n) {
+    document.querySelectorAll('#crSteps .step').forEach(function (el) {
+      var s = +el.dataset.step; el.classList.toggle('is-active', s === n); el.classList.toggle('is-done', s < n);
+      if (s === n) el.setAttribute('aria-current', 'step'); else el.removeAttribute('aria-current');
+    });
+  }
+  function err(t) { var e = $('crPickErr'); e.textContent = t || ''; e.hidden = !t; }
+  function unduh(isi, nama, tipe) {
+    var blob = isi instanceof Blob ? isi : new Blob([isi], { type: tipe || 'text/csv;charset=utf-8' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nama;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 30000);
+  }
+  function tglHariIni() { var d = new Date(Date.now() + 7 * 3600e3); return d.toISOString().slice(0, 10); }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* abaikan */ } }
+
+  /* ---------- template ---------- */
+  var JUDUL_TPL = ['Nama', 'No Rekening', 'Bank'];
+  $('crTplCsv').addEventListener('click', function () { unduh('Nama,No Rekening,Bank\r\n', 'Template Crosscheck Rekening.csv'); });
+  $('crTplXls').addEventListener('click', function () {
+    if (typeof XLSX === 'undefined') { A.toast('Pembuat file Excel belum termuat. Periksa koneksi internet, atau pakai Template CSV.'); return; }
+    var ws = XLSX.utils.aoa_to_sheet([JUDUL_TPL]);
+    ws['!cols'] = [{ wch: 34 }, { wch: 22 }, { wch: 18 }];
+    // kolom No Rekening sebagai teks (angka 0 di depan tidak hilang)
+    for (var r = 1; r <= 1000; r++) ws[XLSX.utils.encode_cell({ r: r, c: 1 })] = { t: 's', v: '', z: '@' };
+    ws['!ref'] = 'A1:C1001';
+    var pet = XLSX.utils.aoa_to_sheet([['Petunjuk Crosscheck Rekening'], [''],
+      ['1. Isi sheet "Daftar": satu baris = satu rekening. Kolom wajib: Nama, No Rekening, Bank.'],
+      ['2. No Rekening ditulis lengkap tanpa titik/spasi. Kalau diawali angka 0, pastikan sel berformat teks.'],
+      ['3. Bank cukup nama singkat, mis. Mandiri, BCA, BRI, BNI, BSI, SeaBank, Bank Jatim, BTN, CIMB Niaga.'],
+      ['4. Upload di menu Crosscheck Rekening. Hasil bisa diunduh sebagai Excel, CSV, atau MCM Mandiri.']]);
+    pet['!cols'] = [{ wch: 100 }];
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Daftar');
+    XLSX.utils.book_append_sheet(wb, pet, 'Petunjuk');
+    XLSX.writeFile(wb, 'Template Crosscheck Rekening.xlsx');
+  });
+
+  /* ---------- baca file ---------- */
+  function str(v) { return v === null || v === undefined ? '' : String(v).replace(/\s+/g, ' ').trim(); }
+  function cariJudul(aoa) {
+    for (var r = 0; r < Math.min(aoa.length, 12); r++) {
+      var low = (aoa[r] || []).map(function (v) { return str(v).toLowerCase(); });
+      var iR = low.findIndex(function (v) { return /rek|account|acct|norek/.test(v) && !/nama|name|bank/.test(v); });
+      var iN = low.findIndex(function (v, i) { return i !== iR && /^nama|name|karyawan|penerima/.test(v) && !/bank|rek/.test(v); });
+      var iB = low.findIndex(function (v, i) { return i !== iR && i !== iN && /bank/.test(v) && !/kode|code/.test(v); });
+      if (iR > -1 && iN > -1) return { baris: r, rek: iR, nama: iN, bank: iB };
+    }
+    return null;
+  }
+  function baca(aoa) {
+    var j = cariJudul(aoa), out = { rows: [], lewat: [], warn: [], angka: 0 };
+    if (!j) { out.error = 'Judul kolom tidak ditemukan. File perlu kolom "Nama" dan "No Rekening" (dan sebaiknya "Bank"). Unduh template di atas supaya pasti terbaca.'; return out; }
+    if (j.bank < 0) out.warn.push('Kolom Bank tidak ditemukan. Pengecekan tetap jalan, tetapi format MCM butuh nama bank (diisi dari database bila rekeningnya sudah ada).');
+    var seen = {}, dobel = 0;
+    for (var r = j.baris + 1; r < aoa.length; r++) {
+      var row = aoa[r] || [], nama = str(row[j.nama]), mentah = row[j.rek], bank = j.bank > -1 ? str(row[j.bank]) : '';
+      if (!nama && str(mentah) === '' && !bank) continue;
+      var a = MCMParser.toAcct(mentah);
+      if (!a || a.acct.length < 5 || a.acct.length > 20) { out.lewat.push({ line: r + 1, alasan: 'no rekening tidak valid ("' + (str(mentah) || '-') + '")' }); continue; }
+      if (!nama || /^\d+$/.test(nama)) { out.lewat.push({ line: r + 1, alasan: 'nama kosong' }); continue; }
+      if (a.fromNumber) out.angka++;
+      if (seen[a.acct]) dobel++;
+      seen[a.acct] = 1;
+      out.rows.push({ line: r + 1, acct: a.acct, name: nama, bank: bank });
+    }
+    if (out.angka) out.warn.push(out.angka + ' no rekening tersimpan sebagai angka di Excel. Kalau ada angka 0 di depan yang hilang, rekening itu bisa terbaca "tidak ada". Ubah kolomnya ke format teks.');
+    if (dobel) out.warn.push(dobel + ' no rekening muncul lebih dari sekali di file.');
+    if (out.lewat.length) out.warn.push(out.lewat.length + ' baris dilewati: ' + out.lewat.slice(0, 4).map(function (x) { return 'baris ' + x.line + ' (' + x.alasan + ')'; }).join(', ') + (out.lewat.length > 4 ? ', …' : '') + '.');
+    if (!out.rows.length) out.error = 'Tidak ada baris rekening yang valid di file ini.';
+    return out;
+  }
+  async function pilihFile(file) {
+    err('');
+    if (!file) return;
+    if (!/\.(xls|xlsx|csv|txt)$/i.test(file.name)) { err('File "' + file.name + '" bukan Excel atau CSV.'); return; }
+    try {
+      var res = await MCMParser.readFile(file), b = baca(res.aoa || []);
+      if (b.error) { err(b.error); show('crPick'); setStep(1); return; }
+      st.file = file; st.rows = b.rows; st.hasil = null;
+      $('crName').textContent = file.name;
+      $('crMeta').textContent = (res.sheet && res.sheet !== 'CSV' ? 'sheet "' + res.sheet + '" · ' : '') + num(b.rows.length) + ' rekening';
+      var banks = {}; b.rows.forEach(function (x) { var i = infoBank(x.bank); banks[i ? i.k : (x.bank || '-').toUpperCase()] = 1; });
+      $('crRows').textContent = num(b.rows.length); $('crBanks').textContent = num(Object.keys(banks).length); $('crSkip').textContent = num(b.lewat.length);
+      $('crWarn').innerHTML = b.warn.map(function (w) { return '<li>' + esc(w) + '</li>'; }).join(''); $('crWarn').hidden = !b.warn.length;
+      $('crPrev').innerHTML = b.rows.slice(0, 8).map(function (x) {
+        return '<tr><td data-label="Baris">' + x.line + '</td><td class="lead" data-label="Nama">' + esc(x.name) + '</td><td class="acct" data-label="No rekening">' + esc(x.acct) + '</td><td data-label="Bank">' + esc(x.bank || '-') + '</td></tr>';
+      }).join('') + (b.rows.length > 8 ? '<tr><td colspan="4" class="empty">… dan ' + num(b.rows.length - 8) + ' rekening lainnya</td></tr>' : '');
+      $('crRunTxt').textContent = num(b.rows.length) + ' rekening siap dicek ke database rekening, RO, surat kuasa, dan data personalia.';
+      $('crRun').disabled = false;
+      show('crCheck'); setStep(2);
+    } catch (e) { err('File tidak bisa dibaca (' + e.message + '). Pastikan file tidak rusak atau terkunci kata sandi.'); }
+  }
+  $('crFile').addEventListener('change', function () { var f = this.files[0]; this.value = ''; pilihFile(f); });
+  ['dragenter', 'dragover'].forEach(function (ev) { $('crDrop').addEventListener(ev, function (e) { e.preventDefault(); $('crDrop').classList.add('is-over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { $('crDrop').addEventListener(ev, function (e) { e.preventDefault(); $('crDrop').classList.remove('is-over'); }); });
+  $('crDrop').addEventListener('drop', function (e) { pilihFile(e.dataTransfer.files[0]); });
+  function balik() { st = { file: null, rows: [], hasil: null, filter: 'TINDAK', q: '', tampil: 200 }; $('crQ').value = ''; show('crPick'); setStep(1); }
+  $('crGanti').addEventListener('click', balik);
+  $('crBaru').addEventListener('click', balik);
+
+  /* ---------- cek ke server ---------- */
+  $('crRun').addEventListener('click', async function () {
+    if (!A.connected()) { A.toast('Masuk terlebih dahulu.'); return; }
+    var btn = this, pg = A.progres($('crProg'), { satuan: 'rekening' }), n = st.rows.length;
+    btn.disabled = true;
+    pg.tahap('Mencocokkan ' + num(n) + ' rekening di server…', 95, 2500 + n * 3, 'Database rekening, RO, surat kuasa & personalia');
+    try {
+      var out = await A.post({ action: 'cekRekening', rows: st.rows, fileName: st.file ? st.file.name : '' });
+      if (!out.ok) throw new Error(out.error || 'Server menolak data.');
+      pg.selesai('Selesai dicek', num(n) + '/' + num(n) + ' rekening');
+      st.hasil = out.hasil; st.waktu = out.waktu; st.jumlahDb = out.jumlahDb; st.wl = out.waitingList || null;
+      if (st.wl && st.wl.masuk && A.waitingListBasi) A.waitingListBasi();
+      var ada = function (k) { return st.hasil.some(function (h) { return kat(h) === k; }); };
+      st.filter = ['BEDA', 'TIDAK_ADA', 'MIRIP', 'RO'].some(ada) ? 'TINDAK' : 'SEMUA';
+      st.tampil = 200;
+      setTimeout(function () { pg.tutup(); renderHasil(); show('crHasil'); setStep(3); }, 350);
+    } catch (e) {
+      pg.tutup(); btn.disabled = false;
+      A.toast('Gagal mengecek: ' + e.message);
+    }
+  });
+
+  /* ---------- hasil ---------- */
+  function hitung() { var o = {}; (st.hasil || []).forEach(function (h) { var k = kat(h); o[k] = (o[k] || 0) + 1; }); return o; }
+  function cocokFilter(h) {
+    var k = kat(h);
+    if (st.filter === 'TINDAK') return k === 'BEDA' || k === 'TIDAK_ADA' || k === 'MIRIP' || k === 'RO';
+    return st.filter === 'SEMUA' || k === st.filter;
+  }
+  function renderHasil() {
+    var o = hitung(), n = st.hasil.length;
+    $('crHName').textContent = st.file ? st.file.name : 'Daftar rekening';
+    $('crHMeta').textContent = num(n) + ' rekening dicek · database ' + num(st.jumlahDb || 0) + ' rekening';
+    var wl = st.wl, el = $('crWl');
+    if (wl && (wl.masuk || wl.sudah)) {
+      el.hidden = false;
+      el.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14M5 20h14M7 4c0 5 4 5 5 8-1 3-5 3-5 8M17 4c0 5-4 5-5 8 1 3 5 3 5 8"/></svg><div><b>' +
+        (wl.masuk ? num(wl.masuk) + ' rekening yang tidak ada di database masuk waiting list' : 'Rekening yang tidak ada di database sudah ada di waiting list') + '</b>' +
+        '<span>' + (wl.sudah ? num(wl.sudah) + ' rekening sudah ada di antrean sebelumnya, jadi tidak dimasukkan dua kali. ' : '') + 'Admin pusat akan mengajukannya ke finance sekaligus. Status berubah <b>Selesai</b> otomatis setelah rekening masuk database.</span></div>' +
+        '<a class="btn btn--white btn--sm" href="#/antrean">Lihat waiting list</a>';
+    } else el.hidden = true;
+    $('crTiles').innerHTML = URUT.map(function (k) {
+      var v = o[k] || 0;
+      return '<button type="button" class="cr__tile' + (st.filter === k ? ' is-on' : '') + (v ? '' : ' is-nol') + '" data-crf="' + k + '" style="--cw:' + WARNA[k] + '"><span>' + LABEL[k] + '</span><b>' + num(v) + '</b><small>' + (n ? Math.round(v / n * 1000) / 10 : 0) + '%</small></button>';
+    }).join('');
+    var tindak = (o.BEDA || 0) + (o.TIDAK_ADA || 0) + (o.MIRIP || 0) + (o.RO || 0);
+    var tabs = [['TINDAK', 'Perlu tindak lanjut', tindak], ['SEMUA', 'Semua', n]].concat(URUT.map(function (k) { return [k, LABEL[k], o[k] || 0]; }));
+    $('crTabs').innerHTML = tabs.map(function (t) {
+      return '<button role="tab" type="button" data-crf="' + t[0] + '" aria-selected="' + (st.filter === t[0]) + '">' + esc(t[1]) + ' <span class="count">' + num(t[2]) + '</span></button>';
+    }).join('');
+    renderTabel();
+  }
+  function renderTabel() {
+    var q = st.q.toUpperCase(), digit = q.replace(/\D/g, '');
+    var list = st.hasil.filter(cocokFilter).filter(function (h) {
+      if (!q) return true;
+      return String(h.namaMcm).toUpperCase().indexOf(q) !== -1 || String(h.namaDb || '').toUpperCase().indexOf(q) !== -1 || (digit.length >= 3 && String(h.acct).indexOf(digit) !== -1);
+    });
+    list.sort(function (a, b) { return URUT.indexOf(kat(a)) - URUT.indexOf(kat(b)) || a.line - b.line; });
+    var tampil = list.slice(0, st.tampil);
+    $('crQMeta').textContent = num(list.length) + ' rekening';
+    $('crBody').innerHTML = tampil.map(function (h) {
+      var k = kat(h), bb = bankBeda(h);
+      var pemilik = h.namaDb ? esc(h.namaDb) + (h.siteDb || h.branchDb ? '<small class="dsite">' + esc([h.siteDb, h.branchDb && A.infoBranch ? A.infoBranch(h.branchDb).label : h.branchDb].filter(Boolean).join(' · ')) + '</small>' : '') : '<span class="dz-hint">–</span>';
+      return '<tr><td data-label="Baris">' + h.line + '</td><td class="lead" data-label="Nama di file">' + esc(h.namaMcm) + '</td><td class="acct" data-label="No rekening">' + esc(h.acct) + '</td>' +
+        '<td data-label="Bank">' + esc(h.bank || '-') + (bb ? '<small class="cr__bb" title="Bank di file berbeda dengan bank di database">database: ' + esc(h.bankDb) + '</small>' : '') + '</td>' +
+        '<td data-label="Pemilik di database">' + pemilik + '</td>' +
+        '<td data-label="Hasil"><span class="cr__st" style="--cw:' + WARNA[k] + '">' + LABEL[k] + '</span></td>' +
+        '<td class="sum" data-label="Keterangan">' + esc(h.ket || '') + (h.sk ? ' <b>' + esc(h.sk.label || 'Surat kuasa') + '</b>' : '') + (k !== 'COCOK' && k !== 'SK' ? '<small class="cr__tl">' + esc(TINDAK[k]) + '</small>' : '') + '</td></tr>';
+    }).join('') || '<tr><td class="empty" colspan="7">' + (q ? 'Tidak ada rekening yang cocok dengan pencarian.' : 'Tidak ada rekening di kategori ini.') + '</td></tr>';
+    $('crMore').innerHTML = list.length > tampil.length ? '<button class="btn btn--white btn--sm" type="button" id="crLagi">Tampilkan ' + num(Math.min(200, list.length - tampil.length)) + ' lagi (' + num(list.length - tampil.length) + ' tersisa)</button>' : '';
+  }
+  document.querySelector('[data-view="cekrek"]').addEventListener('click', function (e) {
+    var f = e.target.closest('[data-crf]');
+    if (f) { st.filter = st.filter === f.dataset.crf && f.classList.contains('cr__tile') ? 'SEMUA' : f.dataset.crf; st.tampil = 200; renderHasil(); return; }
+    if (e.target.closest('#crLagi')) { st.tampil += 200; renderTabel(); }
+  });
+  var tq;
+  $('crQ').addEventListener('input', function () { clearTimeout(tq); var v = this.value; tq = setTimeout(function () { st.q = v.trim(); st.tampil = 200; renderTabel(); }, 160); });
+
+  /* ---------- unduh custom ---------- */
+  function fmt() { var r = document.querySelector('input[name="crdFmt"]:checked'); return r ? r.value : 'xlsx'; }
+  function dipilih() { return Array.prototype.slice.call(document.querySelectorAll('#crdList input:checked')).map(function (c) { return c.value; }); }
+  function barisPilih() {
+    var p = dipilih();
+    return st.hasil.filter(function (h) { return p.indexOf(kat(h)) !== -1; })
+      .sort(function (a, b) { return URUT.indexOf(kat(a)) - URUT.indexOf(kat(b)) || a.line - b.line; });
+  }
+  function bankMcm(h) { return infoBank(h.bank) || infoBank(h.bankDb); }
+  function angkaNominal() { return Math.round(Number(String($('crdNom').value).replace(/[^\d]/g, '')) || 0); }
+  function crdHitung() {
+    var list = barisPilih(), f = fmt(), p = dipilih();
+    $('crdMcm').hidden = f !== 'mcm';
+    var tanpaKode = list.filter(function (h) { return !bankMcm(h); });
+    if (f === 'mcm') {
+      var nom = angkaNominal();
+      $('crdNote').innerHTML = '<b>' + num(list.length) + ' rekening × Rp' + num(nom) + ' = Rp' + num(list.length * nom) + '</b>. Format 44 kolom sama persis dengan file MCM Mandiri Anda (IBU untuk Mandiri, OBU + kode bank untuk bank lain).' +
+        (tanpaKode.length ? '<br><span class="t-bad">' + num(tanpaKode.length) + ' rekening banknya tidak dikenali (' + esc(tanpaKode.slice(0, 3).map(function (h) { return h.bank || 'kosong'; }).join(', ')) + (tanpaKode.length > 3 ? ', …' : '') + '): kode bank dikosongkan, isi manual sebelum upload ke bank.</span>' : '');
+    }
+    $('crdSum').innerHTML = p.length ? '<b>' + num(list.length) + ' rekening</b> dari: ' + URUT.filter(function (k) { return p.indexOf(k) !== -1; }).map(function (k) { return LABEL[k]; }).join(' → ') : 'Belum ada hasil yang dicentang.';
+    $('crdGo').disabled = !list.length || (f === 'mcm' && (!angkaNominal() || !/^\d{6,20}$/.test($('crdSumber').value.replace(/\D/g, '')) || !$('crdTgl').value));
+    $('crdGo').textContent = f === 'mcm' ? 'Unduh MCM' : f === 'csv' ? 'Unduh CSV' : 'Unduh Excel';
+  }
+  $('crDl').addEventListener('click', function () {
+    if (!st.hasil) return;
+    var o = hitung(), awal = ['BEDA', 'TIDAK_ADA'].filter(function (k) { return o[k]; });
+    if (!awal.length) awal = URUT.filter(function (k) { return o[k]; });
+    $('crdList').innerHTML = URUT.map(function (k) {
+      var n = o[k] || 0;
+      return '<label class="cu__opt' + (n ? '' : ' is-nol') + '" style="--cw:' + WARNA[k] + '"><input type="checkbox" value="' + k + '"' + (awal.indexOf(k) !== -1 ? ' checked' : '') + (n ? '' : ' disabled') + '>' +
+        '<i aria-hidden="true"></i><span>' + LABEL[k] + '</span><b>' + num(n) + '</b></label>';
+    }).join('');
+    $('crdSumber').value = lsGet('mw_cr_sumber') || '1420001020303';
+    $('crdTgl').value = tglHariIni();
+    $('crdNom').value = lsGet('mw_cr_nominal') || '10000';
+    $('crdKet').value = lsGet('mw_cr_ket') || 'CEK REKENING';
+    crdHitung();
+    $('dlgCr').showModal();
+  });
+  ['change', 'input'].forEach(function (ev) { $('dlgCr').addEventListener(ev, crdHitung); });
+
+  function namaFileDasar() { return 'Crosscheck Rekening ' + tglHariIni(); }
+  var KOLOM = ['No', 'Nama di file', 'No Rekening', 'Bank (file)', 'Pemilik di database', 'Bank di database', 'Site penempatan', 'Branch', 'Hasil', 'Keterangan', 'Tindak lanjut'];
+  function barisTabel(list) {
+    return list.map(function (h, i) {
+      var k = kat(h);
+      return [i + 1, h.namaMcm, h.acct, h.bank || '', h.namaDb || '', h.bankDb || '', h.siteDb || '', h.branchDb || '', LABEL[k] + (bankBeda(h) ? ' (bank beda)' : ''),
+        (h.ket || '') + (h.sk ? ' ' + (h.sk.label || '') : ''), TINDAK[k]];
+    });
+  }
+  function unduhExcel(list, label) {
+    if (typeof XLSX === 'undefined') throw new Error('Pembuat file Excel belum termuat. Periksa koneksi internet, atau pilih CSV.');
+    var data = barisTabel(list), ws = XLSX.utils.aoa_to_sheet([KOLOM].concat(data));
+    data.forEach(function (r, i) { ws[XLSX.utils.encode_cell({ r: i + 1, c: 2 })] = { t: 's', v: String(r[2]), z: '@' }; });   // no rekening tetap teks
+    ws['!cols'] = [{ wch: 5 }, { wch: 30 }, { wch: 20 }, { wch: 14 }, { wch: 30 }, { wch: 22 }, { wch: 26 }, { wch: 12 }, { wch: 22 }, { wch: 48 }, { wch: 56 }];
+    ws['!autofilter'] = { ref: 'A1:K' + (data.length + 1) };
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Hasil');
+    XLSX.writeFile(wb, namaFileDasar() + ' (' + label + ').xlsx');
+  }
+  function unduhCsv(list, label) {
+    unduh(MCMParser.toCSV([KOLOM].concat(barisTabel(list)), ','), namaFileDasar() + ' (' + label + ').csv');
+  }
+  // MCM Mandiri: baris "P" + baris transfer 44 kolom, akhir baris CRLF, tanpa tanda kutip (sama dengan file asli)
+  function bersihMcm(t, maks) { return String(t || '').replace(/[",;\r\n]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, maks || 70); }
+  /* pembuat MCM Mandiri bersama (dipakai juga oleh Waiting List).
+   * list: [{ acct, nama, bank, bankDb }], o: { sumber, tgl (yyyy-mm-dd), nominal, ket } -> teks CSV */
+  function buatMcm(list, o) {
+    var tgl = String(o.tgl || '').replace(/-/g, ''), nom = Math.round(Number(o.nominal) || 0), ket = bersihMcm(o.ket, 40) || 'CEK REKENING';
+    var kosong = function (n) { var a = []; for (var i = 0; i < n; i++) a.push(''); return a; };
+    var head = ['P', tgl, String(o.sumber || '').replace(/\D/g, ''), String(list.length), String(nom * list.length)].concat(kosong(39));
+    var baris = list.map(function (h) {
+      var b = infoBank(h.bank) || infoBank(h.bankDb), r = kosong(44), mandiri = b && b.k === 'MANDIRI';
+      r[0] = String(h.acct); r[1] = bersihMcm(h.nama); r[5] = 'IDR'; r[6] = String(nom); r[7] = ket;
+      r[9] = mandiri ? 'IBU' : 'OBU'; r[10] = b ? b.kode : ''; r[11] = b ? b.nama : bersihMcm(h.bank || h.bankDb, 30).toUpperCase();
+      r[12] = 'Jakarta'; r[16] = 'N'; r[38] = 'BEN'; r[39] = '1'; r[40] = 'E';
+      return r;
+    });
+    return [head].concat(baris).map(function (r) { return r.join(','); }).join('\r\n') + '\r\n';
+  }
+  A.mcmMandiri = { buat: buatMcm, infoBank: infoBank, unduh: unduh, ingat: function (o) { lsSet('mw_cr_sumber', String(o.sumber || '').replace(/\D/g, '')); lsSet('mw_cr_nominal', String(o.nominal)); lsSet('mw_cr_ket', o.ket || ''); },
+    awal: function () { return { sumber: lsGet('mw_cr_sumber') || '1420001020303', tgl: tglHariIni(), nominal: lsGet('mw_cr_nominal') || '10000', ket: lsGet('mw_cr_ket') || 'CEK REKENING' }; } };
+  function unduhMcm(list, label) {
+    var o = { sumber: $('crdSumber').value, tgl: $('crdTgl').value, nominal: angkaNominal(), ket: $('crdKet').value };
+    var teks = buatMcm(list.map(function (h) { return { acct: h.acct, nama: h.namaMcm, bank: h.bank, bankDb: h.bankDb }; }), o);
+    A.mcmMandiri.ingat({ sumber: o.sumber, nominal: o.nominal, ket: bersihMcm(o.ket, 40) || 'CEK REKENING' });
+    unduh(teks, 'MCM ' + namaFileDasar().toUpperCase() + ' (' + label + ').csv');
+  }
+  $('crdGo').addEventListener('click', function () {
+    var list = barisPilih(), p = dipilih(), f = fmt();
+    if (!list.length) return;
+    var label = URUT.filter(function (k) { return p.indexOf(k) !== -1; }).map(function (k) { return LABEL[k]; }).join(' + ');
+    try {
+      if (f === 'xlsx') unduhExcel(list, label); else if (f === 'csv') unduhCsv(list, label); else unduhMcm(list, label);
+      $('dlgCr').close();
+      A.toast(num(list.length) + ' rekening diunduh sebagai ' + (f === 'mcm' ? 'MCM Mandiri' : f === 'csv' ? 'CSV' : 'Excel') + ' (' + label + ').', true);
+    } catch (e) { A.toast(e.message); }
+  });
+
+  // dipakai untuk pengujian
+  A.cekRekeningInfoBank = infoBank;
+})();
+
+</script>
+  <script>
+/* Moneywise — Waiting List rekening (v37)
+ * Rekening "tidak ada di database" dari Crosscheck Rekening dikumpulkan (semua branch & admin), lalu Super Admin
+ * mengajukannya ke finance SEKALIGUS dalam satu file MCM Mandiri. Status Selesai otomatis saat rekening masuk database. */
+(function () {
+  'use strict';
+  var A = window.APP, $ = function (id) { return document.getElementById(id); };
+  var esc = A.esc, num = A.num;
+  if (!$('wlBody')) return;
+  var STATUS = ['Menunggu', 'Diajukan', 'Selesai', 'Dibatalkan'];
+  var WARNA = { Menunggu: '#F2B33D', Diajukan: '#1565F5', Selesai: '#1FBF86', Dibatalkan: '#8A97AE' };
+  var wl = { list: [], tab: 'Menunggu', q: '', br: '', pilih: {}, busy: false };
+  function sup() { return !!(A.peran && A.peran().super); }
+  function labelB(b) { return !b ? 'Admin pusat' : A.infoBranch ? A.infoBranch(b).label : b; }
+  function warnaB(b) { return b ? A.warnaBranch(b) : '#5B6B86'; }
+
+  function badge() {
+    var n = wl.list.filter(function (x) { return x.status === 'Menunggu'; }).length, b = $('wlBadge');
+    b.textContent = n > 99 ? '99+' : String(n); b.hidden = !n;
+  }
+  A.muatWaitingList = async function (diam) {
+    if (!A.connected() || wl.busy) return;
+    wl.busy = true;
+    if (!diam && !wl.list.length) $('wlBody').innerHTML = '<tr><td class="empty" colspan="8">Memuat…</td></tr>';
+    try {
+      var out = await A.post({ action: 'waitingList' });
+      if (!out.ok) throw new Error(out.error || 'Gagal memuat.');
+      terima(out);
+      if (out.baruSelesai && !diam) A.toast(num(out.baruSelesai) + ' rekening sudah masuk database, statusnya otomatis Selesai.', true);
+    } catch (e) { if (!diam) $('wlBody').innerHTML = '<tr><td class="empty" colspan="8">Waiting list belum bisa dimuat: ' + esc(e.message) + '</td></tr>'; }
+    finally { wl.busy = false; }
+  };
+  function terima(out) {
+    wl.list = out.list || [];
+    var ada = {}; wl.list.forEach(function (x) { ada[x.id] = 1; });
+    Object.keys(wl.pilih).forEach(function (k) { if (!ada[k]) delete wl.pilih[k]; });
+    badge(); render();
+  }
+  $('wlMuat').addEventListener('click', function () { A.muatWaitingList(); });
+
+  function cocok(x) {
+    if (wl.tab !== 'Semua' && x.status !== wl.tab) return false;
+    if (wl.br && (x.branch || '') !== (wl.br === '-' ? '' : wl.br)) return false;
+    if (!wl.q) return true;
+    var q = wl.q.toUpperCase(), d = q.replace(/\D/g, '');
+    return x.nama.toUpperCase().indexOf(q) !== -1 || x.batch.toUpperCase().indexOf(q) !== -1 || (d.length >= 3 && x.acct.indexOf(d) !== -1);
+  }
+  function tampil() { return wl.list.filter(cocok); }
+  function terpilih() { return wl.list.filter(function (x) { return wl.pilih[x.id]; }); }
+
+  function render() {
+    var p = A.peran ? A.peran() : {}, hit = {};
+    STATUS.forEach(function (s) { hit[s] = 0; });
+    wl.list.forEach(function (x) { hit[x.status] = (hit[x.status] || 0) + 1; });
+    $('wlLead').textContent = p.admin1 ? 'Rekening dari branch ' + labelB(p.branch) + ' yang menunggu dicek finance. Admin pusat mengajukannya ke finance sekaligus bersama branch lain.'
+      : 'Rekening yang belum ada di database dari semua branch, dikumpulkan dulu supaya diajukan ke finance sekaligus.';
+    var brMenunggu = {};
+    wl.list.forEach(function (x) { if (x.status === 'Menunggu') brMenunggu[x.branch || ''] = 1; });
+    var kpi = function (cls, ic, lbl, val, sub) { return '<article class="kpi kpi--' + cls + '"><span class="kpi__ic">' + ic + '</span><div class="kpi__body"><p class="kpi__lbl">' + lbl + '</p><p class="kpi__val">' + val + '</p><p class="rp__ksub">' + sub + '</p></div></article>'; };
+    var ikon = function (d) { return '<svg viewBox="0 0 24 24" aria-hidden="true" class="wl__ki"><path d="' + d + '"/></svg>'; };
+    $('wlKpi').innerHTML =
+      kpi('orange', ikon('M12 7v5l3 2M12 3a9 9 0 100 18 9 9 0 000-18z'), 'Menunggu', num(hit.Menunggu), 'belum diajukan ke finance') +
+      kpi('blue', ikon('M4 12l16-8-6 16-2-6z'), 'Diajukan ke finance', num(hit.Diajukan), 'menunggu PDF transfer') +
+      kpi('green', ikon('M5 12.5l4.5 4.5L19 7.5'), 'Selesai', num(hit.Selesai), 'sudah masuk database (90 hari)') +
+      kpi('purple', ikon('M4 20V10M10 20V4M16 20v-7M22 20H2'), p.admin1 ? 'Branch' : 'Branch menunggu', p.admin1 ? esc(labelB(p.branch)) : num(Object.keys(brMenunggu).length), p.admin1 ? 'akses Anda' : 'branch dengan rekening menunggu');
+    var tabs = STATUS.map(function (s) { return [s, s === 'Diajukan' ? 'Diajukan ke finance' : s, hit[s]]; }).concat([['Semua', 'Semua', wl.list.length]]);
+    $('wlTabs').innerHTML = tabs.map(function (t) { return '<button role="tab" type="button" data-wltab="' + t[0] + '" aria-selected="' + (wl.tab === t[0]) + '">' + esc(t[1]) + ' <span class="count">' + num(t[2]) + '</span></button>'; }).join('');
+    // pilihan branch (bukan untuk Admin 1)
+    $('wlBrWrap').hidden = !!p.admin1;
+    var brs = {}; wl.list.forEach(function (x) { brs[x.branch || '-'] = 1; });
+    $('wlBr').innerHTML = '<option value="">Semua branch</option>' + Object.keys(brs).sort().map(function (b) { return '<option value="' + esc(b) + '"' + (wl.br === b ? ' selected' : '') + '>' + esc(b === '-' ? 'Admin pusat' : labelB(b)) + '</option>'; }).join('');
+    renderTabel();
+  }
+  function renderTabel() {
+    var list = tampil(), s = sup();
+    $('wlMeta').textContent = num(list.length) + ' rekening';
+    $('wlBody').innerHTML = list.map(function (x) {
+      var on = !!wl.pilih[x.id];
+      var info = x.status === 'Diajukan' ? '<small>' + esc(x.batch) + (x.diajukanTeks ? ' · ' + esc(x.diajukanTeks) : '') + '</small>'
+        : x.status === 'Selesai' ? '<small>' + (x.namaDb ? 'a.n. ' + esc(x.namaDb) + ' · ' : '') + esc(x.selesaiTeks) + '</small>'
+        : x.status === 'Dibatalkan' ? '<small>' + esc(x.diproses || '') + '</small>' : '';
+      return '<tr' + (on ? ' class="is-pilih"' : '') + '><td class="wl__cb"><input type="checkbox" data-wlid="' + esc(x.id) + '"' + (on ? ' checked' : '') + ' aria-label="Pilih ' + esc(x.nama) + '"></td>' +
+        '<td class="when" data-label="Masuk">' + esc(x.masukTeks) + '</td><td class="lead" data-label="Nama">' + esc(x.nama) + '</td><td class="acct" data-label="No rekening">' + esc(x.acct) + '</td>' +
+        '<td data-label="Bank">' + esc(x.bank || '-') + '</td>' +
+        '<td data-label="Branch"><span class="rp__chip" style="--bw:' + warnaB(x.branch) + '">' + esc(labelB(x.branch)) + '</span></td>' +
+        '<td data-label="Diajukan oleh">' + esc(x.oleh || '-') + '<small class="dsite">' + esc(x.sumber || '') + '</small></td>' +
+        '<td data-label="Status"><span class="cr__st" style="--cw:' + WARNA[x.status] + '">' + esc(x.status === 'Diajukan' ? 'Diajukan ke finance' : x.status) + '</span>' + info + '</td></tr>';
+    }).join('') || '<tr><td class="empty" colspan="8">' + (wl.list.length ? 'Tidak ada rekening di filter ini.' : 'Waiting list masih kosong. Rekening "tidak ada di database" dari Crosscheck Rekening akan masuk ke sini.') + '</td></tr>';
+    var dip = terpilih(), adaM = dip.some(function (x) { return x.status === 'Menunggu'; }), adaD = dip.some(function (x) { return x.status === 'Diajukan'; });
+    var semuaM = wl.list.filter(function (x) { return x.status === 'Menunggu'; }).length;
+    $('wlAjukan').disabled = !(dip.length ? adaM : semuaM);
+    $('wlAjukan').lastChild.textContent = dip.length ? 'Ajukan ' + num(dip.filter(function (x) { return x.status === 'Menunggu'; }).length) + ' terpilih ke finance (MCM)' : 'Ajukan semua yang menunggu (' + num(semuaM) + ') ke finance';
+    $('wlMcmLagi').hidden = !(s && adaD); $('wlKembali').hidden = !(s && adaD);
+    $('wlBatal').disabled = !dip.some(function (x) { return x.status === 'Menunggu' || (s && x.status === 'Diajukan'); });
+    $('wlBatal').textContent = dip.length ? 'Batalkan ' + num(dip.length) + ' terpilih' : 'Batalkan';
+    var cbs = list.length && list.every(function (x) { return wl.pilih[x.id]; }); $('wlAll').checked = !!cbs; $('wlAll').indeterminate = !cbs && list.some(function (x) { return wl.pilih[x.id]; });
+  }
+  var view = document.querySelector('[data-view="antrean"]');
+  view.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-wltab]');
+    if (t) { wl.tab = t.dataset.wltab; wl.pilih = {}; render(); }
+  });
+  view.addEventListener('change', function (e) {
+    var c = e.target.closest('[data-wlid]');
+    if (c) { if (c.checked) wl.pilih[c.dataset.wlid] = 1; else delete wl.pilih[c.dataset.wlid]; renderTabel(); return; }
+    if (e.target.id === 'wlAll') { var on = e.target.checked; tampil().forEach(function (x) { if (on) wl.pilih[x.id] = 1; else delete wl.pilih[x.id]; }); renderTabel(); }
+    if (e.target.id === 'wlBr') { wl.br = e.target.value; wl.pilih = {}; renderTabel(); }
+  });
+  var tq; $('wlQ').addEventListener('input', function () { clearTimeout(tq); var v = this.value.trim(); tq = setTimeout(function () { wl.q = v; renderTabel(); }, 150); });
+
+  async function ubah(aksi, ids, pesan) {
+    var out = await A.post({ action: 'waitingUbah', aksi: aksi, ids: ids });
+    if (!out.ok) throw new Error(out.error || 'Gagal.');
+    wl.pilih = {}; terima(out);
+    A.toast(pesan.replace('{n}', num(out.diubah || 0)) + (out.dilewati ? ' (' + num(out.dilewati) + ' dilewati)' : ''), true);
+    return out;
+  }
+  $('wlBatal').addEventListener('click', async function () {
+    var s = sup(), ids = terpilih().filter(function (x) { return x.status === 'Menunggu' || (s && x.status === 'Diajukan'); }).map(function (x) { return x.id; });
+    if (!ids.length) return;
+    await A.konfirmasi({ judul: 'Batalkan ' + num(ids.length) + ' rekening dari waiting list?', ok: 'Ya, batalkan',
+      isi: '<p>Rekening yang dibatalkan tidak ikut diajukan ke finance. Kalau perlu dicek lagi, cek ulang lewat Crosscheck Rekening.</p>',
+      jalankan: function () { return ubah('batal', ids, '{n} rekening dibatalkan dari waiting list.'); } });
+  });
+  $('wlKembali').addEventListener('click', async function () {
+    var ids = terpilih().filter(function (x) { return x.status === 'Diajukan'; }).map(function (x) { return x.id; });
+    if (!ids.length) return;
+    try { await ubah('menunggu', ids, '{n} rekening dikembalikan ke Menunggu.'); } catch (e) { A.toast(e.message); }
+  });
+  $('wlXls').addEventListener('click', function () {
+    var list = terpilih().length ? terpilih() : tampil();
+    if (!list.length) { A.toast('Tidak ada rekening untuk diunduh.'); return; }
+    var aoa = [['Masuk', 'Nama', 'No Rekening', 'Bank', 'Branch', 'Diajukan oleh', 'Sumber', 'Status', 'Batch', 'Nama di database']].concat(list.map(function (x) {
+      return [x.masukTeks, x.nama, x.acct, x.bank, labelB(x.branch), x.oleh, x.sumber, x.status, x.batch, x.namaDb];
+    }));
+    if (typeof XLSX === 'undefined') { A.mcmMandiri.unduh(MCMParser.toCSV(aoa, ','), 'Waiting List Rekening.csv'); return; }
+    var ws = XLSX.utils.aoa_to_sheet(aoa);
+    list.forEach(function (x, i) { ws[XLSX.utils.encode_cell({ r: i + 1, c: 2 })] = { t: 's', v: String(x.acct), z: '@' }; });
+    ws['!cols'] = [{ wch: 17 }, { wch: 30 }, { wch: 20 }, { wch: 14 }, { wch: 14 }, { wch: 28 }, { wch: 30 }, { wch: 12 }, { wch: 18 }, { wch: 28 }];
+    var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Waiting List'); XLSX.writeFile(wb, 'Waiting List Rekening.xlsx');
+  });
+
+  /* ---------- ajukan ke finance: satu file MCM untuk banyak rekening ---------- */
+  var dlg = { list: [], ulang: false };
+  function nominal() { return Math.round(Number(String($('wldNom').value).replace(/\D/g, '')) || 0); }
+  function wldHitung() {
+    var list = dlg.list, nom = nominal(), tanpa = list.filter(function (x) { return !A.mcmMandiri.infoBank(x.bank); });
+    $('wldNote').innerHTML = '<b>' + num(list.length) + ' rekening × Rp' + num(nom) + ' = Rp' + num(list.length * nom) + '</b>. Format 44 kolom sama dengan file MCM Mandiri (IBU untuk Mandiri, OBU + kode bank untuk bank lain).' +
+      (tanpa.length ? '<br><span class="t-bad">' + num(tanpa.length) + ' rekening banknya tidak dikenali (' + esc(tanpa.slice(0, 3).map(function (x) { return x.bank || 'kosong'; }).join(', ')) + (tanpa.length > 3 ? ', …' : '') + '): kode bank dikosongkan, isi manual sebelum upload ke bank.</span>' : '');
+    $('wldGo').disabled = !list.length || !nom || !/^\d{6,20}$/.test($('wldSumber').value.replace(/\D/g, '')) || !$('wldTgl').value;
+  }
+  function bukaDialog(list, ulang) {
+    if (!A.mcmMandiri) { A.toast('Pembuat MCM belum termuat. Muat ulang halaman.'); return; }
+    dlg.list = list; dlg.ulang = ulang;
+    var per = {}; list.forEach(function (x) { per[x.branch || ''] = (per[x.branch || ''] || 0) + 1; });
+    $('wldTitle').textContent = ulang ? 'Unduh ulang MCM' : 'Ajukan ke finance';
+    $('wldLead').innerHTML = ulang ? 'File MCM dibuat ulang untuk <b>' + num(list.length) + ' rekening</b> yang sudah diajukan. Statusnya tidak berubah.'
+      : '<b>' + num(list.length) + ' rekening</b> dari ' + num(Object.keys(per).length) + ' branch digabung jadi <b>satu file MCM</b>. Setelah diunduh, statusnya menjadi <b>Diajukan ke finance</b>.';
+    $('wldBr').innerHTML = Object.keys(per).sort().map(function (b) { return '<span class="rp__chip" style="--bw:' + warnaB(b) + '">' + esc(labelB(b)) + ' ' + num(per[b]) + '</span>'; }).join(' ');
+    var o = A.mcmMandiri.awal();
+    $('wldSumber').value = o.sumber; $('wldTgl').value = o.tgl; $('wldNom').value = o.nominal; $('wldKet').value = o.ket;
+    $('wldGo').textContent = ulang ? 'Unduh MCM' : 'Unduh MCM & tandai Diajukan';
+    wldHitung(); $('dlgWl').showModal();
+  }
+  ['input', 'change'].forEach(function (ev) { $('dlgWl').addEventListener(ev, wldHitung); });
+  $('wlAjukan').addEventListener('click', function () {
+    var dip = terpilih(), list = (dip.length ? dip : wl.list).filter(function (x) { return x.status === 'Menunggu'; });
+    if (!list.length) { A.toast('Tidak ada rekening berstatus Menunggu.'); return; }
+    bukaDialog(list, false);
+  });
+  $('wlMcmLagi').addEventListener('click', function () { var list = terpilih().filter(function (x) { return x.status === 'Diajukan'; }); if (list.length) bukaDialog(list, true); });
+  $('wldGo').addEventListener('click', async function () {
+    var btn = this, list = dlg.list, o = { sumber: $('wldSumber').value, tgl: $('wldTgl').value, nominal: nominal(), ket: $('wldKet').value };
+    btn.disabled = true;
+    try {
+      var teks = A.mcmMandiri.buat(list.map(function (x) { return { acct: x.acct, nama: x.nama, bank: x.bank }; }), o);
+      A.mcmMandiri.ingat(o);
+      var tgl = String(o.tgl).replace(/-/g, '');
+      if (!dlg.ulang) {
+        var out = await ubah('ajukan', list.map(function (x) { return x.id; }), '{n} rekening diajukan ke finance. File MCM diunduh.');
+        A.mcmMandiri.unduh(teks, 'MCM WAITING LIST ' + (out.batch || tgl) + ' (' + list.length + ' rekening).csv');
+      } else A.mcmMandiri.unduh(teks, 'MCM WAITING LIST ' + tgl + ' (unduh ulang, ' + list.length + ' rekening).csv');
+      $('dlgWl').close();
+    } catch (e) { A.toast('Gagal: ' + e.message); }
+    finally { btn.disabled = false; }
+  });
+
+  // badge menu: dimuat diam-diam setelah masuk, dan setelah Crosscheck Rekening
+  A.onConn(function (on) { if (on) setTimeout(function () { if (A.connected()) A.muatWaitingList(true); }, 5000); });
+  A.waitingListBasi = function () { A.muatWaitingList(true); };
 })();
 
 </script>
