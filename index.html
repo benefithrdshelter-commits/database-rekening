@@ -2843,6 +2843,26 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
 .db__pil .btn { justify-content: center; }
 .db__note { margin: 12px 0 0; font-size: 12.5px; color: var(--ink-3); }
 
+/* v38: pilih rekening -> waiting list */
+.wlbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 0 0 12px; padding: 10px 14px; border-radius: 14px; background: #EEF5FF; border: 1px solid #CFE0FB; }
+.wlbar__all { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; color: var(--ink); cursor: pointer; }
+.wlbar__all input, .wlcb { width: 17px; height: 17px; accent-color: #1565F5; cursor: pointer; flex: none; }
+.wlbar__all em { font-style: normal; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: #fff; color: #0B4FD1; margin-left: 2px; }
+.wlbar__info { font-size: 13px; color: var(--ink-2); }
+.wlbar .btn { margin-left: auto; }
+.wlbar .btn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.wlcb { margin: 0 9px 0 0; vertical-align: -3px; }
+.wltag { display: block; margin-top: 3px; font-size: 11.5px; font-weight: 600; color: #0B4FD1; white-space: nowrap; }
+tr.is-wl td { background: #F2F7FF; }
+
+/* v39: verifikasi Beda nama */
+.vf{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:3px 9px 3px 6px;border:1px dashed #E5484D66;border-radius:999px;font-size:12px;font-weight:600;color:#B4232A;cursor:pointer;white-space:nowrap;user-select:none}
+.vf input{width:15px;height:15px;accent-color:#14B8A6;margin:0;cursor:pointer}
+.vf.is-on{border-style:solid;border-color:#14B8A6;background:#14B8A61A;color:#0F766E}
+.vf--tag{cursor:default}
+.vf__by{display:block;margin-top:3px;font-size:11px;color:var(--muted,#8A97AE)}
+td .vf{display:flex;width:max-content}
+
 </style>
 </head>
 <body class="is-auth">
@@ -2991,7 +3011,6 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
         <a href="#/pengguna" data-nav="pengguna" class="hanya-super"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M3 19.5c.5-3.6 3-5.6 6-5.6 1.5 0 2.9.5 4 1.4"/><path d="M14.5 20v-4.5M17.5 20v-7M20.5 20v-3"/></svg><span>Riwayat Pengguna</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/update" data-nav="update"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7.5" ry="2.8"/><path d="M4.5 6v6c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8V6M4.5 12v6c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8v-6"/></svg><span>Update Database</span><svg class="side__lock" viewBox="0 0 24 24" aria-label="Terkunci" role="img"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.2 10.5V8a3.8 3.8 0 017.6 0v2.5"/></svg><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/karyawan" data-nav="karyawan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="8" r="3.8"/><path d="M3 20c.5-4 3.3-6.4 7-6.4 1.4 0 2.7.3 3.8 1M18 13.5v6M15 16.5h6"/></svg><span>Tambah Karyawan</span><svg class="side__lock" viewBox="0 0 24 24" aria-label="Terkunci" role="img"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.2 10.5V8a3.8 3.8 0 017.6 0v2.5"/></svg><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
-        <a href="#/dokumen" data-nav="dokumen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M9 13h6M9 16.5h4"/></svg><span>Karyawan Baru</span><i class="side__tag">Segera</i><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/database" data-nav="database"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 9.5L12 4l8.5 5.5"/><path d="M5.5 10v7.5M9.8 10v7.5M14.2 10v7.5M18.5 10v7.5M3.5 20h17"/></svg><span>Database Bank</span><svg class="side__lock" viewBox="0 0 24 24" aria-label="Terkunci" role="img"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.2 10.5V8a3.8 3.8 0 017.6 0v2.5"/></svg><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
         <a href="#/pengaturan" data-nav="pengaturan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-1.8-.3 1.6 1.6 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.6 1.6 0 00-1-1.5 1.6 1.6 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.6 1.6 0 00.3-1.8 1.6 1.6 0 00-1.5-1H3a2 2 0 110-4h.1a1.6 1.6 0 001.5-1 1.6 1.6 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.6 1.6 0 001.8.3H9a1.6 1.6 0 001-1.5V3a2 2 0 114 0v.1a1.6 1.6 0 001 1.5 1.6 1.6 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.6 1.6 0 00-.3 1.8V9a1.6 1.6 0 001.5 1H21a2 2 0 110 4h-.1a1.6 1.6 0 00-1.5 1z"/></svg><span>Pengaturan</span><svg class="side__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></a>
       </nav>
@@ -3358,7 +3377,7 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
             <button role="tab" id="rt-mirip" data-filter="MIRIP" aria-selected="false" tabindex="-1">Mirip <span class="count" id="rcMirip">0</span></button>
             <button role="tab" id="rt-none" data-filter="TIDAK_ADA" aria-selected="false" tabindex="-1">Tidak ada <span class="count" id="rcNone">0</span></button>
             <button role="tab" id="rt-ro" data-filter="RO" aria-selected="false" tabindex="-1">Via RO <span class="count" id="rcRo">0</span></button>
-            <button role="tab" id="rt-sk" data-filter="SK" aria-selected="false" tabindex="-1">Surat kuasa <span class="count" id="rcSk">0</span></button>
+            <button role="tab" id="rt-sk" hidden data-filter="SK" aria-selected="false" tabindex="-1">Surat kuasa (arsip) <span class="count" id="rcSk">0</span></button>
             <button role="tab" id="rt-ok" data-filter="COCOK" aria-selected="false" tabindex="-1">Cocok <span class="count" id="rcOk">0</span></button>
           </div>
           <div class="pane" role="tabpanel" id="rPane" aria-labelledby="rt-cek" tabindex="0">
@@ -3378,7 +3397,12 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
                 <button class="btn btn--white btn--sm" type="button" id="rCekUlang" title="Cocokkan ulang laporan ini dengan database terbaru, tanpa upload file lagi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 00-14.5-4.2M4 4v4h4M4 13a8 8 0 0014.5 4.2M20 20v-4h-4"/></svg>Cek ulang</button>
               </div>
             </div>
-            <div class="tbl-wrap">
+            <div class="wlbar" id="rWlBar" hidden>
+                <label class="wlbar__all"><input type="checkbox" id="rWlAll"><span>Pilih semua yang <b>tidak ada di database</b> <em id="rWlN">0</em></span></label>
+                <span class="wlbar__info" id="rWlInfo"></span>
+                <button class="btn btn--primary btn--sm" type="button" id="rWlGo" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h12M6 20.5h12M8 3.5c0 5 4 5.5 4 8.5s-4 3.5-4 8.5M16 3.5c0 5-4 5.5-4 8.5s4 3.5 4 8.5"/></svg>Masukkan ke waiting list</button>
+              </div>
+              <div class="tbl-wrap">
               <table class="tbl tbl--cc">
                 <thead><tr><th scope="col" class="r">Baris</th><th scope="col">No rekening</th><th scope="col">Nama di MCM</th><th scope="col">Nama di database</th><th scope="col">Status</th><th scope="col">Keterangan</th></tr></thead>
                 <tbody id="rBody"></tbody>
@@ -3802,7 +3826,7 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
             </article>
             <article class="kpi kpi--green">
               <span class="kpi__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l8 3.2v5.8c0 5-3.4 9-8 10.5-4.6-1.5-8-5.5-8-10.5V5.7z"/><path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8.4 12.2l2.5 2.5 4.8-5"/></svg></span>
-              <div class="kpi__body"><p class="kpi__lbl">Surat kuasa aktif</p><p class="kpi__val" id="psSk">0</p></div>
+              <div class="kpi__body"><p class="kpi__lbl">Arsip surat kuasa</p><p class="kpi__val" id="psSk">0</p></div>
               <svg class="kpi__spark is-nol" viewBox="0 0 80 40" preserveAspectRatio="none" aria-hidden="true"><path class="kpi__area" d="M0 35 L80 35 L80 40 L0 40Z"/><path class="kpi__line" d="M0 35 L80 35"/></svg>
             </article>
             <article class="kpi kpi--blue">
@@ -3813,7 +3837,7 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
           </div>
           <div class="seg" role="tablist" aria-label="Bagian pengaturan" id="pTabs">
             <button role="tab" aria-selected="true" data-p="ro">Rekening RO</button>
-            <button role="tab" aria-selected="false" data-p="sk">Surat kuasa</button>
+            <button role="tab" aria-selected="false" data-p="sk">Arsip surat kuasa</button>
             <button role="tab" aria-selected="false" data-p="akses" class="hanya-super">Akses &amp; sandi</button>
             <button role="tab" aria-selected="false" data-p="user" class="hanya-super">Pengguna</button>
             <button role="tab" aria-selected="false" data-p="chat" class="hanya-super">Chatbot</button>
@@ -3844,7 +3868,7 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
 
           <div class="ppane" data-pp="sk" hidden>
             <article class="card">
-              <div class="card__head"><div><h2>Surat kuasa</h2><p>Izin memakai rekening orang lain. File tersimpan privat di Drive.</p></div></div>
+              <div class="card__head"><div><h2>Arsip surat kuasa</h2><p>Surat kuasa sudah tidak dipakai: transfer wajib ke rekening atas nama karyawan sendiri. Data lama disimpan sebagai arsip (hanya bisa dilihat, tidak memengaruhi hasil crosscheck).</p></div></div>
               <div class="tbl-wrap tbl-wrap--flat">
                 <table class="tbl"><thead><tr><th scope="col">Waktu</th><th scope="col">No rekening</th><th scope="col">Nama di MCM</th><th scope="col">Pemilik rekening</th><th scope="col">Keterangan</th><th scope="col">Oleh</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead><tbody id="skBody"><tr><td class="empty" colspan="8">Memuat…</td></tr></tbody></table>
               </div>
@@ -3986,7 +4010,7 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
           </header>
           <div class="kpis kpis--4" id="wlKpi"></div>
           <ol class="wl__alur" aria-label="Alur waiting list">
-            <li><b>1. Masuk antrean</b><span>Rekening "tidak ada di database" dari Crosscheck Rekening otomatis masuk, dari semua branch dan admin.</span></li>
+            <li><b>1. Pilih &amp; masukkan</b><span>Di hasil Crosscheck MCM atau Crosscheck Rekening, centang rekening "tidak ada di database", lalu klik Masukkan ke waiting list.</span></li>
             <li><b>2. Diajukan ke finance</b><span>Super Admin mengunduh satu file MCM berisi banyak rekening sekaligus, lalu statusnya menjadi Diajukan.</span></li>
             <li><b>3. Selesai otomatis</b><span>Setelah PDF transfer finance diupload di Update Database, rekening yang sudah masuk database otomatis Selesai.</span></li>
           </ol>
@@ -4068,6 +4092,11 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
                   <input type="search" id="crQ" placeholder="Cari nama atau no rekening" autocomplete="off"></label>
                 <span class="tools__meta" id="crQMeta"></span>
               </div>
+              <div class="wlbar" id="crWlBar" hidden>
+                <label class="wlbar__all"><input type="checkbox" id="crWlAll"><span>Pilih semua yang <b>tidak ada di database</b> <em id="crWlN">0</em></span></label>
+                <span class="wlbar__info" id="crWlInfo"></span>
+                <button class="btn btn--primary btn--sm" type="button" id="crWlGo" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h12M6 20.5h12M8 3.5c0 5 4 5.5 4 8.5s-4 3.5-4 8.5M16 3.5c0 5-4 5.5-4 8.5s4 3.5 4 8.5"/></svg>Masukkan ke waiting list</button>
+              </div>
               <div class="tbl-wrap"><table class="tbl cr__tbl"><thead><tr><th scope="col">Baris</th><th scope="col">Nama di file</th><th scope="col">No rekening</th><th scope="col">Bank</th><th scope="col">Pemilik di database</th><th scope="col">Hasil</th><th scope="col">Keterangan</th></tr></thead><tbody id="crBody"></tbody></table></div>
               <div class="cr__more" id="crMore"></div>
             </div>
@@ -4111,41 +4140,6 @@ body.peran-admin .side__nav a[data-nav="update"], body.peran-admin .side__nav a[
           <div class="bx-tip" id="rpTip" role="tooltip" hidden></div>
         </section>
 
-        <section class="view dk" data-view="dokumen" aria-labelledby="dkTitle">
-          <header class="phead">
-            <div class="phead__main">
-              <div class="phead__eyebrow"><button class="phead__back" type="button" data-back hidden aria-label="Kembali ke halaman sebelumnya" title="Kembali"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg><span>Kembali</span></button><span class="phead__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M9 13h6M9 16.5h4"/></svg></span><span class="phead__eyetxt">Surat kuasa &amp; buku tabungan</span></div>
-              <h1 id="dkTitle">Dokumen <span>Karyawan Baru</span></h1>
-              <p class="phead__lead">Upload surat kuasa dan buku tabungan untuk karyawan baru.</p>
-            </div>
-            <div class="phead__art" aria-hidden="true"></div>
-          </header>
-          <div class="dk__info" role="note">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.2v.3"/></svg>
-            <div><b>Belum aktif.</b> Moneywise belum bisa membedakan karyawan baru dan karyawan lama, jadi upload di halaman ini dikunci dulu. Setelah ada penanda karyawan baru, fitur ini dinyalakan tanpa mengubah tampilan.</div>
-          </div>
-          <div class="dk__grid">
-            <article class="card dk__card" aria-disabled="true">
-              <span class="dk__badge">Segera</span>
-              <div class="dk__ic dk__ic--sk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M8.5 15.5c1.2-1.6 2.2-1.6 3 0s1.8 1.6 3 0"/></svg></div>
-              <h2>Surat kuasa karyawan baru</h2>
-              <p>Untuk karyawan baru yang gajinya ditransfer ke rekening orang lain.</p>
-              <label class="field"><span>Karyawan</span><input disabled placeholder="Cari nama karyawan baru…"></label>
-              <div class="fdrop is-off"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg><span><b>Pilih file surat kuasa</b><small>PDF, JPG, atau PNG · foto dikecilkan otomatis</small></span></div>
-              <button class="btn btn--primary" type="button" disabled>Upload surat kuasa</button>
-            </article>
-            <article class="card dk__card" aria-disabled="true">
-              <span class="dk__badge">Segera</span>
-              <div class="dk__ic dk__ic--bt"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="14" height="17" rx="2"/><path d="M8 3.5v17M11 8h4M11 11.5h4"/></svg></div>
-              <h2>Buku tabungan</h2>
-              <p>Halaman depan buku tabungan untuk memastikan nama dan nomor rekening karyawan baru.</p>
-              <label class="field"><span>Karyawan</span><input disabled placeholder="Cari nama karyawan baru…"></label>
-              <div class="fdrop is-off"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg><span><b>Pilih foto / scan buku tabungan</b><small>JPG, PNG, atau PDF · foto dikecilkan otomatis</small></span></div>
-              <button class="btn btn--primary" type="button" disabled>Upload buku tabungan</button>
-            </article>
-          </div>
-          <p class="dk__foot">File akan disimpan di Google Drive aplikasi (privat), sama seperti surat kuasa sekarang. Foto dikecilkan dulu sebelum diupload supaya Drive tidak cepat penuh.</p>
-        </section>
       </main>
     </div>
   </div>
@@ -6996,7 +6990,7 @@ function cekKaryawanMurni_(rows, db) {
         var hitungRek = COCOK.hitungRek(r.rows), hasil = [], t = performance.now(), lbl = 'Mencocokkan dengan ' + num(peta.db.jumlah) + ' rekening di database…';
         pg.hitung(0, n, lbl);
         for (var i = 0; i < n; i++) {
-          hasil.push(COCOK.cocokSatu(r.rows[i], peta.db, peta.ro, peta.sk, hitungRek, peta.ps));
+          hasil.push(COCOK.cocokSatu(r.rows[i], peta.db, peta.ro, {}, hitungRek, peta.ps));   // v39: surat kuasa hanya arsip
           if (i === n - 1 || performance.now() - t > 24) {
             pg.hitung(i + 1, n, lbl);
             await A.jeda(); t = performance.now();
@@ -7057,13 +7051,14 @@ function cekKaryawanMurni_(rows, db) {
       rep.site = out.site; rep.branch = out.branch; rep.siteDiperbarui = out.siteDiperbarui || 0; rep.adaCadangan = !!out.adaCadangan; rep.mode = out.mode; rep.siteDariMcm = out.siteDariMcm || 0; rep.siteTanpaCocok = out.siteTanpaCocok || 0;
       if (out.siteDiperbarui) A.dataBasi();
       rep.id = out.id; rep.waktu = out.waktu; rep.waktuTeks = out.waktuTeks; rep.oleh = out.oleh || rep.oleh;
-      var beda = out.hasil ? bedaHasil(rep.hasil, out.hasil) : 0;
+      var beda = out.hasil ? bedaHasil(rep.hasil, arsipkanSk(out.hasil)) : 0;
       if (beda) {
         rep.hasil = out.hasil;
         rep.hasil.sort(function (a, b) { return (URUT[a.status] - URUT[b.status]) || (a.line - b.line); });
         if (st.report === rep) { renderFigures(); renderRows(); }
         A.toast(num(beda) + ' baris disesuaikan dengan database terbaru di server.', true);
       }
+      else if (st.report === rep && A.peran && A.peran().super && rep.hasil.some(function (h) { return h.status === 'BEDA'; })) renderRows();   // v39: centang verifikasi aktif setelah tersimpan
       rep.simpanStatus = 'ok';
       ingatLaporan(rep);
       if (st.report === rep) tulisMeta(rep);
@@ -7151,9 +7146,12 @@ function cekKaryawanMurni_(rows, db) {
   }
   function perluCek(h) { return h.status === 'MIRIP' || h.status === 'TIDAK_ADA' || ((h.status === 'BEDA' || h.status === 'RO') && !h.sk); }
 
+  // v39: surat kuasa lama hanya arsip -> baris dihitung sebagai status aslinya (Beda nama biasa)
+  function arsipkanSk(list) { (list || []).forEach(function (h) { if (h.sk) { h.skArsip = h.sk; delete h.sk; } }); return list; }
   function openReport(rep) {
+    arsipkanSk(rep.hasil);
     rep.hasil.sort(function (a, b) { return (URUT[a.status] - URUT[b.status]) || (a.line - b.line); });
-    st.report = rep; st.filter = 'CEK'; st.q = ''; st.page = 1;
+    st.report = rep; st.filter = 'CEK'; st.q = ''; st.page = 1; st.wlPilih = {};
     if (st.file && st.file.name !== rep.fileName) { st.file = null; st.parsed = null; }
     A.go('crosscheck');
     show('xReport'); setStep(3);
@@ -7196,6 +7194,7 @@ function cekKaryawanMurni_(rows, db) {
       openReport(lama);
       A.post({ action: 'detail', id: id }).then(function (out) {
         if (!out || !out.ok) { if (out && /tidak ditemukan/i.test(out.error || '')) delete simpananLap[id]; return; }
+        arsipkanSk(out.hasil);
         if (bedaHasil(lama.hasil, out.hasil)) {
           lama.hasil = out.hasil; lama.adaFile = out.adaFile || lama.adaFile;
           lama.hasil.sort(function (a, b) { return (URUT[a.status] - URUT[b.status]) || (a.line - b.line); });
@@ -7224,10 +7223,10 @@ function cekKaryawanMurni_(rows, db) {
     $('rt-ro').hidden = !g.RO; $('rt-sk').hidden = !g.SK;
     // tab yang sedang dibuka jadi kosong & tersembunyi (semua RO sudah ber-surat kuasa): pindah ke tab Surat kuasa
     if ((st.filter === 'RO' && !g.RO) || (st.filter === 'SK' && !g.SK)) setTimeout(function () { selectTab(g.SK ? 'rt-sk' : 'rt-cek'); }, 0);
-    var v = $('rVerdict'), tambahan = (g.RO ? ' ' + num(g.RO) + ' baris lewat rekening RO belum punya surat kuasa.' : '') + (g.SK ? ' ' + num(g.SK) + ' baris sudah ber-surat kuasa (lihat tab Surat kuasa).' : '');
-    if (!g.CEK) { v.className = 'verdict verdict--ok'; v.innerHTML = ICON_OK + '<div><b>Semua ' + num(n) + ' baris aman</b><span>Nomor rekening dan nama sesuai database, RO, atau surat kuasa. Siap diproses MCM.' + esc(tambahan) + '</span></div>'; }
-    else if (bedaTanpaSk) { v.className = 'verdict verdict--bad'; v.innerHTML = ICON_BAD + '<div><b>' + num(bedaTanpaSk) + ' rekening tercatat atas nama orang lain</b><span>Total ' + num(g.CEK) + ' baris perlu dicek sebelum diproses. ' + num(g.COCOK) + ' baris cocok.' + esc(tambahan) + ' Upload surat kuasa di baris Beda nama bila memang memakai rekening keluarga.</span></div>'; }
-    else { v.className = 'verdict verdict--warn'; v.innerHTML = ICON_WARN + '<div><b>' + num(g.CEK) + ' baris perlu dicek</b><span>Tidak ada rekening atas nama orang lain tanpa surat kuasa. ' + num(g.COCOK) + ' baris cocok.' + esc(tambahan) + '</span></div>'; }
+    var v = $('rVerdict'), nVerif = rep.hasil.filter(function (h) { return h.status === 'BEDA' && h.verif; }).length, tambahan = (g.RO ? ' ' + num(g.RO) + ' baris lewat rekening RO.' : '') + (nVerif ? ' ' + num(nVerif) + ' Beda nama sudah lolos verifikasi.' : '');
+    if (!g.CEK) { v.className = 'verdict verdict--ok'; v.innerHTML = ICON_OK + '<div><b>Semua ' + num(n) + ' baris aman</b><span>Nomor rekening dan nama sesuai database atau RO. Siap diproses MCM.' + esc(tambahan) + '</span></div>'; }
+    else if (bedaTanpaSk) { v.className = 'verdict verdict--bad'; v.innerHTML = ICON_BAD + '<div><b>' + num(bedaTanpaSk) + ' rekening tercatat atas nama orang lain</b><span>Total ' + num(g.CEK) + ' baris perlu dicek sebelum diproses. ' + num(g.COCOK) + ' baris cocok.' + esc(tambahan) + ' Transfer wajib ke rekening atas nama karyawan sendiri; Beda nama yang tetap boleh diproses dicentang "Lolos verifikasi" oleh Super Admin.</span></div>'; }
+    else { v.className = 'verdict verdict--warn'; v.innerHTML = ICON_WARN + '<div><b>' + num(g.CEK) + ' baris perlu dicek</b><span>Tidak ada rekening atas nama orang lain. ' + num(g.COCOK) + ' baris cocok.' + esc(tambahan) + '</span></div>'; }
   }
 
   function rows() {
@@ -7237,22 +7236,25 @@ function cekKaryawanMurni_(rows, db) {
       return !q || (h.acct + ' ' + h.namaMcm + ' ' + h.namaDb).toLowerCase().indexOf(q) !== -1;
     });
   }
-  function statusCell(h) {
-    if (h.sk) return '<span class="pill pill--sk">Surat kuasa</span><small class="pill__asal">awalnya ' + LABEL[h.status] + '</small>';
-    return '<span class="pill ' + PILL[h.status] + '">' + LABEL[h.status] + '</span>' + (h.sumber === 'personalia' ? '<small class="pill__asal pill__asal--ps">dari data personalia</small>' : '');
+  function statusCell(h, i) {   // v39: surat kuasa lama = arsip; statusnya tetap seperti aslinya (Beda nama biasa)
+    return '<span class="pill ' + PILL[h.status] + '">' + LABEL[h.status] + '</span>' + (h.sumber === 'personalia' ? '<small class="pill__asal pill__asal--ps">dari data personalia</small>' : '') + verifCell(h, i);
+  }
+  // v39: Beda nama yang tetap boleh ditransfer, dicentang Super Admin ("lolos verifikasi")
+  function verifCell(h, i) {
+    if (h.status !== 'BEDA') return '';
+    var sup = A.peran && A.peran().super, v = h.verif;
+    if (sup && st.report && !st.report.id) return '<label class="vf" title="Tunggu laporan selesai tersimpan"><input type="checkbox" disabled><span>Lolos verifikasi</span></label>';
+    if (sup && st.report && st.report.id) return '<label class="vf' + (v ? ' is-on' : '') + '"><input type="checkbox" class="vfcb" data-vfi="' + i + '"' + (v ? ' checked' : '') + '><span>Lolos verifikasi</span></label>' +
+      (v ? '<small class="vf__by">' + esc(v.oleh) + ' · ' + esc(v.waktuTeks) + '</small>' : '');
+    return v ? '<span class="vf vf--tag is-on">✓ Lolos verifikasi</span><small class="vf__by">' + esc(v.oleh) + ' · ' + esc(v.waktuTeks) + '</small>' : '';
   }
   function grupRO(h) {
     return st.report.hasil.filter(function (x) { return x.status === 'RO' && !x.sk && x.acct === h.acct; });
   }
   function ketCell(h, i) {
     var t = esc(h.ket);
-    if (h.sk) t += '<div><span class="skbadge">' + IC_CHECK + esc(h.sk.label) + ' <button type="button" data-sklihat="' + esc(h.sk.id) + '">Lihat file</button><button type="button" class="skbadge__del" data-skhapusr="' + i + '">Hapus</button></span></div>';
-    else if (h.status === 'BEDA') t += '<div><button class="skup" type="button" data-skup="' + i + '">' + IC_UP + 'Upload surat kuasa</button></div>';
-    else if (h.status === 'RO') {
-      var n = grupRO(h).length;
-      t += '<div class="skrow"><button class="skup" type="button" data-skup="' + i + '">' + IC_UP + 'Surat kuasa orang ini</button>' +
-        (n > 1 ? '<button class="skup skup--all" type="button" data-skall="' + i + '">' + IC_UP + 'Satu surat kuasa untuk ' + n + ' orang di RO ini</button>' : '') + '</div>';
-    }
+    // v39: surat kuasa tidak dipakai lagi (transfer wajib atas nama karyawan); yang lama hanya arsip
+    if (h.skArsip) t += '<div><span class="skbadge skbadge--arsip">Arsip surat kuasa: ' + esc(h.skArsip.label.replace(/^Approved — /, '')) + ' <button type="button" data-sklihat="' + esc(h.skArsip.id) + '">Lihat file</button></span></div>';
     return t;
   }
   function renderRows() {
@@ -7262,18 +7264,78 @@ function cekKaryawanMurni_(rows, db) {
     var kosong = st.q ? 'Tidak ada yang cocok dengan "' + esc(st.q) + '".' : (st.filter === 'CEK' ? 'Tidak ada baris yang perlu dicek.' : 'Tidak ada baris di kategori ini.');
     $('rBody').innerHTML = slice.map(function (h) {
       var i = st.report.hasil.indexOf(h);
-      return '<tr class="row--' + h.status.toLowerCase() + (h.sk ? ' row--sk' : '') + '"><td class="r hide-m" data-label="Baris">' + h.line +
-        '</td><td class="acct" data-label="No rekening">' + esc(h.acct) +
+      var wlS = h.status === 'TIDAK_ADA' ? (A.wlStatus ? A.wlStatus(h.acct) : '') : '', bisaWl = h.status === 'TIDAK_ADA' && !wlS;
+      return '<tr class="row--' + h.status.toLowerCase() + (h.sk ? ' row--sk' : '') + (bisaWl && st.wlPilih[i] ? ' is-wl' : '') + '"><td class="r hide-m" data-label="Baris">' + h.line +
+        '</td><td class="acct" data-label="No rekening">' + (bisaWl ? '<input type="checkbox" class="wlcb" data-wli="' + i + '"' + (st.wlPilih[i] ? ' checked' : '') + ' aria-label="Pilih ' + esc(h.namaMcm) + ' untuk waiting list">' : '') + esc(h.acct) + (wlS ? '<small class="wltag">Di waiting list · ' + esc(wlS) + '</small>' : '') +
         '</td><td class="lead" data-label="Nama di MCM">' + esc(h.namaMcm) +
         '</td><td data-label="Nama di database">' + (h.namaDb ? esc(h.namaDb) : '<span class="muted">-</span>') +
-        '</td><td data-label="Status">' + statusCell(h) +
+        '</td><td data-label="Status">' + statusCell(h, i) +
         '</td><td class="ket" data-label="Keterangan">' + ketCell(h, i) + '</td></tr>';
     }).join('') || '<tr><td class="empty" colspan="6">' + kosong + '</td></tr>';
     $('rQMeta').textContent = num(list.length) + ' baris';
     $('rPageInfo').textContent = 'Halaman ' + st.page + ' dari ' + pages;
     $('rPrev').disabled = st.page <= 1; $('rNext').disabled = st.page >= pages;
     $('rPager').hidden = list.length <= PAGE;
+    renderWlBar();
   }
+  /* ---------- pilih rekening "tidak ada di database" -> waiting list (v38) ---------- */
+  function wlCalon() { var rep = st.report; return rep ? rep.hasil.filter(function (h) { return h.status === 'TIDAK_ADA' && !(A.wlStatus && A.wlStatus(h.acct)); }) : []; }
+  function renderWlBar() {
+    var rep = st.report, bar = $('rWlBar');
+    if (!rep) { bar.hidden = true; return; }
+    var semuaTA = rep.hasil.filter(function (h) { return h.status === 'TIDAK_ADA'; }), calon = wlCalon();
+    bar.hidden = !semuaTA.length || (st.filter !== 'TIDAK_ADA' && st.filter !== 'CEK');
+    if (bar.hidden) return;
+    var dip = calon.filter(function (h) { return st.wlPilih[rep.hasil.indexOf(h)]; }).length;
+    $('rWlN').textContent = num(calon.length);
+    $('rWlAll').checked = !!calon.length && dip === calon.length; $('rWlAll').indeterminate = dip > 0 && dip < calon.length; $('rWlAll').disabled = !calon.length;
+    var sudah = semuaTA.length - calon.length;
+    $('rWlInfo').textContent = !calon.length ? 'Semua rekening tidak ada di database sudah masuk waiting list.' : sudah ? num(sudah) + ' sudah di waiting list' : 'Centang karyawan yang mau diajukan ke finance.';
+    $('rWlGo').disabled = !dip;
+    $('rWlGo').lastChild.textContent = dip ? 'Masukkan ' + num(dip) + ' ke waiting list' : 'Masukkan ke waiting list';
+  }
+  $('rBody').addEventListener('change', async function (e) {
+    var vf = e.target.closest('.vfcb');
+    if (vf) {
+      var rep = st.report, h = rep && rep.hasil[+vf.dataset.vfi], lolos = vf.checked;
+      if (!h || !rep.id) return;
+      vf.disabled = true;
+      try {
+        var out = await A.post({ action: 'verifikasiBeda', id: rep.id, lines: [h.line], lolos: lolos });
+        if (!out.ok) throw new Error(out.error || 'Gagal menyimpan verifikasi.');
+        h.verif = lolos ? (out.verif[h.line] || { oleh: '', waktuTeks: '' }) : null;
+        if (simpananLap[rep.id]) simpananLap[rep.id] = rep;
+        renderFigures(); renderRows();
+        A.toast(lolos ? h.namaMcm + ' ditandai lolos verifikasi. Ikut di unduhan "Beda nama · lolos verifikasi".' : 'Verifikasi ' + h.namaMcm + ' dibatalkan.', true);
+      } catch (x) { vf.checked = !lolos; vf.disabled = false; A.toast(x.message); }
+      return;
+    }
+    var c = e.target.closest('.wlcb'); if (!c) return;
+    if (c.checked) st.wlPilih[c.dataset.wli] = 1; else delete st.wlPilih[c.dataset.wli];
+    c.closest('tr').classList.toggle('is-wl', c.checked); renderWlBar();
+  });
+  $('rWlAll').addEventListener('change', function () {
+    var on = this.checked, rep = st.report;
+    wlCalon().forEach(function (h) { var i = rep.hasil.indexOf(h); if (on) st.wlPilih[i] = 1; else delete st.wlPilih[i]; });
+    renderRows();
+  });
+  function bankBaris(rep) {   // bank per baris dari file MCM (kalau file aslinya ada di sesi ini)
+    var o = {}; if (st.parsed && st.file && st.file.name === rep.fileName) st.parsed.rows.forEach(function (r) { o[r.line] = r.bank || ''; });
+    return o;
+  }
+  $('rWlGo').addEventListener('click', async function () {
+    var rep = st.report, btn = this; if (!rep || !A.wlTambah) return;
+    var bank = bankBaris(rep), pilih = wlCalon().filter(function (h) { return st.wlPilih[rep.hasil.indexOf(h)]; });
+    if (!pilih.length) return;
+    btn.disabled = true;
+    try {
+      var out = await A.wlTambah(pilih.map(function (h) { return { acct: h.acct, nama: h.namaMcm, bank: bank[h.line] || '' }; }),
+        'Crosscheck MCM · ' + (rep.fileName || ''), rep.branch && rep.branch !== 'ALL' ? rep.branch : '');
+      st.wlPilih = {}; renderRows();
+      A.toast(num(out.masuk) + ' rekening masuk waiting list' + (out.sudah ? ' (' + num(out.sudah) + ' sudah ada di antrean)' : '') + '. Lihat di menu Waiting List.', true);
+    } catch (e) { A.toast(e.message); btn.disabled = false; }
+  });
+  setTimeout(function () { if (A.onWl) A.onWl(function () { if (st.report && !$('xReport').hidden) renderRows(); }); }, 0);   // antrean.js dimuat setelah file ini
   var qt;
   $('rQ').addEventListener('input', function () { var v = this.value; clearTimeout(qt); qt = setTimeout(function () { st.q = v; st.page = 1; renderRows(); }, 150); });
   $('rPrev').addEventListener('click', function () { st.page--; renderRows(); $('rPane').scrollIntoView({ block: 'nearest' }); });
@@ -7338,7 +7400,7 @@ function cekKaryawanMurni_(rows, db) {
     var kolom = ['Baris', 'No rekening', 'Nama di MCM', 'Nama di database', 'Status', 'Keterangan', 'Nominal (Rp)'];
     return {
       judul: 'Laporan Crosscheck MCM', namaFile: 'Laporan Crosscheck - ' + String(rep.fileName || 'MCM').replace(/\.[^.]+$/, ''),
-      sub: 'File ' + (rep.fileName || '-') + ' dicocokkan dengan database rekening (sheet Data Upah), daftar RO, dan surat kuasa.',
+      sub: 'File ' + (rep.fileName || '-') + ' dicocokkan dengan database rekening (sheet Data Upah) dan daftar RO.',
       meta: [['ID crosscheck', rep.id], ['Waktu', waktuRep(rep)], ['Oleh', rep.oleh || '-'], ['Nama file', rep.fileName || '-'], ['Jumlah baris', num(rep.hasil.length)], ['Total nominal', 'Rp ' + rp(rep.totalCents || 0)]],
       ringkas: [['Cocok', num(g.COCOK)], ['Mirip', num(g.MIRIP)], ['Beda nama', num(g.BEDA)], ['Tidak ada di database', num(g.TIDAK_ADA)], ['Via RO', num(g.RO)], ['Surat kuasa', num(g.SK)]],
       tabel: [
@@ -7356,7 +7418,7 @@ function cekKaryawanMurni_(rows, db) {
    * kepala tabel tetap saat digulir). ExcelJS baru dimuat saat pertama kali mengunduh. */
   var KAT_DL = { CEK: 'Perlu dicek', BEDA: 'Beda nama', MIRIP: 'Mirip', TIDAK_ADA: 'Tidak ada di database', RO: 'Via RO', SK: 'Surat kuasa', COCOK: 'Cocok' };
   var URUT_DL = ['CEK', 'BEDA', 'MIRIP', 'TIDAK_ADA', 'RO', 'SK', 'COCOK'];
-  var KOLOM_DL = ['No', 'Baris di file', 'No rekening', 'Nama di MCM', 'Nama di database', 'Status', 'Surat kuasa', 'Sumber data', 'Keterangan', 'Site penempatan (MCM)', 'Nominal (Rp)'];
+  var KOLOM_DL = ['No', 'Baris di file', 'No rekening', 'Nama di MCM', 'Nama di database', 'Status', 'Verifikasi', 'Sumber data', 'Keterangan', 'Site penempatan (MCM)', 'Nominal (Rp)'];
   var LEBAR_DL = [6, 9, 19, 30, 30, 22, 34, 19, 60, 24, 16];
   function barisKat(f) {
     return st.report.hasil.filter(function (h) {
@@ -7371,7 +7433,7 @@ function cekKaryawanMurni_(rows, db) {
   }
   function isiBaris(h, i) {
     return [i + 1, h.line, String(h.acct), h.namaMcm, h.namaDb || '-', LABEL[h.status] + (h.sk ? ' (ada surat kuasa)' : ''),
-      h.sk ? h.sk.label.replace(/^Approved — /, '') : '', sumberData(h), h.ket || '', h.site || '', (h.amountCents || 0) / 100];
+      h.verif ? 'Lolos verifikasi · ' + h.verif.oleh + ' · ' + h.verif.waktuTeks : h.skArsip ? 'Arsip surat kuasa: ' + h.skArsip.label.replace(/^Approved — /, '') : '', sumberData(h), h.ket || '', h.site || '', (h.amountCents || 0) / 100];
   }
   function namaDasar(rep) { return String(rep.fileName || 'MCM').replace(/\.[^.]+$/, '').replace(/[\\/:*?"<>|]+/g, ' ').trim(); }
   function unduhBlob(blob, nama) {
@@ -7510,10 +7572,10 @@ function cekKaryawanMurni_(rows, db) {
   $('rDlCsv').addEventListener('click', async function () { if (st.report && await pastikanTersimpan(st.report)) unduhCsv(st.filter); });
   /* ---------- unduh custom: beberapa keterangan sekaligus dalam satu CSV ---------- */
   // kategori sama seperti tab laporan: Beda nama / Via RO yang sudah punya surat kuasa masuk "Surat kuasa"
-  var CU_URUT = ['COCOK', 'SK', 'MIRIP', 'RO', 'BEDA', 'TIDAK_ADA'];
-  var CU_WARNA = { COCOK: '#1FBF86', SK: '#0EA5C6', MIRIP: '#F2B33D', RO: '#7C4DFF', BEDA: '#E5484D', TIDAK_ADA: '#8A97AE' };
-  var CU_LABEL = { COCOK: 'Cocok', SK: 'Surat kuasa', MIRIP: 'Mirip', RO: 'Via RO', BEDA: 'Beda nama', TIDAK_ADA: 'Tidak ada di database' };
-  function katCu(h) { return h.sk && (h.status === 'BEDA' || h.status === 'RO') ? 'SK' : h.status; }
+  var CU_URUT = ['COCOK', 'VERIF', 'MIRIP', 'RO', 'BEDA', 'TIDAK_ADA'];
+  var CU_WARNA = { COCOK: '#1FBF86', VERIF: '#14B8A6', SK: '#0EA5C6', MIRIP: '#F2B33D', RO: '#7C4DFF', BEDA: '#E5484D', TIDAK_ADA: '#8A97AE' };
+  var CU_LABEL = { COCOK: 'Cocok', VERIF: 'Beda nama · lolos verifikasi', SK: 'Surat kuasa (arsip)', MIRIP: 'Mirip', RO: 'Via RO', BEDA: 'Beda nama (belum lolos)', TIDAK_ADA: 'Tidak ada di database' };
+  function katCu(h) { return h.status === 'BEDA' && h.verif ? 'VERIF' : h.status; }
   function cuPilihan() { try { var v = JSON.parse(localStorage.getItem('mw_cu_pilih') || 'null'); return Array.isArray(v) ? v : ['COCOK']; } catch (e) { return ['COCOK']; } }
   function cuRender() {
     var rep = st.report, pilih = cuPilihan(), hit = {};
@@ -8498,7 +8560,7 @@ function cekKaryawanMurni_(rows, db) {
   'use strict';
   var A = window.APP, $ = function (id) { return document.getElementById(id); };
   var esc = A.esc, num = A.num;
-  var VIEWS = ['dashboard', 'crosscheck', 'cekrek', 'antrean', 'riwayat', 'update', 'karyawan', 'database', 'pengaturan', 'pengguna', 'dokumen'];
+  var VIEWS = ['dashboard', 'crosscheck', 'cekrek', 'antrean', 'riwayat', 'update', 'karyawan', 'database', 'pengaturan', 'pengguna'];
   var JUDUL = { dashboard: 'Dashboard', crosscheck: 'Crosscheck MCM', cekrek: 'Crosscheck Rekening', antrean: 'Waiting List', riwayat: 'Riwayat', update: 'Update Database', karyawan: 'Tambah Karyawan', database: 'Database Bank', pengaturan: 'Pengaturan', pengguna: 'Riwayat Pengguna', dokumen: 'Dokumen Karyawan Baru' };
   // halaman yang hanya bisa dibuka Super Admin (Admin 1 & 2 melihat menunya terkunci)
   var HANYA_SUPER = { update: 1, karyawan: 1, database: 1, pengguna: 1 };
@@ -9061,10 +9123,9 @@ function cekKaryawanMurni_(rows, db) {
       var aktif = x.status === 'Approved';
       return '<tr><td class="when" data-label="Waktu">' + esc(x.waktuTeks) + '</td><td class="acct" data-label="No rekening">' + esc(x.acct) + '</td><td class="lead" data-label="Nama di MCM">' + esc(x.namaMcm) +
         '</td><td data-label="Pemilik rekening">' + esc(x.namaDb || '-') + '</td><td data-label="Keterangan">' + esc(x.label.replace(/^Approved — /, '')) + '</td><td data-label="Oleh">' + esc(x.oleh || '-') +
-        '</td><td data-label="Status"><span class="st ' + (aktif ? 'st--on">Approved' : 'st--off">Dicabut') + '</span></td><td class="act"><button class="btn btn--ghost btn--xs" type="button" data-sklihat="' + esc(x.id) + '">Lihat file</button>' +
-        (aktif ? ' <button class="btn btn--ghost btn--xs btn--danger-ghost" type="button" data-skcabut="' + esc(x.id) + '" data-nama="' + esc(x.namaMcm) + '">Cabut</button>' : '') +
-        ' <button class="hist__del" type="button" data-skhapus="' + esc(x.id) + '" data-nama="' + esc(x.namaMcm) + '" data-acct="' + esc(x.acct) + '" data-berbagi="' + (x.berbagi || 1) + '" title="Hapus surat kuasa" aria-label="Hapus surat kuasa ' + esc(x.namaMcm) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 7h15M9.5 7V4.8h5V7M6.5 7l.9 12.2h9.2L17.5 7M10 10.5v5.5M14 10.5v5.5"/></svg></button></td></tr>';
-    }).join('') || '<tr><td class="empty" colspan="8">Belum ada surat kuasa. Upload dari baris Beda nama di laporan crosscheck.</td></tr>';
+        '</td><td data-label="Status"><span class="st ' + (aktif ? 'st--off">Arsip' : 'st--off">Dicabut') + '</span></td><td class="act"><button class="btn btn--ghost btn--xs" type="button" data-sklihat="' + esc(x.id) + '">Lihat file</button>' +
+        '</td></tr>';   // v39: arsip saja, tanpa cabut/hapus
+    }).join('') || '<tr><td class="empty" colspan="8">Tidak ada arsip surat kuasa.</td></tr>';
   }
   $('skBody').addEventListener('click', async function (e) {
     var l = e.target.closest('[data-sklihat]');
@@ -10739,7 +10800,7 @@ function cekKaryawanMurni_(rows, db) {
       if (!out.ok) throw new Error(out.error || 'Server menolak data.');
       pg.selesai('Selesai dicek', num(n) + '/' + num(n) + ' rekening');
       st.hasil = out.hasil; st.waktu = out.waktu; st.jumlahDb = out.jumlahDb; st.wl = out.waitingList || null;
-      if (st.wl && st.wl.masuk && A.waitingListBasi) A.waitingListBasi();
+      st.wlPilih = {};
       var ada = function (k) { return st.hasil.some(function (h) { return kat(h) === k; }); };
       st.filter = ['BEDA', 'TIDAK_ADA', 'MIRIP', 'RO'].some(ada) ? 'TINDAK' : 'SEMUA';
       st.tampil = 200;
@@ -10761,7 +10822,7 @@ function cekKaryawanMurni_(rows, db) {
     var o = hitung(), n = st.hasil.length;
     $('crHName').textContent = st.file ? st.file.name : 'Daftar rekening';
     $('crHMeta').textContent = num(n) + ' rekening dicek · database ' + num(st.jumlahDb || 0) + ' rekening';
-    var wl = st.wl, el = $('crWl');
+    var wl = null, el = $('crWl');   // v38: tidak otomatis lagi, dipilih manual (bilah di atas tabel)
     if (wl && (wl.masuk || wl.sudah)) {
       el.hidden = false;
       el.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14M5 20h14M7 4c0 5 4 5 5 8-1 3-5 3-5 8M17 4c0 5-4 5-5 8 1 3 5 3 5 8"/></svg><div><b>' +
@@ -10790,14 +10851,17 @@ function cekKaryawanMurni_(rows, db) {
     var tampil = list.slice(0, st.tampil);
     $('crQMeta').textContent = num(list.length) + ' rekening';
     $('crBody').innerHTML = tampil.map(function (h) {
-      var k = kat(h), bb = bankBeda(h);
+      var k = kat(h), bb = bankBeda(h), j = st.hasil.indexOf(h);
+      var wlS = h.status === 'TIDAK_ADA' ? (A.wlStatus ? A.wlStatus(h.acct) : '') : '', bisaWl = h.status === 'TIDAK_ADA' && !wlS;
       var pemilik = h.namaDb ? esc(h.namaDb) + (h.siteDb || h.branchDb ? '<small class="dsite">' + esc([h.siteDb, h.branchDb && A.infoBranch ? A.infoBranch(h.branchDb).label : h.branchDb].filter(Boolean).join(' · ')) + '</small>' : '') : '<span class="dz-hint">–</span>';
-      return '<tr><td data-label="Baris">' + h.line + '</td><td class="lead" data-label="Nama di file">' + esc(h.namaMcm) + '</td><td class="acct" data-label="No rekening">' + esc(h.acct) + '</td>' +
+      return '<tr' + (bisaWl && st.wlPilih[j] ? ' class="is-wl"' : '') + '><td data-label="Baris">' + h.line + '</td><td class="lead" data-label="Nama di file">' + esc(h.namaMcm) + '</td><td class="acct" data-label="No rekening">' +
+        (bisaWl ? '<input type="checkbox" class="wlcb" data-wlj="' + j + '"' + (st.wlPilih[j] ? ' checked' : '') + ' aria-label="Pilih ' + esc(h.namaMcm) + ' untuk waiting list">' : '') + esc(h.acct) + (wlS ? '<small class="wltag">Di waiting list · ' + esc(wlS) + '</small>' : '') + '</td>' +
         '<td data-label="Bank">' + esc(h.bank || '-') + (bb ? '<small class="cr__bb" title="Bank di file berbeda dengan bank di database">database: ' + esc(h.bankDb) + '</small>' : '') + '</td>' +
         '<td data-label="Pemilik di database">' + pemilik + '</td>' +
         '<td data-label="Hasil"><span class="cr__st" style="--cw:' + WARNA[k] + '">' + LABEL[k] + '</span></td>' +
         '<td class="sum" data-label="Keterangan">' + esc(h.ket || '') + (h.sk ? ' <b>' + esc(h.sk.label || 'Surat kuasa') + '</b>' : '') + (k !== 'COCOK' && k !== 'SK' ? '<small class="cr__tl">' + esc(TINDAK[k]) + '</small>' : '') + '</td></tr>';
     }).join('') || '<tr><td class="empty" colspan="7">' + (q ? 'Tidak ada rekening yang cocok dengan pencarian.' : 'Tidak ada rekening di kategori ini.') + '</td></tr>';
+    renderWlBar();
     $('crMore').innerHTML = list.length > tampil.length ? '<button class="btn btn--white btn--sm" type="button" id="crLagi">Tampilkan ' + num(Math.min(200, list.length - tampil.length)) + ' lagi (' + num(list.length - tampil.length) + ' tersisa)</button>' : '';
   }
   document.querySelector('[data-view="cekrek"]').addEventListener('click', function (e) {
@@ -10807,6 +10871,44 @@ function cekKaryawanMurni_(rows, db) {
   });
   var tq;
   $('crQ').addEventListener('input', function () { clearTimeout(tq); var v = this.value; tq = setTimeout(function () { st.q = v.trim(); st.tampil = 200; renderTabel(); }, 160); });
+
+  /* ---------- pilih rekening "tidak ada di database" -> waiting list (v38) ---------- */
+  function wlCalon() { return (st.hasil || []).filter(function (h) { return h.status === 'TIDAK_ADA' && !(A.wlStatus && A.wlStatus(h.acct)); }); }
+  function renderWlBar() {
+    var bar = $('crWlBar'), semua = (st.hasil || []).filter(function (h) { return h.status === 'TIDAK_ADA'; }), calon = wlCalon();
+    bar.hidden = !semua.length || ['TINDAK', 'SEMUA', 'TIDAK_ADA'].indexOf(st.filter) === -1;
+    if (bar.hidden) return;
+    st.wlPilih = st.wlPilih || {};
+    var dip = calon.filter(function (h) { return st.wlPilih[st.hasil.indexOf(h)]; }).length, sudah = semua.length - calon.length;
+    $('crWlN').textContent = num(calon.length);
+    $('crWlAll').checked = !!calon.length && dip === calon.length; $('crWlAll').indeterminate = dip > 0 && dip < calon.length; $('crWlAll').disabled = !calon.length;
+    $('crWlInfo').textContent = !calon.length ? 'Semua rekening tidak ada di database sudah masuk waiting list.' : sudah ? num(sudah) + ' sudah di waiting list' : 'Centang karyawan yang mau diajukan ke finance.';
+    $('crWlGo').disabled = !dip;
+    $('crWlGo').lastChild.textContent = dip ? 'Masukkan ' + num(dip) + ' ke waiting list' : 'Masukkan ke waiting list';
+  }
+  $('crBody').addEventListener('change', function (e) {
+    var c = e.target.closest('.wlcb'); if (!c) return;
+    st.wlPilih = st.wlPilih || {};
+    if (c.checked) st.wlPilih[c.dataset.wlj] = 1; else delete st.wlPilih[c.dataset.wlj];
+    c.closest('tr').classList.toggle('is-wl', c.checked); renderWlBar();
+  });
+  $('crWlAll').addEventListener('change', function () {
+    var on = this.checked; st.wlPilih = st.wlPilih || {};
+    wlCalon().forEach(function (h) { var j = st.hasil.indexOf(h); if (on) st.wlPilih[j] = 1; else delete st.wlPilih[j]; });
+    renderTabel();
+  });
+  $('crWlGo').addEventListener('click', async function () {
+    var btn = this; if (!A.wlTambah) return;
+    var pilih = wlCalon().filter(function (h) { return st.wlPilih[st.hasil.indexOf(h)]; });
+    if (!pilih.length) return;
+    btn.disabled = true;
+    try {
+      var out = await A.wlTambah(pilih.map(function (h) { return { acct: h.acct, nama: h.namaMcm, bank: h.bank || '' }; }), 'Crosscheck Rekening · ' + (st.file ? st.file.name : ''), '');
+      st.wlPilih = {}; renderTabel();
+      A.toast(num(out.masuk) + ' rekening masuk waiting list' + (out.sudah ? ' (' + num(out.sudah) + ' sudah ada di antrean)' : '') + '. Lihat di menu Waiting List.', true);
+    } catch (e) { A.toast(e.message); btn.disabled = false; }
+  });
+  setTimeout(function () { if (A.onWl) A.onWl(function () { if (st.hasil && !$('crHasil').hidden) renderTabel(); }); }, 0);
 
   /* ---------- unduh custom ---------- */
   function fmt() { var r = document.querySelector('input[name="crdFmt"]:checked'); return r ? r.value : 'xlsx'; }
@@ -10944,8 +11046,23 @@ function cekKaryawanMurni_(rows, db) {
     } catch (e) { if (!diam) $('wlBody').innerHTML = '<tr><td class="empty" colspan="8">Waiting list belum bisa dimuat: ' + esc(e.message) + '</td></tr>'; }
     finally { wl.busy = false; }
   };
+  // status antrean per no rekening (dipakai tanda "Di waiting list" di laporan crosscheck)
+  var aktif = {}, pendengar = [];
+  function kunci(a) { return String(a || '').replace(/\D/g, '').replace(/^0+/, ''); }
+  A.wlStatus = function (acct) { return aktif[kunci(acct)] || ''; };
+  A.onWl = function (f) { pendengar.push(f); };
+  // masukkan rekening terpilih ke waiting list: rows [{acct, nama, bank}]
+  A.wlTambah = async function (rows, sumber, branch) {
+    var out = await A.post({ action: 'waitingTambah', rows: rows, sumber: sumber, branch: branch || '' });
+    if (!out.ok) throw new Error(out.error || 'Gagal memasukkan ke waiting list.');
+    terima(out);
+    return out;
+  };
   function terima(out) {
     wl.list = out.list || [];
+    aktif = {};
+    wl.list.forEach(function (x) { if (x.status === 'Menunggu' || x.status === 'Diajukan') aktif[kunci(x.acct)] = x.status === 'Diajukan' ? 'Diajukan ke finance' : 'Menunggu'; });
+    pendengar.forEach(function (f) { try { f(); } catch (e) { /* abaikan */ } });
     var ada = {}; wl.list.forEach(function (x) { ada[x.id] = 1; });
     Object.keys(wl.pilih).forEach(function (k) { if (!ada[k]) delete wl.pilih[k]; });
     badge(); render();
@@ -10999,7 +11116,7 @@ function cekKaryawanMurni_(rows, db) {
         '<td data-label="Branch"><span class="rp__chip" style="--bw:' + warnaB(x.branch) + '">' + esc(labelB(x.branch)) + '</span></td>' +
         '<td data-label="Diajukan oleh">' + esc(x.oleh || '-') + '<small class="dsite">' + esc(x.sumber || '') + '</small></td>' +
         '<td data-label="Status"><span class="cr__st" style="--cw:' + WARNA[x.status] + '">' + esc(x.status === 'Diajukan' ? 'Diajukan ke finance' : x.status) + '</span>' + info + '</td></tr>';
-    }).join('') || '<tr><td class="empty" colspan="8">' + (wl.list.length ? 'Tidak ada rekening di filter ini.' : 'Waiting list masih kosong. Rekening "tidak ada di database" dari Crosscheck Rekening akan masuk ke sini.') + '</td></tr>';
+    }).join('') || '<tr><td class="empty" colspan="8">' + (wl.list.length ? 'Tidak ada rekening di filter ini.' : 'Waiting list masih kosong. Centang rekening "tidak ada di database" di hasil Crosscheck MCM atau Crosscheck Rekening, lalu klik Masukkan ke waiting list.') + '</td></tr>';
     var dip = terpilih(), adaM = dip.some(function (x) { return x.status === 'Menunggu'; }), adaD = dip.some(function (x) { return x.status === 'Diajukan'; });
     var semuaM = wl.list.filter(function (x) { return x.status === 'Menunggu'; }).length;
     $('wlAjukan').disabled = !(dip.length ? adaM : semuaM);
@@ -11451,7 +11568,7 @@ function cekKaryawanMurni_(rows, db) {
   var A = window.APP, $ = function (id) { return document.getElementById(id); };
   if (!A || !$('cbFab')) return;
   var esc = A.esc, KUNCI = 'mw_chat_v1';
-  var SARAN_AWAL = ['Rekening Budi atas nama siapa?', 'Berapa rekening per bank?', 'Site apa saja?', 'Crosscheck terakhir', 'Daftar rekening RO', 'Cara upload surat kuasa'];
+  var SARAN_AWAL = ['Rekening Budi atas nama siapa?', 'Berapa rekening per bank?', 'Site apa saja?', 'Crosscheck terakhir', 'Daftar rekening RO', 'Arti status Beda nama'];
   var VIEW_LBL = { dashboard: 'Dashboard', crosscheck: 'Crosscheck MCM', riwayat: 'Riwayat', update: 'Update Database', karyawan: 'Tambah Karyawan', database: 'Database Bank', pengaturan: 'Pengaturan' };
   var log = [], tanya = [], sibuk = false;
 
